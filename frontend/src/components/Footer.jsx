@@ -12,9 +12,9 @@ const Footer = () => {
               <div className="sm:mb-2.5">
                 <Link to="/" className="inline-flex items-center">
                   <img
-                    src="/bigplots.webp"
-                    alt="Bigplots Logo"
-                    className="mt-2 sm:mt-0 w-30 h-[64px] object-cover block sm:h-40 sm:w-40 sm:object-contain"
+                    src="/vouchercashlogo2.png"
+                    alt="Voucher Cash Logo"
+                    className="mt-2 sm:-mt-4 h-44 w-44 sm:h-52 sm:w-52 object-contain"
                   />
                 </Link>
               </div>

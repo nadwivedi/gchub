@@ -38,16 +38,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-[60px] md:h-[80px]">
           {/* Logo Section */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+          <Link to="/" className="flex items-center flex-shrink-0">
             <img
-              src="/vouchercashlogo.png"
+              src="/vouchercashlogo2.png"
               alt="Voucher Cash Logo"
-              className="h-9 w-9 md:h-10 md:w-10 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200"
+              className="h-[214px] w-[214px] md:h-[246px] md:w-[246px] object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200"
             />
-            <span className="text-base md:text-xl font-bold tracking-wider leading-none">
-              <span className="text-gray-900">VOUCHER</span>
-              <span className="text-amber-500">CASH</span>
-            </span>
           </Link>
 
           {/* Desktop Search - centered */}

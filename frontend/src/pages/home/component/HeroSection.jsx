@@ -13,8 +13,8 @@ const demoHeroes = heroImages.map((img) => ({
   linkUrl: '/',
 }));
 
-const MOBILE_VISIBLE_CARDS = 2;
-const MOBILE_CLONE_COUNT = MOBILE_VISIBLE_CARDS;
+const MOBILE_VISIBLE_CARDS = 1.25;
+const MOBILE_CLONE_COUNT = 2;
 const MOBILE_CARD_WIDTH_PERCENT = 100 / MOBILE_VISIBLE_CARDS;
 const DESKTOP_VISIBLE_CARDS = 5;
 const MOBILE_SWIPE_THRESHOLD_PX = 22;
