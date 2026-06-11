@@ -36,13 +36,13 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-100 shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-[60px] md:h-[80px]">
+        <div className="flex items-center h-[70px] md:h-[90px]">
           {/* Logo Section */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img
               src="/vouchercashlogo2.png"
               alt="Voucher Cash Logo"
-              className="h-[214px] w-[214px] md:h-[246px] md:w-[246px] object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200"
+              className="h-[202px] w-[202px] md:h-[246px] md:w-[246px] object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200"
             />
           </Link>
 
