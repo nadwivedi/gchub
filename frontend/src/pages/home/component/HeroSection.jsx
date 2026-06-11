@@ -1,31 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-const demoHeroes = [
-
-
- 
-  {
-    _id: 'demo-7',
-    imageUrl: '/land8.jpg',
-    title: 'Land Banner 7',
-    linkUrl: '',
-    stripText: '25 Acre Land Near Jag',
-  },
-  {
-    _id: 'demo-8',
-    imageUrl: '/land9.avif',
-    title: 'Land Banner 8',
-    linkUrl: '',
-    stripText: '25 Acre Land Near korba',
-  },
-  {
-    _id: 'demo-8',
-    imageUrl: '/land10.webp',
-    title: 'Land Banner 10',
-    linkUrl: '',
-    stripText: '25 Acre Land Near korba',
-  },
+const heroImages = [
+  { id: 'hero-1', file: '/hero/hero-1.png', label: 'Hero Banner 1' },
+  { id: 'hero-2', file: '/hero/hero-2.png', label: 'Hero Banner 2' },
+  { id: 'hero-3', file: '/hero/hero-3.png', label: 'Hero Banner 3' },
 ];
+
+const demoHeroes = heroImages.map((img) => ({
+  _id: img.id,
+  imageUrl: img.file,
+  title: img.label,
+  linkUrl: '/',
+}));
 
 const MOBILE_VISIBLE_CARDS = 2;
 const MOBILE_CLONE_COUNT = MOBILE_VISIBLE_CARDS;
@@ -264,7 +250,6 @@ const HeroSection = () => {
   const renderHeroItem = (hero, index, keyPrefix = 'hero') => {
     const imageSrc = hero.imageUrl;
     const altText = hero.title || `Hero banner ${index + 1}`;
-    const stripText = String(hero.stripText || '').trim() || 'Land for Sale';
     const destinationUrl = String(hero.linkUrl || '').trim() || DEFAULT_HERO_TARGET_URL;
     const isExternal = /^https?:\/\//i.test(destinationUrl);
 
@@ -283,11 +268,6 @@ const HeroSection = () => {
             WebkitTouchCallout: 'none',
           }}
         />
-        <div className="border-t border-slate-200 bg-gradient-to-r from-black/75 via-slate-900/70 to-black/75 px-2 py-1 sm:px-3 sm:py-1.5">
-          <span className="block truncate text-[10px] sm:text-xs md:text-sm font-semibold uppercase tracking-wide text-white text-center">
-            {stripText}
-          </span>
-        </div>
       </div>
     );
 
@@ -318,7 +298,7 @@ const HeroSection = () => {
     <section className="w-full lg:w-[92%] mx-auto px-1 sm:px-4">
       <div className="relative overflow-hidden lg:hidden">
         <div
-          className={`${isMobileTransitionEnabled ? 'transition-transform duration-[900ms] ease-linear' : 'transition-none'} flex select-none`}
+          className={`${isMobileTransitionEnabled ? 'transition-transform duration-[1700ms] ease-linear' : 'transition-none'} flex select-none`}
           style={{
             transform: `translateX(-${mobileTrackIndex * MOBILE_CARD_WIDTH_PERCENT}%)`,
             touchAction: 'pan-y',
@@ -344,7 +324,7 @@ const HeroSection = () => {
 
       <div className="hidden lg:block relative overflow-hidden">
         <div
-          className={`${isDesktopTransitionEnabled ? 'transition-transform duration-[900ms] ease-linear' : 'transition-none'} flex select-none`}
+          className={`${isDesktopTransitionEnabled ? 'transition-transform duration-[1700ms] ease-linear' : 'transition-none'} flex select-none`}
           style={{
             transform: `translateX(-${desktopTrackIndex * desktopCardWidthPercent}%)`,
           }}

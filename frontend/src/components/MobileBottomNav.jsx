@@ -15,8 +15,8 @@ const MobileBottomNav = () => {
       )
     },
     {
-      path: '/contact',
-      name: 'Sell Plot',
+      path: '/sell-voucher',
+      name: 'Sell Gift Card',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.4} d="M12 7v10m5-5H7" />
@@ -39,14 +39,14 @@ const MobileBottomNav = () => {
       <div className="flex justify-evenly items-end py-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path
-          const isSellItem = item.path === '/contact'
+          const isSellItem = item.path === '/sell-voucher'
           return (
             <Link
               key={item.path}
               to={item.path}
               className={`flex flex-col items-center rounded-lg relative ${
                 isSellItem
-                  ? 'px-3 py-1 text-cyan-700 transition-all duration-200'
+                  ? 'px-3 py-1 text-cyan-700 animate-pulse transition-all duration-200'
                   : `py-1 px-3 transition-colors duration-200 ${
                       isActive 
                         ? 'text-cyan-500 bg-cyan-50' 

@@ -19,20 +19,13 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['pc-parts', 'pc-builds', 'laptops', 'computer-accessories']
+    enum: ['e-commerce', 'gaming', 'food-dining', 'fashion-lifestyle', 'travel-entertainment']
   },
   subCategory: {
     type: String,
     required: true,
     enum: [
-      // PC Parts
-      'graphics-card', 'processors', 'motherboards', 'memory', 'storage', 'monitors',
-      // Computer Accessories 
-      'keyboard', 'mouse', 'headset', 'monitor', 'mousepad', 'controller', 'webcam', 'microphone', 'laptop-bag', 'gaming-chair', 'speakers', 'cooling-pad', 'usb-hub', 'docking-station', 'cable', 'adapter',
-      // Laptops
-      'gaming-laptop', 'office-laptop',
-      // PC Builds
-      'gaming-build', 'office-build', 'workstation-build', 'budget-build', 'high-end-build', 'streaming-build'
+      'shopping', 'gaming-credits', 'subscription', 'food-beverage', 'clothing', 'movies-music', 'travel'
     ]
   },
 
@@ -229,9 +222,9 @@ productSchema.pre('save', function(next) {
   }
   
   // Auto-set price range
-  if (this.price < 5000) this.priceRange = 'budget';
-  else if (this.price < 25000) this.priceRange = 'mid-range';
-  else if (this.price < 75000) this.priceRange = 'premium';
+  if (this.price < 500) this.priceRange = 'budget';
+  else if (this.price < 2000) this.priceRange = 'mid-range';
+  else if (this.price < 5000) this.priceRange = 'premium';
   else this.priceRange = 'high-end';
   
   next();

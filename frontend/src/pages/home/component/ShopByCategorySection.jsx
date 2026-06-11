@@ -1,41 +1,42 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Leaf, Building2, House, Coins } from "lucide-react";
+import { ShoppingBag, Gamepad2, Utensils, Shirt, Tv } from "lucide-react";
 
-const landCategories = [
+const voucherCategories = [
   {
-    _id: "agriculture-land",
-    name: "Agriculture Land",
-    query: "agriculture land",
-    icon: Leaf,
-    gradient: "from-green-500 to-emerald-600",
+    _id: "e-commerce",
+    name: "E-Commerce",
+    icon: ShoppingBag,
+    gradient: "from-violet-500 to-purple-600",
   },
   {
-    _id: "industrial-land",
-    name: "Industrial Land",
-    query: "industrial land",
-    icon: Building2,
-    gradient: "from-slate-600 to-gray-800",
-  },
-  {
-    _id: "residential-land",
-    name: "Residential Land",
-    query: "residential land",
-    icon: House,
+    _id: "gaming",
+    name: "Gaming Credits",
+    icon: Gamepad2,
     gradient: "from-blue-500 to-indigo-600",
   },
   {
-    _id: "commercial-land",
-    name: "Commercial Land",
-    query: "commercial land",
-    icon: Coins,
+    _id: "food-dining",
+    name: "Food & Dining",
+    icon: Utensils,
     gradient: "from-amber-500 to-orange-600",
+  },
+  {
+    _id: "fashion-lifestyle",
+    name: "Fashion & Lifestyle",
+    icon: Shirt,
+    gradient: "from-pink-500 to-rose-600",
+  },
+  {
+    _id: "travel-entertainment",
+    name: "Subscriptions & Travel",
+    icon: Tv,
+    gradient: "from-emerald-500 to-teal-600",
   },
 ];
 
 const getCategoryDestination = (category) => {
-  const query = String(category.query || category.name || "").trim();
-  return `/search?q=${encodeURIComponent(query)}`;
+  return `/search?category=${category._id}`;
 };
 
 const ShopByCategorySection = () => {
@@ -52,8 +53,8 @@ const ShopByCategorySection = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-x-1.5 gap-y-1 sm:gap-6 lg:w-fit lg:mx-auto lg:justify-items-center">
-          {landCategories.map((category) => {
+        <div className="grid grid-cols-5 gap-x-1.5 gap-y-1 sm:gap-6 lg:w-fit lg:mx-auto lg:justify-items-center">
+          {voucherCategories.map((category) => {
             const Icon = category.icon;
             const destination = getCategoryDestination(category);
 
