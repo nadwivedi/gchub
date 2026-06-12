@@ -2,7 +2,6 @@ import React from 'react'
 import HeroSection from './component/HeroSection'
 import ShopByCategorySection from './component/ShopByCategorySection'
 import ShopByBrandSection from './component/ShopByBrandSection'
-import TopDealsSection from './component/TopDealsSection'
 
 const products = [
   { name: 'Amazon', file: '/products/amazon.png' },
@@ -48,10 +47,6 @@ const Home = () => {
         <ShopByBrandSection />
       </div>
 
-      {/* Top Discounted Deals Section */}
-      <div className="py-8 bg-slate-50">
-        <TopDealsSection />
-      </div>
     </div>
   )
 }
