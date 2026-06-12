@@ -172,16 +172,16 @@ const GiftCardGooglePlay = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
                       <button
                         onClick={() => handleBuyNow(voucher)}
-                        className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold py-3.5 px-6 rounded-xl hover:from-orange-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer text-sm sm:text-base"
+                        className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-orange-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer text-xs sm:text-sm"
                       >
                         Buy Now
                       </button>
                       <button
                         onClick={() => handleAddToCart(voucher)}
-                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3.5 px-6 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer text-sm sm:text-base"
+                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3.5 px-4 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer text-xs sm:text-sm"
                       >
                         Add to Cart
                       </button>
