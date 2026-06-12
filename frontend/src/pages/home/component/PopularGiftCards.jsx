@@ -1,0 +1,32 @@
+import React from 'react'
+
+const products = [
+  { name: 'Amazon', file: '/products/amazon.png' },
+  { name: 'BigBasket', file: '/products/bigbasket.png' },
+  { name: 'Flipkart', file: '/products/flipkart.png' },
+  { name: 'Google Play', file: '/products/google%20play.png' },
+  { name: 'Steam', file: '/products/steam.png' },
+]
+
+const PopularGiftCards = () => {
+  return (
+    <div className="py-8 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Popular Gift Cards</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {products.map((product) => (
+            <div key={product.name} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-0 flex items-center justify-center border border-gray-200">
+              <img
+                src={product.file}
+                alt={product.name}
+                className="h-36 w-36 sm:h-48 sm:w-48 object-contain"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default PopularGiftCards
