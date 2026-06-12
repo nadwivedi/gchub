@@ -6,6 +6,7 @@ const products = [
   { name: 'Flipkart', file: '/products/flipkart.png' },
   { name: 'Google Play', file: '/products/google%20play.png' },
   { name: 'Steam', file: '/products/steam.png' },
+  { name: 'Myntra', file: '/products/myntra.png' },
 ]
 
 const PopularGiftCards = () => {
@@ -13,7 +14,7 @@ const PopularGiftCards = () => {
     <div className="py-8 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Popular Gift Cards</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           {products.map((product) => (
             <div key={product.name} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-0 flex items-center justify-center border border-gray-200 relative">
               <img
