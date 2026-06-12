@@ -35,6 +35,17 @@ const vouchers = [
     images: ['/products/google%20play.png'],
     description: '₹520 Google Play Gift Card at just ₹400',
   },
+  {
+    _id: 'google-play-650',
+    name: 'Google Play Code - ₹650 Voucher',
+    price: 500,
+    originalPrice: 650,
+    brand: 'Google Play',
+    category: 'gift-cards',
+    images: ['/products/google%20play.png'],
+    description: '₹650 Google Play Gift Card at just ₹500',
+    stockQuantity: 0,
+  },
 ]
 
 const formatPrice = (price) => {
@@ -90,7 +101,7 @@ const GiftCardGooglePlay = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {vouchers.map((voucher) => {
             const discountPercent = calculateDiscount(voucher.originalPrice, voucher.price)
             const savings = voucher.originalPrice - voucher.price
@@ -114,13 +125,22 @@ const GiftCardGooglePlay = () => {
                     alt={voucher.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 shadow-sm flex items-center gap-1.5">
-                    <svg className="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    Instant
-                  </div>
+                  <div className={`absolute inset-0 bg-gradient-to-t ${voucher.stockQuantity === 0 ? 'from-slate-900/80 via-slate-900/20' : 'from-black/40 via-transparent'} to-transparent`}></div>
+                  
+                  {voucher.stockQuantity === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center backdrop-blur-[2px]">
+                      <div className="bg-slate-900/80 text-white px-4 py-2 rounded-lg font-bold tracking-wider uppercase shadow-xl transform border border-slate-700">
+                        Out of Stock
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 shadow-sm flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                      </svg>
+                      Instant
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
@@ -157,20 +177,34 @@ const GiftCardGooglePlay = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={() => handleBuyNow(voucher)}
-                        className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-orange-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer text-xs sm:text-sm"
-                      >
-                        Buy Now
-                      </button>
-                      <button
-                        onClick={() => handleAddToCart(voucher)}
-                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3.5 px-4 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer text-xs sm:text-sm"
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
+                    {voucher.stockQuantity === 0 ? (
+                      <div className="grid grid-cols-1 gap-3">
+                        <button
+                          disabled
+                          className="w-full bg-slate-200 text-slate-500 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-xs sm:text-sm flex items-center justify-center gap-2"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Out of Stock
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={() => handleBuyNow(voucher)}
+                          className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-orange-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer text-xs sm:text-sm"
+                        >
+                          Buy Now
+                        </button>
+                        <button
+                          onClick={() => handleAddToCart(voucher)}
+                          className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3.5 px-4 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer text-xs sm:text-sm"
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
