@@ -1,10 +1,10 @@
 import React from 'react'
 
 const products = [
+  { name: 'Google Play', file: '/products/google%20play.png' },
   { name: 'Amazon', file: '/products/amazon.png' },
   { name: 'BigBasket', file: '/products/bigbasket.png' },
   { name: 'Flipkart', file: '/products/flipkart.png' },
-  { name: 'Google Play', file: '/products/google%20play.png' },
   { name: 'Steam', file: '/products/steam.png' },
   { name: 'Myntra', file: '/products/myntra.png' },
 ]
