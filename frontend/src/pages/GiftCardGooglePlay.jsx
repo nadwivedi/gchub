@@ -137,8 +137,8 @@ const GiftCardGooglePlay = () => {
                   </div>
 
                   <div>
-                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1 sm:gap-0 border-t border-slate-100 pt-4 mb-4">
-                      <div className="flex flex-col">
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-4 mb-4">
+                      <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-extrabold text-slate-900">
                           {formatPrice(voucher.price)}
                         </span>
@@ -149,26 +149,11 @@ const GiftCardGooglePlay = () => {
                         )}
                       </div>
 
-                      <div className="mt-1 sm:mt-0">
-                        <div className="bg-emerald-50 text-emerald-700 font-bold text-xs px-3 py-1.5 rounded-md inline-flex items-center gap-1">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                          </svg>
-                          Save {formatPrice(savings)}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl p-3 mb-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-600">You Save</span>
-                        <span className="text-lg font-extrabold text-emerald-600">{discountPercent}%</span>
-                      </div>
-                      <div className="mt-2 w-full bg-white/60 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500"
-                          style={{ width: `${discountPercent}%` }}
-                        ></div>
+                      <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1.5 rounded-md">
+                        <span>Save {formatPrice(savings)}</span>
+                        <span className="bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded text-[10px]">
+                          {discountPercent}%
+                        </span>
                       </div>
                     </div>
 
