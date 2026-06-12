@@ -26,7 +26,7 @@ const Home = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Popular Gift Cards</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {products.map((product) => (
-              <div key={product.name} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-2 flex items-center justify-center border border-gray-100">
+              <div key={product.name} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-0 flex items-center justify-center border border-gray-100">
                 <img
                   src={product.file}
                   alt={product.name}
