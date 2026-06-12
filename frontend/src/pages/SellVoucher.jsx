@@ -14,7 +14,6 @@ const brands = [
 
 const SellVoucher = () => {
   const [cards, setCards] = useState([])
-  const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({
     brand: '',
     balance: '',
@@ -33,7 +32,6 @@ const SellVoucher = () => {
     }
     setCards([...cards, { ...form, id: Date.now() }])
     setForm({ brand: '', balance: '', code: '', expiry: '' })
-    setShowModal(false)
     toast.success('Gift card added successfully')
   }
 
@@ -44,22 +42,18 @@ const SellVoucher = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+          
+          {/* Main Section */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div className="flex items-center gap-2 sm:gap-3">
               <Link to="/" className="text-gray-600 hover:text-gray-900">
                 <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
               </Link>
               <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Sell Gift Cards</h1>
             </div>
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-1 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
-            >
-              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline sm:inline">Add New Card</span>
-              <span className="inline xs:hidden sm:hidden">Add</span>
-            </button>
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-6 mb-6 sm:mb-8">
@@ -91,53 +85,9 @@ const SellVoucher = () => {
             </div>
           </div>
 
-        {cards.length === 0 ? (
-          <div className="text-center py-20">
-            <Gift className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No gift cards added yet</p>
-            <p className="text-gray-400 text-sm mt-1">Click "Add New Card" to get started</p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {cards.map((card) => (
-              <div
-                key={card.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-gray-100 rounded-lg p-3">
-                    <Gift className="h-6 w-6 text-gray-700" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{card.brand}</p>
-                    <p className="text-sm text-gray-500">
-                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | ₹{card.balance} | Exp: {card.expiry}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleDelete(card.id)}
-                  className="text-red-500 hover:text-red-700 transition-colors self-end sm:self-auto"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Add Gift Card</h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 mb-6 sm:mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">List Your Gift Card</h2>
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <Gift className="h-4 w-4 inline mr-1" />
@@ -196,16 +146,95 @@ const SellVoucher = () => {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 />
               </div>
-              <button
-                onClick={handleAdd}
-                className="w-full py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                Add Card
-              </button>
+              <div className="pt-2">
+                <button
+                  onClick={handleAdd}
+                  className="w-full py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                >
+                  Publish Listing
+                </button>
+              </div>
             </div>
           </div>
+
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Your Active Listings</h2>
+        {cards.length === 0 ? (
+          <div className="text-center py-20">
+            <Gift className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg">No gift cards added yet</p>
+            <p className="text-gray-400 text-sm mt-1">Click "Add New Card" to get started</p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {cards.map((card) => (
+              <div
+                key={card.id}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="bg-gray-100 rounded-lg p-3">
+                    <Gift className="h-6 w-6 text-gray-700" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{card.brand}</p>
+                    <p className="text-sm text-gray-500">
+                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | ₹{card.balance} | Exp: {card.expiry}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleDelete(card.id)}
+                  className="text-red-500 hover:text-red-700 transition-colors self-end sm:self-auto"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+          </div>
+
+          {/* Sidebar Section - FAQs */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 sticky top-24">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="w-1 h-5 rounded-full bg-yellow-500 block"></span>
+                Frequently Asked Questions
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">How fast will my card sell?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Most popular brand gift cards sell within 24 hours. Less common brands may take 2-3 days.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">When do I get paid?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Money is automatically transferred to your linked bank account or wallet within 48 hours after the buyer verifies the card.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">Are there any selling fees?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">We charge a flat 5% commission on successful sales. There are no listing fees.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">What if my code doesn't work?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Ensure the code and PIN are correct before listing. If a buyer reports an invalid code, we will investigate and may suspend your account if found fraudulent.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">How do I add my bank account to get paid?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Go to your Account settings and select "Payment Methods". There, you can securely add and verify your bank account or wallet details.</p>
+                </div>
+              </div>
+
+              <div className="mt-6 bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                <h4 className="font-semibold text-yellow-800 text-sm mb-1">Need help?</h4>
+                <p className="text-yellow-700 text-xs mb-3">Our support team is available 24/7 to assist you.</p>
+                <Link to="/contact" className="inline-block text-xs font-bold text-yellow-900 hover:text-yellow-700">Contact Support &rarr;</Link>
+              </div>
+            </div>
+          </div>
+          
         </div>
-      )}
+      </div>
     </div>
   )
 }
