@@ -28,6 +28,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import BlogsPage from './pages/blog/BlogsPage'
 import BlogDetailPage from './pages/blog/BlogDetailPage'
 import SellVoucher from './pages/SellVoucher'
+import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
 
 const AppContent = () => {
   const location = useLocation()
@@ -59,6 +60,7 @@ const AppContent = () => {
         <Route path="/blog" element={<BlogsPage />} />
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/gift-card/google-play" element={<GiftCardGooglePlay />} />
       </Routes>
       {showMobileNav && <Footer />}
       {showMobileNav && <MobileBottomNav />}
