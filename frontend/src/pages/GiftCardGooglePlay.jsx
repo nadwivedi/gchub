@@ -78,16 +78,6 @@ const GiftCardGooglePlay = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="text-center mb-10 sm:mb-14">
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-2xl shadow-lg border border-slate-200 flex items-center justify-center p-3 sm:p-4">
-              <img
-                src="/products/google%20play.png"
-                alt="Google Play"
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
-
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-800 mb-4">
             Google Play{' '}
             <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
