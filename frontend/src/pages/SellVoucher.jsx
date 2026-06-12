@@ -85,72 +85,104 @@ const SellVoucher = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">List Your Gift Card</h2>
-            <div className="grid grid-cols-1 gap-4">
+          <div className="bg-gradient-to-br from-yellow-50 via-white to-orange-50 rounded-xl shadow-md border border-yellow-200 p-5 sm:p-6 mb-6 sm:mb-8 relative overflow-hidden">
+            {/* Decorative background blur */}
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+            
+            <h2 className="text-xl font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+              <Gift className="h-6 w-6 text-yellow-600" />
+              List Your Gift Card
+            </h2>
+            
+            <div className="grid grid-cols-1 gap-5 relative z-10">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <Gift className="h-4 w-4 inline mr-1" />
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                   Brand
                 </label>
-                <select
-                  name="brand"
-                  value={form.brand}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                >
-                  <option value="">Select brand</option>
-                  {brands.map((b) => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Gift className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <select
+                    name="brand"
+                    value={form.brand}
+                    onChange={handleChange}
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow appearance-none"
+                  >
+                    <option value="">Select brand</option>
+                    {brands.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <DollarSign className="h-4 w-4 inline mr-1" />
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                   Balance Amount (₹)
                 </label>
-                <input
-                  type="number"
-                  name="balance"
-                  value={form.balance}
-                  onChange={handleChange}
-                  placeholder="Enter amount"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <DollarSign className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="number"
+                    name="balance"
+                    value={form.balance}
+                    onChange={handleChange}
+                    placeholder="Enter amount"
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <Hash className="h-4 w-4 inline mr-1" />
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                   Gift Card Code
                 </label>
-                <input
-                  type="text"
-                  name="code"
-                  value={form.code}
-                  onChange={handleChange}
-                  placeholder="Enter gift card code"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Hash className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="text"
+                    name="code"
+                    value={form.code}
+                    onChange={handleChange}
+                    placeholder="Enter gift card code"
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <Calendar className="h-4 w-4 inline mr-1" />
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                   Expiry Date
                 </label>
-                <input
-                  type="date"
-                  name="expiry"
-                  value={form.expiry}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="date"
+                    name="expiry"
+                    value={form.expiry}
+                    onChange={handleChange}
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
               </div>
-              <div className="pt-2">
+
+              <div className="pt-3">
                 <button
                   onClick={handleAdd}
-                  className="w-full py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                  className="w-full py-3 text-white font-bold text-base rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #eab308 0%, #f59e0b 55%, #d97706 100%)',
+                    boxShadow: '0 4px 14px rgba(234,179,8,0.4)',
+                  }}
                 >
+                  <Plus className="h-5 w-5" />
                   Publish Listing
                 </button>
               </div>

@@ -1,5 +1,6 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom'
+import { MessageCircle } from 'lucide-react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { AppContextProvider } from './context/AppContext'
@@ -73,6 +74,17 @@ const AppContent = () => {
         pauseOnHover
         theme="colored"
       />
+      {showMobileNav && (
+        <Link
+          to="/contact"
+          className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[60] flex items-center gap-2 bg-teal-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-teal-500 hover:scale-105 transition-all duration-200"
+          style={{ boxShadow: '0 4px 14px rgba(13, 148, 136, 0.4)' }}
+          aria-label="Customer Support"
+        >
+          <MessageCircle className="w-5 h-5" />
+          <span className="font-semibold text-sm">Support</span>
+        </Link>
+      )}
     </div>
   )
 }
