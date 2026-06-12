@@ -298,7 +298,7 @@ const HeroSection = () => {
     <section className="w-full lg:w-[92%] mx-auto px-1 sm:px-4">
       <div className="relative overflow-hidden lg:hidden">
         <div
-          className={`${isMobileTransitionEnabled ? 'transition-transform duration-[1700ms] ease-linear' : 'transition-none'} flex select-none`}
+          className={`${isMobileTransitionEnabled ? 'transition-transform duration-[3500ms] ease-linear' : 'transition-none'} flex select-none`}
           style={{
             transform: `translateX(-${mobileTrackIndex * MOBILE_CARD_WIDTH_PERCENT}%)`,
             touchAction: 'pan-y',
@@ -324,7 +324,7 @@ const HeroSection = () => {
 
       <div className="hidden lg:block relative overflow-hidden">
         <div
-          className={`${isDesktopTransitionEnabled ? 'transition-transform duration-[1700ms] ease-linear' : 'transition-none'} flex select-none`}
+          className={`${isDesktopTransitionEnabled ? 'transition-transform duration-[3500ms] ease-linear' : 'transition-none'} flex select-none`}
           style={{
             transform: `translateX(-${desktopTrackIndex * desktopCardWidthPercent}%)`,
           }}
