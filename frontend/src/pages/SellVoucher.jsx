@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X, Upload, Clock, Banknote } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
@@ -45,21 +45,51 @@ const SellVoucher = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="text-gray-600 hover:text-gray-900">
-              <ArrowLeft className="h-6 w-6" />
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Sell Gift Cards</h1>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Link to="/" className="text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-6 w-6" />
+              </Link>
+              <h1 className="text-2xl font-bold text-gray-900">Sell Gift Cards</h1>
+            </div>
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              Add New Card
+            </button>
           </div>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            <Plus className="h-4 w-4" />
-            Add New Card
-          </button>
-        </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+            <h2 className="text-center text-lg font-semibold text-gray-900 mb-6">How It Works</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-0">
+              <div className="flex-1 flex flex-col items-center text-center relative">
+                <div className="bg-gray-900 text-white rounded-full w-12 h-12 flex items-center justify-center mb-3 shadow-md">
+                  <Upload className="h-5 w-5" />
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Add Your Card</p>
+                <p className="text-xs text-gray-500 mt-0.5">List your gift card for sale</p>
+                <div className="hidden sm:block absolute top-6 left-[60%] w-[80%] h-0.5 border-t-2 border-dashed border-gray-300" />
+              </div>
+              <div className="hidden sm:flex items-center justify-center text-gray-300 text-2xl font-light px-2"> </div>
+              <div className="flex-1 flex flex-col items-center text-center relative mt-6 sm:mt-0">
+                <div className="bg-gray-900 text-white rounded-full w-12 h-12 flex items-center justify-center mb-3 shadow-md">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Sells in 24 Hours</p>
+                <p className="text-xs text-gray-500 mt-0.5">Fast & easy selling process</p>
+                <div className="hidden sm:block absolute top-6 left-[60%] w-[80%] h-0.5 border-t-2 border-dashed border-gray-300" />
+              </div>
+              <div className="flex-1 flex flex-col items-center text-center relative mt-6 sm:mt-0">
+                <div className="bg-gray-900 text-white rounded-full w-12 h-12 flex items-center justify-center mb-3 shadow-md">
+                  <Banknote className="h-5 w-5" />
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Get Paid</p>
+                <p className="text-xs text-gray-500 mt-0.5">Money credited to your bank</p>
+              </div>
+            </div>
+          </div>
 
         {cards.length === 0 ? (
           <div className="text-center py-20">
