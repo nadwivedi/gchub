@@ -44,20 +44,21 @@ const SellVoucher = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link to="/" className="text-gray-600 hover:text-gray-900">
-                <ArrowLeft className="h-6 w-6" />
+                <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Sell Gift Cards</h1>
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Sell Gift Cards</h1>
             </div>
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-1 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
             >
-              <Plus className="h-4 w-4" />
-              Add New Card
+              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline sm:inline">Add New Card</span>
+              <span className="inline xs:hidden sm:hidden">Add</span>
             </button>
           </div>
 
