@@ -26,6 +26,7 @@ import Account from './pages/Account'
 import ProtectedRoute from './components/ProtectedRoute'
 import BlogsPage from './pages/blog/BlogsPage'
 import BlogDetailPage from './pages/blog/BlogDetailPage'
+import SellVoucher from './pages/SellVoucher'
 
 const AppContent = () => {
   const location = useLocation()
@@ -53,6 +54,7 @@ const AppContent = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/sell-voucher" element={<SellVoucher />} />
         <Route path="/blog" element={<BlogsPage />} />
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
