@@ -143,45 +143,41 @@ const GiftCardGooglePlay = () => {
                   )}
                 </div>
 
-                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs tracking-wider font-extrabold text-emerald-600 uppercase">
+                    <h3 className="font-bold text-slate-800 mb-1 text-sm sm:text-base leading-tight group-hover:text-emerald-600 transition-colors">
+                      {voucher.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-[10px] sm:text-xs tracking-wider font-extrabold text-emerald-600 uppercase">
                         Google Play Code
                       </span>
                     </div>
-                    <h3 className="font-bold text-slate-800 mb-3 text-lg leading-tight group-hover:text-emerald-600 transition-colors">
-                      {voucher.name}
-                    </h3>
-                    <p className="text-sm text-slate-500 mb-4">{voucher.description}</p>
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between border-t border-slate-100 pt-4 mb-4">
+                    <div className="flex flex-col gap-1 border-t border-slate-100 pt-3 mb-3">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-extrabold text-slate-900">
+                        <span className="text-lg sm:text-xl font-extrabold text-slate-900">
                           {formatPrice(voucher.price)}
                         </span>
                         {voucher.originalPrice > voucher.price && (
-                          <span className="text-sm text-slate-400 line-through">
+                          <span className="text-xs sm:text-sm text-slate-400 line-through">
                             {formatPrice(voucher.originalPrice)}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1.5 rounded-md">
-                        <span>Save {formatPrice(savings)}</span>
-                        <span className="bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded text-[10px]">
-                          {discountPercent}%
-                        </span>
+                      <div className="flex items-center gap-1.5 text-emerald-600 font-bold text-[10px] sm:text-xs">
+                        <span>Save {formatPrice(savings)} ({discountPercent}%)</span>
                       </div>
                     </div>
 
                     {voucher.stockQuantity === 0 ? (
-                      <div className="grid grid-cols-1 gap-3">
+                      <div className="flex flex-col gap-2">
                         <button
                           disabled
-                          className="w-full bg-slate-200 text-slate-500 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-xs sm:text-sm flex items-center justify-center gap-2"
+                          className="w-full bg-slate-200 text-slate-500 font-bold py-2.5 px-4 rounded-lg cursor-not-allowed text-xs sm:text-sm flex items-center justify-center gap-2"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -190,16 +186,16 @@ const GiftCardGooglePlay = () => {
                         </button>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-col gap-2">
                         <button
                           onClick={() => handleBuyNow(voucher)}
-                          className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-orange-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer text-xs sm:text-sm"
+                          className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer text-xs sm:text-sm"
                         >
                           Buy Now
                         </button>
                         <button
                           onClick={() => handleAddToCart(voucher)}
-                          className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3.5 px-4 rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer text-xs sm:text-sm"
+                          className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer text-xs sm:text-sm"
                         >
                           Add to Cart
                         </button>
