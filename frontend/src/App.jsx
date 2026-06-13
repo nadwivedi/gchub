@@ -111,6 +111,7 @@ const AppContent = () => {
   const location = useLocation()
   const isLoginPage = location.pathname === '/login'
   const isChatPage = location.pathname === '/chat'
+  const isCartPage = location.pathname === '/cart'
 
   const showMobileNav = !isLoginPage && !isChatPage
 
@@ -158,7 +159,7 @@ const AppContent = () => {
         pauseOnHover
         theme="colored"
       />
-      {showMobileNav && (
+      {showMobileNav && !isCartPage && (
         <Link
           to="/contact"
           className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[60] flex items-center gap-2 bg-teal-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-teal-500 hover:scale-105 transition-all duration-200"
