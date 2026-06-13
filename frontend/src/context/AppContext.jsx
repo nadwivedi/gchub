@@ -147,6 +147,7 @@ export const AppContextProvider = (props) => {
   const value = useMemo(() => ({
     BACKEND_URL,
     user,
+    setUser,
     isAuthenticated,
     loading,
     login,
@@ -156,6 +157,7 @@ export const AppContextProvider = (props) => {
     checkAuthStatus
   }), [
     user,
+    setUser,
     isAuthenticated,
     loading,
     login,

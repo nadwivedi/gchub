@@ -3,7 +3,7 @@ const User = require('../models/User');
 // Get user's cart
 const getCart = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).populate('cart.product');
+    const user = await User.findById(req.userId);
     
     if (!user) {
       return res.status(404).json({
@@ -28,12 +28,12 @@ const getCart = async (req, res) => {
 // Add item to cart
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity = 1 } = req.body;
+    const { product, quantity = 1 } = req.body;
 
-    if (!productId) {
+    if (!product || (!product._id && !product.id)) {
       return res.status(400).json({
         success: false,
-        message: 'Product ID is required'
+        message: 'Valid product data is required'
       });
     }
 
@@ -45,8 +45,7 @@ const addToCart = async (req, res) => {
       });
     }
 
-    await user.addToCart(productId, quantity);
-    await user.populate('cart.product');
+    await user.addToCart(product, quantity);
 
     res.status(200).json({
       success: true,
@@ -83,7 +82,6 @@ const removeFromCart = async (req, res) => {
     }
 
     await user.removeFromCart(productId);
-    await user.populate('cart.product');
 
     res.status(200).json({
       success: true,
@@ -130,19 +128,22 @@ const updateCartQuantity = async (req, res) => {
     if (quantity === 0) {
       await user.removeFromCart(productId);
     } else {
-      const existingItem = user.cart.find(item => 
-        item.product.toString() === productId.toString()
-      );
+      const existingItem = user.cart.find(item => {
+        const itemId = item.product._id || item.product.id;
+        return String(itemId) === String(productId);
+      });
 
       if (existingItem) {
         existingItem.quantity = quantity;
+        user.markModified('cart');
         await user.save();
       } else {
-        await user.addToCart(productId, quantity);
+        return res.status(400).json({
+          success: false,
+          message: 'Item not in cart, cannot update quantity. Add it first.'
+        });
       }
     }
-
-    await user.populate('cart.product');
 
     res.status(200).json({
       success: true,
@@ -209,11 +210,10 @@ const syncCart = async (req, res) => {
     for (const item of localCart) {
       const productId = item._id || item.id;
       if (productId) {
-        await user.addToCart(productId, item.quantity || 1);
+        const { quantity, addedAt, ...productData } = item;
+        await user.addToCart(productData, quantity || 1);
       }
     }
-
-    await user.populate('cart.product');
 
     res.status(200).json({
       success: true,

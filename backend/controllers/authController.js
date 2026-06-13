@@ -461,6 +461,49 @@ const handleGoogleAuth = async (req, res) => {
   }
 };
 
+// Update mobile number for logged-in users (e.g. after Google sign-in)
+const updateMobileNumber = async (req, res) => {
+  try {
+    const token = req.cookies?.token;
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { mobile, phone } = req.body;
+    const resolvedPhone = String(phone || mobile || '').trim().replace(/\D/g, '');
+
+    if (!resolvedPhone || resolvedPhone.length < 10) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number' });
+    }
+
+    // Check if phone already taken by another user
+    const existing = await userModel.findOne({ phone: resolvedPhone, _id: { $ne: decoded.userId } });
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'This phone number is already registered' });
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      decoded.userId,
+      { phone: resolvedPhone },
+      { new: true, runValidators: false }
+    ).select('-password -resetOtp -otpExpiresAt');
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Mobile number updated successfully',
+      user: updatedUser
+    });
+  } catch (err) {
+    console.error('Update mobile error:', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 module.exports = {
   handelUserSignup,
   handelUserLogin,
@@ -469,4 +512,5 @@ module.exports = {
   submitResetPassOTP,
   isloggedin,
   handleGoogleAuth,
+  updateMobileNumber,
 };

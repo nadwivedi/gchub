@@ -192,7 +192,7 @@ export const CartProvider = ({ children }) => {
       try {
         dispatch({ type: 'SET_LOADING', payload: true })
         const response = await axios.post(`${BACKEND_URL}/api/cart/add`, {
-          productId,
+          product,
           quantity: 1
         }, {
           withCredentials: true

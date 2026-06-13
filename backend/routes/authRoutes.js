@@ -8,6 +8,7 @@ const {
   submitResetPassOTP,
   isloggedin,
   handleGoogleAuth,
+  updateMobileNumber,
 } = require('../controllers/authController');
 
 // Public authentication routes
@@ -24,5 +25,8 @@ router.post('/google', handleGoogleAuth);
 
 // Check authentication status
 router.get('/me', isloggedin);
+
+// Update mobile number (for Google users without phone)
+router.put('/mobile', updateMobileNumber);
 
 module.exports = router;

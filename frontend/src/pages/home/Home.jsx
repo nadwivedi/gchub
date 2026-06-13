@@ -35,11 +35,11 @@ const Home = () => {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
-              { _id: 'gta-5', name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg', price: 359, imageUrl: '/games/gta5.jpeg' },
-              { _id: 'rdr2', name: 'RDR2', slug: 'rdr2', img: '/games/rdr2.jpeg', price: 359, imageUrl: '/games/rdr2.jpeg' },
-              { _id: 'cyberpunk', name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg', price: 359, imageUrl: '/games/cyberpunk%202077.jpeg' },
-              { _id: 'the-last-of-us-2', name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg', price: 359, imageUrl: '/games/the%20last%20of%20us%202.jpeg' },
-              { _id: 'resident-evil-4', name: 'Resident Evil 4', slug: 'resident-evil-4', img: null, price: 359, imageUrl: '/placeholder-image.jpg' },
+              { _id: 'gta-5', name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/gta5.jpeg' },
+              { _id: 'rdr2', name: 'RDR2', slug: 'rdr2', img: '/games/rdr2.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/rdr2.jpeg' },
+              { _id: 'cyberpunk', name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/cyberpunk%202077.jpeg' },
+              { _id: 'the-last-of-us-2', name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/the%20last%20of%20us%202.jpeg' },
+              { _id: 'resident-evil-4', name: 'Resident Evil 4', slug: 'resident-evil-4', img: null, price: 359, originalPrice: 1200, imageUrl: '/placeholder-image.jpg' },
             ].map((game) => (
               <div key={game.name} onClick={() => navigate(`/games/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
                 <div className="relative">

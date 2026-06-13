@@ -137,8 +137,7 @@ const userSchema = new mongoose.Schema({
 
   cart: [{
     product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
+      type: mongoose.Schema.Types.Mixed,
       required: true
     },
     quantity: {
@@ -187,28 +186,35 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 
 
 // Method to add item to cart
-userSchema.methods.addToCart = function(productId, quantity = 1) {
-  const existingItem = this.cart.find(item => 
-    item.product.toString() === productId.toString()
-  );
+userSchema.methods.addToCart = function(productData, quantity = 1) {
+  const incomingId = productData._id || productData.id;
+  
+  const existingItem = this.cart.find(item => {
+    const itemId = item.product._id || item.product.id;
+    return String(itemId) === String(incomingId);
+  });
 
   if (existingItem) {
     existingItem.quantity += quantity;
   } else {
     this.cart.push({
-      product: productId,
+      product: productData,
       quantity: quantity
     });
   }
 
+  this.markModified('cart');
   return this.save();
 };
 
 // Method to remove item from cart
 userSchema.methods.removeFromCart = function(productId) {
-  this.cart = this.cart.filter(item => 
-    item.product.toString() !== productId.toString()
-  );
+  this.cart = this.cart.filter(item => {
+    const itemId = item.product._id || item.product.id;
+    return String(itemId) !== String(productId);
+  });
+  
+  this.markModified('cart');
   return this.save();
 };
 

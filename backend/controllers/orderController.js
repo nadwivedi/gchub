@@ -85,35 +85,52 @@ const createOrder = async (req, res) => {
         });
       }
 
-      // Fetch product details
-      const product = await Product.findById(item.productId);
-      if (!product) {
-        return res.status(400).json({
-          success: false,
-          message: `Product with ID ${item.productId} not found`
-        });
+      let subtotal = 0;
+      let processedItem = null;
+
+      if (String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
+        // Fetch product details for database items
+        const product = await Product.findById(item.productId);
+        if (!product) {
+          return res.status(400).json({
+            success: false,
+            message: `Product with ID ${item.productId} not found`
+          });
+        }
+
+        // Check stock availability
+        if (product.stockQuantity < item.quantity) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for ${product.name}. Available: ${product.stockQuantity}, Requested: ${item.quantity}`
+          });
+        }
+
+        subtotal = product.price * item.quantity;
+        processedItem = {
+          productId: product._id.toString(),
+          productName: product.name || product.seoTitle,
+          productBrand: product.brand || 'Unknown',
+          productPrice: product.price,
+          quantity: item.quantity,
+          subtotal: subtotal
+        };
+      } else {
+        // Trust frontend data for hardcoded items (like google play vouchers)
+        subtotal = (item.price || item.productPrice || 0) * item.quantity;
+        processedItem = {
+          productId: item.productId,
+          productName: item.name || item.productName || item.productId,
+          productBrand: item.brand || item.productBrand || 'Digital Goods',
+          productPrice: item.price || item.productPrice || 0,
+          quantity: item.quantity,
+          subtotal: subtotal
+        };
       }
 
-      // Check stock availability
-      if (product.stockQuantity < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Insufficient stock for ${product.name}. Available: ${product.stockQuantity}, Requested: ${item.quantity}`
-        });
-      }
-
-      const subtotal = product.price * item.quantity;
       totalAmount += subtotal;
       totalItems += item.quantity;
-
-      processedItems.push({
-        productId: product._id,
-        productName: product.name || product.seoTitle,
-        productBrand: product.brand || 'Unknown',
-        productPrice: product.price,
-        quantity: item.quantity,
-        subtotal: subtotal
-      });
+      processedItems.push(processedItem);
     }
 
     // Create order
@@ -132,11 +149,13 @@ const createOrder = async (req, res) => {
 
     // Update product stock quantities
     for (const item of processedItems) {
-      await Product.findByIdAndUpdate(
-        item.productId,
-        { $inc: { stockQuantity: -item.quantity } },
-        { new: true }
-      );
+      if (item.productId.match(/^[0-9a-fA-F]{24}$/)) {
+        await Product.findByIdAndUpdate(
+          item.productId,
+          { $inc: { stockQuantity: -item.quantity } },
+          { new: true }
+        );
+      }
     }
 
     // Send confirmation email
@@ -178,7 +197,7 @@ const getOrder = async (req, res) => {
 
     // Check if id is a valid ObjectId
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      order = await Order.findById(id).populate('items.productId');
+      order = await Order.findById(id);
     } else {
       return res.status(400).json({
         success: false,
@@ -214,7 +233,6 @@ const getOrdersByEmail = async (req, res) => {
     const { email } = req.params;
 
     const orders = await Order.find({ 'customerInfo.email': email })
-      .populate('items.productId', 'images imageUrl name seoTitle')
       .sort({ orderDate: -1 });
 
     res.json({
@@ -317,7 +335,6 @@ const getAllOrders = async (req, res) => {
     const sortOptions = { [sortBy]: sortDirection };
 
     const orders = await Order.find(query)
-      .populate('items.productId', 'images imageUrl name seoTitle')
       .sort(sortOptions)
       .limit(limit * 1)
       .skip((page - 1) * limit);

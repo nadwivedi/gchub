@@ -90,7 +90,13 @@ const Cart = () => {
                                   </Link>
                                 </h3>
                                 <p className="mt-1 text-sm text-gray-500">{item.category}</p>
-                                <p className="mt-1 text-sm font-medium text-gray-900">{formatPrice(item.price)}</p>
+                                <p className="mt-1 text-sm font-medium text-gray-900">
+                                  {item.originalPrice && item.originalPrice > item.price ? (
+                                    <><span className="text-gray-400 line-through mr-1">{formatPrice(item.originalPrice)}</span> {formatPrice(item.price)}</>
+                                  ) : (
+                                    formatPrice(item.price)
+                                  )}
+                                </p>
                               </div>
                             </div>
                             
@@ -154,7 +160,13 @@ const Cart = () => {
                                   <p className="ml-4">{formatPrice(item.price * item.quantity)}</p>
                                 </div>
                                 <p className="mt-1 text-sm text-gray-500">{item.category}</p>
-                                <p className="mt-1 text-sm text-gray-600">Price: {formatPrice(item.price)}</p>
+                                <p className="mt-1 text-sm text-gray-600">
+                                  Price: {item.originalPrice && item.originalPrice > item.price ? (
+                                    <><span className="text-gray-400 line-through mr-1">{formatPrice(item.originalPrice)}</span> {formatPrice(item.price)}</>
+                                  ) : (
+                                    formatPrice(item.price)
+                                  )}
+                                </p>
                               </div>
                               <div className="flex-1 flex items-end justify-between text-sm">
                                 <div className="flex items-center space-x-3">
