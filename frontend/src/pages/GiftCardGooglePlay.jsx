@@ -89,14 +89,14 @@ const GiftCardGooglePlay = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="text-center mb-10 sm:mb-14">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-800 mb-4">
+          <h1 className="text-3xl sm:text-4xl lg:text-4xl font-black text-slate-800 mb-4">
             Google Play{' '}
             <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
               Gift Cards
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
+          <p className="text-base sm:text-base text-slate-500 max-w-2xl mx-auto">
             Get Google Play codes at the best prices. Instant delivery via email.
           </p>
         </div>
@@ -113,7 +113,7 @@ const GiftCardGooglePlay = () => {
               >
                 {discountPercent > 0 && (
                   <div className="absolute top-3 left-3 z-10">
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-md">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
                       -{discountPercent}% OFF
                     </div>
                   </div>

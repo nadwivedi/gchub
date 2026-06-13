@@ -1,4 +1,5 @@
 import React from 'react'
+import { Agentation } from 'agentation'
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom'
 import { MessageCircle } from 'lucide-react'
 import { ToastContainer } from 'react-toastify'
@@ -97,6 +98,7 @@ const App = () => {
       <AppContextProvider>
         <CartProvider>
           <AppContent />
+          {process.env.NODE_ENV === "development" && <Agentation />}
         </CartProvider>
       </AppContextProvider>
     </Router>
