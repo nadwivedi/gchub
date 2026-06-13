@@ -46,31 +46,30 @@ const GamesPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800 py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Gamepad2 className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-          <h1 className="text-3xl sm:text-5xl font-black text-white mb-3">All Games</h1>
-          <p className="text-indigo-200 text-base sm:text-lg max-w-xl mx-auto">
-            Browse our collection of premium PC & console games at unbeatable prices
-          </p>
-          <div className="relative max-w-md mx-auto mt-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-1 flex items-center gap-2">
+              <Gamepad2 className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" />
+              All Games
+            </h1>
+            <p className="text-sm text-gray-500">
+              {filtered.length} {filtered.length === 1 ? 'game' : 'games'} available right now
+            </p>
+          </div>
+          <div className="relative w-full md:max-w-md group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-yellow-500 transition-colors" />
             <input
               type="text"
-              placeholder="Search games by name or genre..."
+              placeholder="Search by name, genre..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-xl border-0 shadow-lg focus:ring-2 focus:ring-yellow-400 text-sm"
+              className="w-full pl-10 pr-24 py-3 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm outline-none transition-all bg-white"
             />
+            <button className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-4 py-1.5 rounded-lg transition-colors text-sm shadow-sm flex items-center gap-1">
+              Search
+            </button>
           </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-gray-500">
-            {filtered.length} {filtered.length === 1 ? 'game' : 'games'} found
-          </p>
         </div>
 
         {filtered.length === 0 ? (
