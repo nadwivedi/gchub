@@ -78,7 +78,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="p-3 flex flex-col gap-2">
-                  <h3 className="font-bold text-gray-900 text-sm leading-tight">{isBundle ? game.fullName : game.name}</h3>
+                  <h3 className={`font-bold text-gray-900 leading-tight ${isBundle ? 'text-[11px]' : 'text-sm'}`}>{isBundle ? game.fullName : game.name}</h3>
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-extrabold text-gray-900">₹{game.price}</span>
                     <span className="text-xs text-gray-400 line-through">₹{game.originalPrice}</span>
