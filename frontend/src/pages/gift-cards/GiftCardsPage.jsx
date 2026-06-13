@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Gift } from 'lucide-react'
+import { Search, Gift, ShoppingCart } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { toast } from 'react-toastify'
 import { giftCardsList } from '../../data/giftCards'
@@ -9,10 +9,9 @@ const GiftCardsPage = () => {
   const navigate = useNavigate()
   const { addToCart } = useCart()
   const [search, setSearch] = useState('')
+  const [selectedBrand, setSelectedBrand] = useState('')
 
   const brands = [...new Set(giftCardsList.map((g) => g.brand))]
-
-  const [selectedBrand, setSelectedBrand] = useState('')
 
   let filtered = selectedBrand
     ? giftCardsList.filter((g) => g.brand === selectedBrand)
@@ -57,42 +56,65 @@ const GiftCardsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-teal-50/40">
+    <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+
+        {/* Header row — same structure as GamesPage */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-1 flex items-center gap-2">
-              <Gift className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500" />
+              <Gift className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" />
               Gift Cards
             </h1>
             <p className="text-sm text-gray-500">
-              {filtered.length} {filtered.length === 1 ? 'card' : 'cards'} available
+              {filtered.length} {filtered.length === 1 ? 'card' : 'cards'} available at discounted prices
             </p>
           </div>
-          <div className="flex gap-2 w-full md:max-w-md">
-            <div className="relative flex-1 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
-              <input
-                type="text"
-                placeholder="Search by name, brand..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 text-sm outline-none transition-all bg-white"
-              />
-            </div>
-            <select
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-              className="px-3 py-3 rounded-xl border border-gray-200 shadow-sm text-sm outline-none focus:ring-2 focus:ring-emerald-400 bg-white"
-            >
-              <option value="">All Brands</option>
-              {brands.map((b) => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
+
+          {/* Search bar — same structure as GamesPage */}
+          <div className="relative w-full md:max-w-md group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-yellow-500 transition-colors" />
+            <input
+              type="text"
+              placeholder="Search by name, brand..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-24 py-3 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm outline-none transition-all bg-white"
+            />
+            <button className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-4 py-1.5 rounded-lg transition-colors text-sm shadow-sm flex items-center gap-1 cursor-pointer">
+              Search
+            </button>
           </div>
         </div>
 
+        {/* Brand filter chips */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          <button
+            onClick={() => setSelectedBrand('')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all duration-150 cursor-pointer ${
+              selectedBrand === ''
+                ? 'bg-yellow-400 border-yellow-400 text-black shadow-sm'
+                : 'bg-white border-gray-200 text-gray-600 hover:border-yellow-400 hover:text-yellow-600'
+            }`}
+          >
+            All Brands
+          </button>
+          {brands.map((b) => (
+            <button
+              key={b}
+              onClick={() => setSelectedBrand(selectedBrand === b ? '' : b)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all duration-150 cursor-pointer ${
+                selectedBrand === b
+                  ? 'bg-yellow-400 border-yellow-400 text-black shadow-sm'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-yellow-400 hover:text-yellow-600'
+              }`}
+            >
+              {b}
+            </button>
+          ))}
+        </div>
+
+        {/* Cards grid — same structure as GamesPage */}
         {filtered.length === 0 ? (
           <div className="text-center py-20">
             <Gift className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -108,6 +130,7 @@ const GiftCardsPage = () => {
                   key={card._id}
                   className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden border border-gray-200 relative group flex flex-col hover:-translate-y-1"
                 >
+                  {/* Image */}
                   <div className="relative">
                     <div className="w-full aspect-square bg-slate-100 flex items-center justify-center p-6">
                       <img
@@ -117,28 +140,32 @@ const GiftCardsPage = () => {
                       />
                     </div>
                     {discount > 0 && (
-                      <div className="absolute top-2 left-2 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-md">
+                      <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-md">
                         -{discount}% OFF
                       </div>
                     )}
                   </div>
+
+                  {/* Info */}
                   <div className="p-3 flex flex-col gap-2 flex-1">
                     <div>
-                      <p className="text-[10px] font-semibold text-emerald-600 uppercase tracking-wider">
+                      <p className="text-[10px] font-semibold text-yellow-600 uppercase tracking-wider">
                         {card.brand}
                       </p>
                       <h3 className="font-bold text-gray-900 text-sm leading-tight">{card.name}</h3>
                     </div>
+
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-extrabold text-gray-900">₹{card.price}</span>
                       {card.originalPrice > card.price && (
                         <span className="text-xs text-gray-400 line-through">₹{card.originalPrice}</span>
                       )}
                     </div>
+
                     <div className="flex gap-2 mt-auto">
                       <button
                         onClick={(e) => handleBuyNow(e, card)}
-                        className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer"
+                        className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer"
                       >
                         Buy Now
                       </button>
