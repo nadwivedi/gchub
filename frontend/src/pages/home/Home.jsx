@@ -85,10 +85,10 @@ const Home = () => {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={(e) => { e.stopPropagation(); const item = isBundle ? { _id: game._id, name: game.fullName, price: game.price, originalPrice: game.originalPrice, images: bundleGameImages } : game; addToCart(item); if (isBundle) { toast.success('Game bundle added to cart!') } else { navigate('/cart') } }} className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
-                      {isBundle ? 'Buy Bundle' : 'Buy Now'}
+                      Buy Now
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); const item = isBundle ? { _id: game._id, name: game.fullName, price: game.price, originalPrice: game.originalPrice, images: bundleGameImages } : game; addToCart(item); toast.success(isBundle ? 'Game bundle added to cart!' : `${game.name} added to cart!`) }} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
-                      {isBundle ? 'Add Bundle' : <><span className="sm:hidden">Add Cart</span><span className="hidden sm:inline">Add to Cart</span></>}
+                      <><span className="sm:hidden">Add Cart</span><span className="hidden sm:inline">Add to Cart</span></>
                     </button>
                   </div>
                 </div>
