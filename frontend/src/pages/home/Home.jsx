@@ -1,10 +1,12 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import HeroSection from './component/HeroSection'
 import ShopByCategorySection from './component/ShopByCategorySection'
 import ShopByBrandSection from './component/ShopByBrandSection'
 import PopularGiftCards from './component/PopularGiftCards'
 
 const Home = () => {
+  const navigate = useNavigate()
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Banner Carousel for Voucher Cash */}
@@ -20,13 +22,13 @@ const Home = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Buy Popular AAA Games</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
-              { name: 'GTA 5', img: '/games/gta5.jpeg' },
-              { name: 'RDR2', img: null },
-              { name: 'Cyberpunk', img: null },
-              { name: 'The Last of Us 2', img: null },
-              { name: 'Resident Evil 4', img: null },
+              { name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg' },
+              { name: 'RDR2', slug: 'rdr2', img: null },
+              { name: 'Cyberpunk', slug: 'cyberpunk', img: null },
+              { name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: null },
+              { name: 'Resident Evil 4', slug: 'resident-evil-4', img: null },
             ].map((game) => (
-              <div key={game.name} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col">
+              <div key={game.name} onClick={() => navigate(`/game/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
                 <div className="relative">
                   {game.img ? (
                     <img
@@ -50,7 +52,7 @@ const Home = () => {
                     <span className="text-xs text-gray-400 line-through">₹1,200</span>
                   </div>
                   <div className="flex gap-2">
-                    <button className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
+                    <button onClick={() => navigate(`/game/${game.slug}`)} className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
                       Buy Now
                     </button>
                     <button className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">

@@ -30,6 +30,7 @@ import BlogsPage from './pages/blog/BlogsPage'
 import BlogDetailPage from './pages/blog/BlogDetailPage'
 import SellVoucher from './pages/SellVoucher'
 import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
+import GameDetail from './pages/game/GameDetail'
 
 const AppContent = () => {
   const location = useLocation()
@@ -62,6 +63,7 @@ const AppContent = () => {
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/gift-card/google-play" element={<GiftCardGooglePlay />} />
+        <Route path="/game/:slug" element={<GameDetail />} />
       </Routes>
       {showMobileNav && <Footer />}
       {showMobileNav && <MobileBottomNav />}
