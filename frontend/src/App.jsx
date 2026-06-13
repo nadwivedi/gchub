@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { Agentation } from 'agentation'
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom'
-import { MessageCircle, Phone } from 'lucide-react'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { Phone } from 'lucide-react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { AppContext, AppContextProvider } from './context/AppContext'
@@ -24,7 +24,7 @@ import OrderDetail from './pages/OrderDetail'
 import ManageAddresses from './pages/ManageAddresses'
 import ProfileInfo from './pages/ProfileInfo'
 import CustomerSupport from './pages/CustomerSupport'
-import ChatPage from './pages/ChatPage'
+import ChatBot from './components/ChatBot'
 import Account from './pages/Account'
 import ProtectedRoute from './components/ProtectedRoute'
 import BlogsPage from './pages/blog/BlogsPage'
@@ -112,14 +112,11 @@ const MobilePromptModal = () => {
 const AppContent = () => {
   const location = useLocation()
   const isLoginPage = location.pathname === '/login'
-  const isChatPage = location.pathname === '/chat'
-  const isCartPage = location.pathname === '/cart'
-
-  const showMobileNav = !isLoginPage && !isChatPage
+  const showMobileNav = !isLoginPage
 
   return (
     <div className={showMobileNav ? 'pb-14 md:pb-0' : ''}>
-      {!isLoginPage && !isChatPage && <Navbar />}
+      {!isLoginPage && <Navbar />}
       <ScrollToTop />
       <MobilePromptModal />
       <Routes>
@@ -134,7 +131,6 @@ const AppContent = () => {
         <Route path="/manage-addresses" element={<ProtectedRoute><ManageAddresses /></ProtectedRoute>} />
         <Route path="/profile-info" element={<ProtectedRoute><ProfileInfo /></ProtectedRoute>} />
         <Route path="/customer-support" element={<ProtectedRoute><CustomerSupport /></ProtectedRoute>} />
-        <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
@@ -164,17 +160,7 @@ const AppContent = () => {
         pauseOnHover
         theme="colored"
       />
-      {showMobileNav && !isCartPage && (
-        <Link
-          to="/contact"
-          className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[60] flex items-center gap-2 bg-teal-600 text-white px-4 py-3 rounded-full shadow-lg hover:bg-teal-500 hover:scale-105 transition-all duration-200"
-          style={{ boxShadow: '0 4px 14px rgba(13, 148, 136, 0.4)' }}
-          aria-label="Customer Support"
-        >
-          <MessageCircle className="w-5 h-5" />
-          <span className="font-semibold text-sm">Support</span>
-        </Link>
-      )}
+      {showMobileNav && <ChatBot />}
     </div>
   )
 }
