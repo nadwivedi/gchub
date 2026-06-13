@@ -30,7 +30,7 @@ const GamesPage = () => {
         name: game.fullName,
         price: game.price,
         originalPrice: game.originalPrice,
-        images: ['/games/gta5.jpeg'],
+        images: allGameImages,
       })
       toast.success('Game bundle added to cart!')
     } else {
@@ -53,7 +53,7 @@ const GamesPage = () => {
         name: game.fullName,
         price: game.price,
         originalPrice: game.originalPrice,
-        images: ['/games/gta5.jpeg'],
+        images: allGameImages,
       })
     } else {
       addToCart({

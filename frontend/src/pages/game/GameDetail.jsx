@@ -20,6 +20,7 @@ const calculateDiscount = (original, current) => {
 }
 
 const bundleGames = bundleGamesList
+const bundleImages = bundleGames.map((g) => g.img).filter(Boolean)
 
 const GameDetail = () => {
   const { slug } = useParams()
@@ -56,7 +57,7 @@ const GameDetail = () => {
         name: game.fullName,
         price: game.price,
         originalPrice: game.originalPrice,
-        images: ['/games/gta5.jpeg'],
+        images: bundleImages,
       })
       toast.success('Bundle added to cart!')
     } else {
@@ -82,7 +83,7 @@ const GameDetail = () => {
         name: game.fullName,
         price: game.price,
         originalPrice: game.originalPrice,
-        images: ['/games/gta5.jpeg'],
+        images: bundleImages,
       })
     } else {
       addToCart({

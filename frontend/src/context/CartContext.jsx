@@ -1,6 +1,19 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import axios from 'axios'
 import { AppContext } from './AppContext'
+import { games, bundleGameSlugs } from '../data/games'
+
+const BUNDLE_ID = 'bundle-all-11'
+const BUNDLE_IMAGES = bundleGameSlugs.map((slug) => games[slug]?.img).filter(Boolean)
+
+const migrateCartItems = (items) => {
+  return items.map((item) => {
+    if ((item._id === BUNDLE_ID || item.id === BUNDLE_ID) && (!item.images || item.images.length <= 1)) {
+      return { ...item, images: BUNDLE_IMAGES }
+    }
+    return item
+  })
+}
 
 const CartContext = createContext()
 
@@ -111,11 +124,12 @@ export const CartProvider = ({ children }) => {
           
           if (response.data.success) {
             // Transform backend cart format to frontend format
-            const cartItems = response.data.cart.map(item => ({
+            let cartItems = response.data.cart.map(item => ({
               ...item.product,
               quantity: item.quantity,
               addedAt: item.addedAt
             }))
+            cartItems = migrateCartItems(cartItems)
             dispatch({ type: 'LOAD_CART', payload: cartItems })
           }
         } catch (error) {
@@ -129,7 +143,7 @@ export const CartProvider = ({ children }) => {
         const savedCart = localStorage.getItem('cart')
         if (savedCart) {
           const parsedCart = JSON.parse(savedCart)
-          dispatch({ type: 'LOAD_CART', payload: parsedCart })
+          dispatch({ type: 'LOAD_CART', payload: migrateCartItems(parsedCart) })
         }
       }
     }

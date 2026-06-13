@@ -89,12 +89,20 @@ const Cart = () => {
                   <div className="flex items-center gap-4 p-4">
                     {/* Product image */}
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-100 shrink-0 relative">
-                      <img
-                        src={item.imageUrl || (item.images && item.images[0]) || '/placeholder-image.jpg'}
-                        alt={item.name || item.seoTitle || 'Product'}
-                        className="w-full h-full object-cover object-center"
-                        onError={(e) => { e.target.src = '/placeholder-image.jpg' }}
-                      />
+                      {item.images && item.images.length > 1 ? (
+                        <div className="grid grid-cols-3 grid-rows-2 w-full h-full gap-px">
+                          {item.images.slice(0, 6).map((src, i) => (
+                            <img key={i} src={src} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none' }} />
+                          ))}
+                        </div>
+                      ) : (
+                        <img
+                          src={item.imageUrl || (item.images && item.images[0]) || '/placeholder-image.jpg'}
+                          alt={item.name || item.seoTitle || 'Product'}
+                          className="w-full h-full object-cover object-center"
+                          onError={(e) => { e.target.src = '/placeholder-image.jpg' }}
+                        />
+                      )}
                       {hasDiscount && (
                         <div className="absolute top-1 left-1 bg-amber-400 text-black text-[10px] font-bold px-1.5 py-0.5 rounded-md">
                           -{discountPct}%
