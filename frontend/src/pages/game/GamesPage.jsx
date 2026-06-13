@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Gamepad2, Star } from 'lucide-react'
+import { Search, Gamepad2, Star, Sparkles } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { AppContext } from '../../context/AppContext'
 import { toast } from 'react-toastify'
-import { gamesList } from '../../data/games'
+import { gamesList, games, bundleGameSlugs } from '../../data/games'
 
 const GamesPage = () => {
   const navigate = useNavigate()
@@ -20,27 +20,50 @@ const GamesPage = () => {
       )
     : gamesList
 
+  const allGameImages = bundleGameSlugs.map((slug) => games[slug]?.img).filter(Boolean)
+
   const handleAddToCart = (e, game) => {
     e.stopPropagation()
-    addToCart({
-      _id: game._id,
-      name: game.fullName,
-      price: game.price,
-      originalPrice: game.originalPrice,
-      images: [game.img],
-    })
-    toast.success(`${game.name} added to cart!`)
+    if (game.isBundle) {
+      addToCart({
+        _id: game._id,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: ['/games/gta5.jpeg'],
+      })
+      toast.success('Game bundle added to cart!')
+    } else {
+      addToCart({
+        _id: game._id,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: [game.img],
+      })
+      toast.success(`${game.name} added to cart!`)
+    }
   }
 
   const handleBuyNow = (e, game) => {
     e.stopPropagation()
-    addToCart({
-      _id: game._id,
-      name: game.fullName,
-      price: game.price,
-      originalPrice: game.originalPrice,
-      images: [game.img],
-    })
+    if (game.isBundle) {
+      addToCart({
+        _id: game._id,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: ['/games/gta5.jpeg'],
+      })
+    } else {
+      addToCart({
+        _id: game._id,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: [game.img],
+      })
+    }
     navigate('/cart')
   }
 
@@ -87,7 +110,24 @@ const GamesPage = () => {
                 className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer hover:-translate-y-1"
               >
                 <div className="relative">
-                  {game.img ? (
+                  {game.isBundle ? (
+                    <div className="w-full aspect-square bg-gray-900 overflow-hidden">
+                      <div className="grid grid-cols-2 h-full w-full gap-0.5 p-0.5">
+                        {allGameImages.map((src, i) => (
+                          <img
+                            key={i}
+                            src={src}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        ))}
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 via-transparent to-transparent flex items-end pb-2 pl-2">
+                        <Sparkles className="w-4 h-4 text-yellow-400 mr-1" />
+                        <span className="text-white text-[10px] font-extrabold uppercase tracking-wider">Bundle</span>
+                      </div>
+                    </div>
+                  ) : game.img ? (
                     <img
                       src={game.img}
                       alt={game.name}
@@ -101,16 +141,20 @@ const GamesPage = () => {
                   <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-md">
                     -{Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)}% OFF
                   </div>
-                  <div className="absolute bottom-2 right-2 bg-white/95 backdrop-blur-sm px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow">
-                    <Star className="w-3 h-3 text-yellow-500" fill="currentColor" />
-                    <span className="text-[10px] font-bold text-gray-900">{game.rating}</span>
-                  </div>
+                  {!game.isBundle && (
+                    <div className="absolute bottom-2 right-2 bg-white/95 backdrop-blur-sm px-1.5 py-0.5 rounded-md flex items-center gap-1 shadow">
+                      <Star className="w-3 h-3 text-yellow-500" fill="currentColor" />
+                      <span className="text-[10px] font-bold text-gray-900">{game.rating}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-3 flex flex-col gap-2 flex-1">
                   <div>
-                    <p className="text-[10px] font-semibold text-purple-500 uppercase tracking-wider">
-                      {game.genre.split(',')[0]}
-                    </p>
+                    {!game.isBundle && (
+                      <p className="text-[10px] font-semibold text-purple-500 uppercase tracking-wider">
+                        {game.genre.split(',')[0]}
+                      </p>
+                    )}
                     <h3 className="font-bold text-gray-900 text-sm leading-tight">{game.fullName || game.name}</h3>
                   </div>
                   <div className="flex items-center gap-2">

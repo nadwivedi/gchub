@@ -1,14 +1,18 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Gift, Gamepad2, DollarSign, ArrowRight, Star } from 'lucide-react'
+import { Gift, Gamepad2, DollarSign, ArrowRight, Star, Sparkles } from 'lucide-react'
 import HeroSection from './component/HeroSection'
 import PopularGiftCards from './component/PopularGiftCards'
 import { useCart } from '../../context/CartContext'
 import { toast } from 'react-toastify'
+import { games, bundleGameSlugs } from '../../data/games'
 
 const Home = () => {
   const navigate = useNavigate()
   const { addToCart } = useCart()
+
+  const bundleGameImages = bundleGameSlugs.map((slug) => games[slug]?.img).filter(Boolean)
+
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Banner Carousel for Voucher Cash */}
@@ -40,10 +44,25 @@ const Home = () => {
               { _id: 'cyberpunk', name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/cyberpunk%202077.jpeg' },
               { _id: 'the-last-of-us-2', name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/the%20last%20of%20us%202.jpeg' },
               { _id: 'resident-evil-4', name: 'Resident Evil 4', slug: 'resident-evil-4', img: '/games/resident%20evil%204.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/resident%20evil%204.jpeg' },
-            ].map((game) => (
-              <div key={game.name} onClick={() => navigate(`/games/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
+              { _id: 'bundle-all-11', name: 'Top 6 Bundle', fullName: 'Top 6 AAA Game Bundle', slug: 'bundle-all-11', price: 999, originalPrice: 4039, isBundle: true },
+            ].map((game) => {
+              const isBundle = game.isBundle
+              return (
+              <div key={game.name} onClick={() => !isBundle && navigate(`/games/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
                 <div className="relative">
-                  {game.img ? (
+                  {isBundle ? (
+                    <div className="w-full aspect-square bg-gray-900 overflow-hidden">
+                      <div className="grid grid-cols-2 h-full w-full gap-0.5 p-0.5">
+                        {bundleGameImages.map((src, i) => (
+                          <img key={i} src={src} alt="" className="w-full h-full object-cover" />
+                        ))}
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 via-transparent to-transparent flex items-end pb-2 pl-2">
+                        <Sparkles className="w-4 h-4 text-yellow-400 mr-1" />
+                        <span className="text-white text-[10px] font-extrabold uppercase tracking-wider">Bundle</span>
+                      </div>
+                    </div>
+                  ) : game.img ? (
                     <img
                       src={game.img}
                       alt={game.name}
@@ -55,27 +74,26 @@ const Home = () => {
                     </div>
                   )}
                   <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-md">
-                    -70% OFF
+                    -{Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)}% OFF
                   </div>
                 </div>
                 <div className="p-3 flex flex-col gap-2">
-                  <h3 className="font-bold text-gray-900 text-sm leading-tight">{game.name}</h3>
+                  <h3 className="font-bold text-gray-900 text-sm leading-tight">{isBundle ? game.fullName : game.name}</h3>
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-extrabold text-gray-900">₹359</span>
-                    <span className="text-xs text-gray-400 line-through">₹1,200</span>
+                    <span className="text-lg font-extrabold text-gray-900">₹{game.price}</span>
+                    <span className="text-xs text-gray-400 line-through">₹{game.originalPrice}</span>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={(e) => { e.stopPropagation(); addToCart(game); navigate('/cart') }} className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
-                      Buy Now
+                    <button onClick={(e) => { e.stopPropagation(); const item = isBundle ? { _id: game._id, name: game.fullName, price: game.price, originalPrice: game.originalPrice, images: ['/games/gta5.jpeg'] } : game; addToCart(item); if (isBundle) { toast.success('Game bundle added to cart!') } else { navigate('/cart') } }} className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
+                      {isBundle ? 'Buy Bundle' : 'Buy Now'}
                     </button>
-                    <button onClick={(e) => { e.stopPropagation(); addToCart(game); toast.success(`${game.name} added to cart!`) }} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
-                      <span className="sm:hidden">Add Cart</span>
-                      <span className="hidden sm:inline">Add to Cart</span>
+                    <button onClick={(e) => { e.stopPropagation(); const item = isBundle ? { _id: game._id, name: game.fullName, price: game.price, originalPrice: game.originalPrice, images: ['/games/gta5.jpeg'] } : game; addToCart(item); toast.success(isBundle ? 'Game bundle added to cart!' : `${game.name} added to cart!`) }} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
+                      {isBundle ? 'Add Bundle' : <><span className="sm:hidden">Add Cart</span><span className="hidden sm:inline">Add to Cart</span></>}
                     </button>
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
           <div className="mt-6 text-center sm:hidden">
             <button

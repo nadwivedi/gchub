@@ -318,6 +318,18 @@ export const games = {
       storage: '110 GB available space',
     },
   },
+  'bundle-all-11': {
+    _id: 'bundle-all-11',
+    name: 'Top 6 Bundle',
+    fullName: 'Top 6 AAA Game Bundle',
+    slug: 'bundle-all-11',
+    img: null,
+    imageUrl: '/placeholder-image.jpg',
+    price: 999,
+    originalPrice: 4039,
+    isBundle: true,
+    genre: 'Bundle',
+  },
 }
 
 export const gamesList = Object.values(games)
@@ -325,3 +337,9 @@ export const gamesList = Object.values(games)
 export const featuredGames = ['gta-5', 'rdr2', 'cyberpunk', 'the-last-of-us-2', 'resident-evil-4'].map(
   (slug) => games[slug]
 )
+
+export const bundleAll11 = games['bundle-all-11']
+
+export const bundleGameSlugs = ['gta-5', 'rdr2', 'cyberpunk', 'the-witcher-3', 'god-of-war', 'forza-horizon-5']
+
+export const bundleGamesList = bundleGameSlugs.map((slug) => games[slug]).filter(Boolean)

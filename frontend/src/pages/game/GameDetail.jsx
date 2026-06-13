@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
 import { AppContext } from '../../context/AppContext'
 import { toast } from 'react-toastify'
-import { games } from '../../data/games'
+import { games, bundleGamesList } from '../../data/games'
+import { Sparkles } from 'lucide-react'
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('en-IN', {
@@ -17,6 +18,8 @@ const calculateDiscount = (original, current) => {
   if (!original || original <= current) return 0
   return Math.round(((original - current) / original) * 100)
 }
+
+const bundleGames = bundleGamesList
 
 const GameDetail = () => {
   const { slug } = useParams()
@@ -47,14 +50,25 @@ const GameDetail = () => {
   const savings = game.originalPrice - game.price
 
   const handleAddToCart = () => {
-    addToCart({
-      _id: slug,
-      name: game.fullName,
-      price: game.price,
-      originalPrice: game.originalPrice,
-      images: [game.img],
-    })
-    toast.success('Added to cart!')
+    if (game.isBundle) {
+      addToCart({
+        _id: slug,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: ['/games/gta5.jpeg'],
+      })
+      toast.success('Bundle added to cart!')
+    } else {
+      addToCart({
+        _id: slug,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: [game.img],
+      })
+      toast.success('Added to cart!')
+    }
   }
 
   const handleBuyNow = () => {
@@ -62,14 +76,125 @@ const GameDetail = () => {
       navigate('/login')
       return
     }
-    addToCart({
-      _id: slug,
-      name: game.fullName,
-      price: game.price,
-      originalPrice: game.originalPrice,
-      images: [game.img],
-    })
+    if (game.isBundle) {
+      addToCart({
+        _id: slug,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: ['/games/gta5.jpeg'],
+      })
+    } else {
+      addToCart({
+        _id: slug,
+        name: game.fullName,
+        price: game.price,
+        originalPrice: game.originalPrice,
+        images: [game.img],
+      })
+    }
     navigate('/checkout')
+  }
+
+  if (game.isBundle) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors mb-6 cursor-pointer"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="text-sm font-medium">Back</span>
+          </button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
+            <div className="relative">
+              <div className="w-full aspect-square bg-gray-900 rounded-2xl overflow-hidden shadow-lg">
+                <div className="grid grid-cols-2 h-full w-full gap-0.5 p-0.5">
+                  {bundleGames.map((g, i) => (
+                    <img key={i} src={g.img} alt="" className="w-full h-full object-cover" />
+                  ))}
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent rounded-2xl" />
+              </div>
+              {discount > 0 && (
+                <div className="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1.5 rounded-full shadow-md">
+                  -{discount}% OFF
+                </div>
+              )}
+              <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-lg shadow-md flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-yellow-500" />
+                <span className="text-sm font-bold text-gray-900">Bundle</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <div>
+                <p className="text-xs font-semibold text-yellow-500 uppercase tracking-wider mb-1">Bundle Offer</p>
+                <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-2">{game.fullName}</h1>
+                <p className="text-sm text-gray-500">Get {bundleGames.length} premium AAA titles at one unbeatable price</p>
+              </div>
+
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="flex items-baseline gap-3 mb-1">
+                  <span className="text-4xl font-black text-gray-900">{formatPrice(game.price)}</span>
+                  <span className="text-lg text-gray-400 line-through">{formatPrice(game.originalPrice)}</span>
+                </div>
+                <p className="text-sm font-semibold text-green-600 mb-4">
+                  Save {formatPrice(savings)} &mdash; Limited time offer
+                </p>
+
+                <div className="flex flex-row gap-3">
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-yellow-400/40 transform hover:scale-[1.02] cursor-pointer"
+                  >
+                    Buy Bundle
+                  </button>
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-gray-900/30 transform hover:scale-[1.02] cursor-pointer"
+                  >
+                    Add Bundle
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Get access to {bundleGames.length} of the most popular AAA games at a fraction of their original price. 
+                This bundle includes action, adventure, RPG, racing and more genres to keep you entertained for hours.
+              </p>
+            </div>
+          </div>
+
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Games Included in This Bundle</h2>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {bundleGames.map((g) => (
+              <div
+                key={g._id}
+                onClick={() => navigate(`/games/${g.slug}`)}
+                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 overflow-hidden cursor-pointer group"
+              >
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={g.img}
+                    alt={g.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-1.5">
+                  <p className="text-[10px] font-semibold text-gray-800 leading-tight truncate">{g.fullName || g.name}</p>
+                  <p className="text-[10px] font-bold text-gray-900">₹{g.price}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -154,7 +279,7 @@ const GameDetail = () => {
               </div>
             </div>
 
-            {game.features.length > 0 && (
+            {game.features && game.features.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-2">Key Features</h3>
                 <ul className="space-y-1.5">
