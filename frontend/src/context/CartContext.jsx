@@ -189,7 +189,6 @@ export const CartProvider = ({ children }) => {
     }
 
     if (isAuthenticated && user) {
-      // User is logged in - save to backend
       try {
         dispatch({ type: 'SET_LOADING', payload: true })
         const response = await axios.post(`${BACKEND_URL}/api/cart/add`, {
@@ -206,15 +205,16 @@ export const CartProvider = ({ children }) => {
             addedAt: item.addedAt
           }))
           dispatch({ type: 'LOAD_CART', payload: cartItems })
+          return
         }
       } catch (error) {
-        console.error('Failed to add to cart:', error)
-        dispatch({ type: 'SET_ERROR', payload: 'Failed to add item to cart' })
+        console.error('Backend cart add failed, falling back to local:', error)
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false })
       }
+      // Fallback: add locally if backend fails
+      dispatch({ type: 'ADD_TO_CART', payload: product })
     } else {
-      // Guest user - save to localStorage via reducer
       dispatch({ type: 'ADD_TO_CART', payload: product })
     }
   }

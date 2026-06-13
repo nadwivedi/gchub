@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { Gift, Gamepad2, DollarSign, ArrowRight, Star } from 'lucide-react'
 import HeroSection from './component/HeroSection'
 import PopularGiftCards from './component/PopularGiftCards'
+import { useCart } from '../../context/CartContext'
+import { toast } from 'react-toastify'
 
 const Home = () => {
   const navigate = useNavigate()
+  const { addToCart } = useCart()
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Banner Carousel for Voucher Cash */}
@@ -21,11 +24,11 @@ const Home = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Buy Popular AAA Games</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
-              { name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg' },
-              { name: 'RDR2', slug: 'rdr2', img: '/games/rdr2.jpeg' },
-              { name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg' },
-              { name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg' },
-              { name: 'Resident Evil 4', slug: 'resident-evil-4', img: null },
+              { _id: 'gta-5', name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg', price: 359, imageUrl: '/games/gta5.jpeg' },
+              { _id: 'rdr2', name: 'RDR2', slug: 'rdr2', img: '/games/rdr2.jpeg', price: 359, imageUrl: '/games/rdr2.jpeg' },
+              { _id: 'cyberpunk', name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg', price: 359, imageUrl: '/games/cyberpunk%202077.jpeg' },
+              { _id: 'the-last-of-us-2', name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg', price: 359, imageUrl: '/games/the%20last%20of%20us%202.jpeg' },
+              { _id: 'resident-evil-4', name: 'Resident Evil 4', slug: 'resident-evil-4', img: null, price: 359, imageUrl: '/placeholder-image.jpg' },
             ].map((game) => (
               <div key={game.name} onClick={() => navigate(`/game/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
                 <div className="relative">
@@ -51,10 +54,10 @@ const Home = () => {
                     <span className="text-xs text-gray-400 line-through">₹1,200</span>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => navigate(`/game/${game.slug}`)} className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
+                    <button onClick={(e) => { e.stopPropagation(); addToCart(game); navigate('/cart') }} className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
                       Buy Now
                     </button>
-                    <button className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
+                    <button onClick={(e) => { e.stopPropagation(); addToCart(game); toast.success(`${game.name} added to cart!`) }} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
                       <span className="sm:hidden">Add Cart</span>
                       <span className="hidden sm:inline">Add to Cart</span>
                     </button>
