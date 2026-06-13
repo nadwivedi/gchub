@@ -326,7 +326,7 @@ export const games = {
     img: null,
     imageUrl: '/placeholder-image.jpg',
     price: 999,
-    originalPrice: 4039,
+    originalPrice: 6300,
     isBundle: true,
     genre: 'Bundle',
   },
