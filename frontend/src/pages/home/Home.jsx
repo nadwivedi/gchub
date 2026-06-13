@@ -135,7 +135,7 @@ const Home = () => {
       <div className="py-8 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">What Our Customers Say</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { name: 'Rahul Sharma', rating: 5, text: 'bc GTA 5 ka code mil gaya 2 minute mein, best website hai yeh!', initials: 'RS' },
               { name: 'Priya Patel', rating: 5, text: 'Google Play voucher instantly aagaya, 20% off mil gaya, kamaal kar diya!', initials: 'PP' },
@@ -147,20 +147,20 @@ const Home = () => {
               { name: 'Karan Joshi', rating: 5, text: 'Sold my unused Flipkart voucher. Got better rate than any other platform. Will use again for sure!', initials: 'KJ' },
             ].map((review, i) => (
               <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                  <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-[10px] sm:text-sm">
                     {review.initials}
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">{review.name}</p>
-                    <div className="flex gap-0.5">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-gray-800 text-[11px] sm:text-sm truncate">{review.name}</p>
+                    <div className="flex gap-px sm:gap-0.5">
                       {[...Array(5)].map((_, j) => (
-                        <Star key={j} className={`w-3.5 h-3.5 ${j < review.rating ? 'text-yellow-400' : 'text-gray-200'}`} fill={j < review.rating ? 'currentColor' : 'none'} />
+                        <Star key={j} className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 ${j < review.rating ? 'text-yellow-400' : 'text-gray-200'}`} fill={j < review.rating ? 'currentColor' : 'none'} />
                       ))}
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">{review.text}</p>
+                <p className="text-gray-600 text-[11px] sm:text-sm leading-snug sm:leading-relaxed line-clamp-3 sm:line-clamp-none">{review.text}</p>
               </div>
             ))}
           </div>
