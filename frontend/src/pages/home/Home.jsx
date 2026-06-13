@@ -27,17 +27,22 @@ const Home = () => {
               { name: 'Resident Evil 4', img: null },
             ].map((game) => (
               <div key={game.name} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col">
-                {game.img ? (
-                  <img
-                    src={game.img}
-                    alt={game.name}
-                    className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full aspect-square flex items-center justify-center text-gray-400 text-xs text-center px-2 bg-gray-50">
-                    {game.name}
+                <div className="relative">
+                  {game.img ? (
+                    <img
+                      src={game.img}
+                      alt={game.name}
+                      className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full aspect-square flex items-center justify-center text-gray-400 text-xs text-center px-2 bg-gray-50">
+                      {game.name}
+                    </div>
+                  )}
+                  <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-md">
+                    -70% OFF
                   </div>
-                )}
+                </div>
                 <div className="p-3 flex flex-col gap-2">
                   <h3 className="font-bold text-gray-900 text-sm leading-tight">{game.name}</h3>
                   <div className="flex items-center gap-2">
