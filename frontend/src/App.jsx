@@ -32,6 +32,12 @@ import SellVoucher from './pages/SellVoucher'
 import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
 import GameDetail from './pages/game/GameDetail'
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  React.useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
+
 const AppContent = () => {
   const location = useLocation()
   const isLoginPage = location.pathname === '/login'
@@ -42,6 +48,7 @@ const AppContent = () => {
   return (
     <div className={showMobileNav ? 'pb-14 md:pb-0' : ''}>
       {!isLoginPage && !isChatPage && <Navbar />}
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<SearchResults />} />
