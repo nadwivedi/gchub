@@ -45,11 +45,12 @@ const Home = () => {
                     <span className="text-xs text-gray-400 line-through">₹1,200</span>
                   </div>
                   <div className="flex gap-2">
-                    <button className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200 cursor-pointer">
+                    <button className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
                       Buy Now
                     </button>
-                    <button className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-3 rounded-lg text-xs transition-all duration-200 cursor-pointer">
-                      Add to Cart
+                    <button className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs transition-all duration-200 cursor-pointer">
+                      <span className="sm:hidden">Add Cart</span>
+                      <span className="hidden sm:inline">Add to Cart</span>
                     </button>
                   </div>
                 </div>
