@@ -32,6 +32,7 @@ import SellVoucher from './pages/SellVoucher'
 import MySales from './pages/MySales'
 import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
 import GameDetail from './pages/game/GameDetail'
+import GamesPage from './pages/game/GamesPage'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -72,6 +73,7 @@ const AppContent = () => {
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/gift-card/google-play" element={<GiftCardGooglePlay />} />
+        <Route path="/games" element={<GamesPage />} />
         <Route path="/game/:slug" element={<GameDetail />} />
       </Routes>
       {showMobileNav && <Footer />}

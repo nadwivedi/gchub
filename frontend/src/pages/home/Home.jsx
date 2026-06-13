@@ -21,7 +21,18 @@ const Home = () => {
       {/* Popular AAA Games Section */}
       <div className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Buy Popular AAA Games</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">Buy Popular AAA Games</h2>
+            <button
+              onClick={() => navigate('/games')}
+              className="hidden sm:flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer"
+            >
+              View All
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
               { _id: 'gta-5', name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg', price: 359, imageUrl: '/games/gta5.jpeg' },
@@ -65,6 +76,17 @@ const Home = () => {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="mt-6 text-center sm:hidden">
+            <button
+              onClick={() => navigate('/games')}
+              className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all duration-200 cursor-pointer"
+            >
+              View All Games
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
