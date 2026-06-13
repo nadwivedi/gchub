@@ -84,7 +84,7 @@ const GamesPage = () => {
             {filtered.map((game) => (
               <div
                 key={game._id}
-                onClick={() => navigate(`/game/${game.slug}`)}
+                onClick={() => navigate(`/games/${game.slug}`)}
                 className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer hover:-translate-y-1"
               >
                 <div className="relative">

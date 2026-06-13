@@ -74,7 +74,7 @@ const AppContent = () => {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/gift-card/google-play" element={<GiftCardGooglePlay />} />
         <Route path="/games" element={<GamesPage />} />
-        <Route path="/game/:slug" element={<GameDetail />} />
+        <Route path="/games/:slug" element={<GameDetail />} />
       </Routes>
       {showMobileNav && <Footer />}
       {showMobileNav && <MobileBottomNav />}

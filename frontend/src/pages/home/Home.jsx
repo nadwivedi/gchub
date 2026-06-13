@@ -41,7 +41,7 @@ const Home = () => {
               { _id: 'the-last-of-us-2', name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg', price: 359, imageUrl: '/games/the%20last%20of%20us%202.jpeg' },
               { _id: 'resident-evil-4', name: 'Resident Evil 4', slug: 'resident-evil-4', img: null, price: 359, imageUrl: '/placeholder-image.jpg' },
             ].map((game) => (
-              <div key={game.name} onClick={() => navigate(`/game/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
+              <div key={game.name} onClick={() => navigate(`/games/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
                 <div className="relative">
                   {game.img ? (
                     <img
