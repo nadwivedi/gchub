@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X, Upload, Clock, Banknote } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import axios from 'axios'
+import { AppContext } from '../context/AppContext'
 
 const brands = [
   'Google Play',
@@ -13,7 +15,9 @@ const brands = [
 ]
 
 const SellVoucher = () => {
+  const { BACKEND_URL } = useContext(AppContext)
   const [cards, setCards] = useState([])
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     brand: '',
     balance: '',
@@ -21,23 +25,54 @@ const SellVoucher = () => {
     expiry: '',
   })
 
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/gift-cards`, { withCredentials: true })
+        if (res.data.success) {
+          setCards(res.data.data)
+        }
+      } catch {
+        // silently fail
+      }
+    }
+    fetchListings()
+  }, [BACKEND_URL])
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!form.brand || !form.balance || !form.code || !form.expiry) {
       toast.error('Please fill all fields')
       return
     }
-    setCards([...cards, { ...form, id: Date.now() }])
-    setForm({ brand: '', balance: '', code: '', expiry: '' })
-    toast.success('Gift card added successfully')
+    setLoading(true)
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/gift-cards`, form, { withCredentials: true })
+      if (res.data.success) {
+        setCards([res.data.data, ...cards])
+        setForm({ brand: '', balance: '', code: '', expiry: '' })
+        toast.success('Gift card listed successfully')
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to list gift card')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleDelete = (id) => {
-    setCards(cards.filter((c) => c.id !== id))
-    toast.info('Gift card removed')
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${BACKEND_URL}/api/gift-cards/${id}`, { withCredentials: true })
+      if (res.data.success) {
+        setCards(cards.filter((c) => c._id !== id))
+        toast.info('Listing removed')
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete listing')
+    }
   }
 
   return (
@@ -167,16 +202,33 @@ const SellVoucher = () => {
               <div className="pt-3">
                 <button
                   onClick={handleAdd}
-                  className="w-full py-3 text-white font-bold text-base rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  disabled={loading}
+                  className="w-full py-3 text-white font-bold text-base rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{
                     background: 'linear-gradient(135deg, #eab308 0%, #f59e0b 55%, #d97706 100%)',
                     boxShadow: '0 4px 14px rgba(234,179,8,0.4)',
                   }}
                 >
-                  <Plus className="h-5 w-5" />
-                  Publish Listing
+                  {loading ? (
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : (
+                    <Plus className="h-5 w-5" />
+                  )}
+                  {loading ? 'Listing...' : 'Publish Listing'}
                 </button>
               </div>
+
+              {form.balance > 0 && (
+                <div className="text-center -mt-2">
+                  <p className="text-sm font-semibold text-gray-700">
+                    You'll receive: <span className="text-emerald-600">₹{Math.round(form.balance * 0.9)}</span>
+                    <span className="text-gray-400 font-normal"> (after 10% commission)</span>
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -191,7 +243,7 @@ const SellVoucher = () => {
           <div className="grid gap-4">
             {cards.map((card) => (
               <div
-                key={card.id}
+                key={card._id}
                 className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
               >
                 <div className="flex items-center gap-4">
@@ -201,12 +253,12 @@ const SellVoucher = () => {
                   <div>
                     <p className="font-semibold text-gray-900">{card.brand}</p>
                     <p className="text-sm text-gray-500">
-                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | ₹{card.balance} | Exp: {card.expiry}
+                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | ₹{card.balance} | Exp: {new Date(card.expiry).toLocaleDateString('en-IN')}
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDelete(card.id)}
+                  onClick={() => handleDelete(card._id)}
                   className="text-red-500 hover:text-red-700 transition-colors self-end sm:self-auto"
                 >
                   <Trash2 className="h-5 w-5" />

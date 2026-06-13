@@ -1,25 +1,35 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { ArrowLeft, Gift, CheckCircle, Clock, TrendingUp, Banknote, Wallet } from 'lucide-react'
 import { Link } from 'react-router-dom'
-
-const salesHistory = [
-  { id: 1, brand: 'Google Play', value: 1000, payout: 915, status: 'paid', date: '2026-06-10', paidOn: '2026-06-12', commission: 85 },
-  { id: 2, brand: 'Amazon', value: 2500, payout: 2288, status: 'paid', date: '2026-06-08', paidOn: '2026-06-10', commission: 212 },
-  { id: 3, brand: 'Flipkart', value: 500, payout: 460, status: 'paid', date: '2026-06-05', paidOn: '2026-06-07', commission: 40 },
-  { id: 4, brand: 'Steam', value: 2000, payout: 1830, status: 'pending', date: '2026-06-11', paidOn: '-', commission: 170 },
-  { id: 5, brand: 'Google Play', value: 750, payout: 686, status: 'processing', date: '2026-06-12', paidOn: '-', commission: 64 },
-  { id: 6, brand: 'Myntra', value: 1500, payout: 1373, status: 'paid', date: '2026-06-03', paidOn: '2026-06-05', commission: 127 },
-]
+import axios from 'axios'
+import { AppContext } from '../context/AppContext'
 
 const statusConfig = {
-  paid: { icon: CheckCircle, bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Paid' },
-  pending: { icon: Clock, bg: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Pending' },
-  processing: { icon: TrendingUp, bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Processing' },
+  active: { icon: Clock, bg: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Active' },
+  sold: { icon: CheckCircle, bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Sold' },
+  expired: { icon: TrendingUp, bg: 'bg-red-50 text-red-700 border-red-200', label: 'Expired' },
 }
 
 const MySales = () => {
-  const totalEarnings = salesHistory.filter(s => s.status === 'paid').reduce((sum, s) => sum + s.payout, 0)
-  const pendingPayout = salesHistory.filter(s => s.status !== 'paid').reduce((sum, s) => sum + s.payout, 0)
+  const { BACKEND_URL } = useContext(AppContext)
+  const [listings, setListings] = useState([])
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/gift-cards`, { withCredentials: true })
+        if (res.data.success) {
+          setListings(res.data.data)
+        }
+      } catch {
+        // silently fail
+      }
+    }
+    fetchListings()
+  }, [BACKEND_URL])
+
+  const totalEarnings = listings.filter(s => s.status === 'sold').reduce((sum, s) => sum + Math.round(s.balance * 0.95), 0)
+  const pendingPayout = listings.filter(s => s.status === 'active').reduce((sum, s) => sum + Math.round(s.balance * 0.95), 0)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -62,7 +72,7 @@ const MySales = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Total Sales</p>
-                <p className="text-xl font-bold text-gray-900">{salesHistory.length}</p>
+                <p className="text-xl font-bold text-gray-900">{listings.length}</p>
               </div>
             </div>
           </div>
@@ -87,30 +97,43 @@ const MySales = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {salesHistory.map((sale) => {
-                  const StatusIcon = statusConfig[sale.status].icon
-                  return (
-                    <tr key={sale.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          <Gift className="h-4 w-4 text-gray-400" />
-                          <span className="font-medium text-gray-900">{sale.brand}</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 text-gray-700">₹{sale.value}</td>
-                      <td className="px-5 py-4 text-gray-500">-₹{sale.commission}</td>
-                      <td className="px-5 py-4 font-semibold text-emerald-600">₹{sale.payout}</td>
-                      <td className="px-5 py-4 text-gray-600">{sale.date}</td>
-                      <td className="px-5 py-4 text-gray-600">{sale.paidOn}</td>
-                      <td className="px-5 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${statusConfig[sale.status].bg}`}>
-                          <StatusIcon className="h-3.5 w-3.5" />
-                          {statusConfig[sale.status].label}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
+                {listings.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-5 py-12 text-center text-gray-400">
+                      <Gift className="h-10 w-10 mx-auto mb-2 text-gray-300" />
+                      <p>No gift card listings yet</p>
+                    </td>
+                  </tr>
+                ) : (
+                  listings.map((card) => {
+                    const commission = Math.round(card.balance * 0.05)
+                    const payout = card.balance - commission
+                    const StatusIcon = statusConfig[card.status]?.icon || Clock
+                    const statusStyle = statusConfig[card.status]?.bg || 'bg-gray-50 text-gray-700 border-gray-200'
+                    const statusLabel = statusConfig[card.status]?.label || card.status
+                    return (
+                      <tr key={card._id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-2">
+                            <Gift className="h-4 w-4 text-gray-400" />
+                            <span className="font-medium text-gray-900">{card.brand}</span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 text-gray-700">₹{card.balance}</td>
+                        <td className="px-5 py-4 text-gray-500">-₹{commission}</td>
+                        <td className="px-5 py-4 font-semibold text-emerald-600">₹{payout}</td>
+                        <td className="px-5 py-4 text-gray-600">{new Date(card.createdAt).toLocaleDateString('en-IN')}</td>
+                        <td className="px-5 py-4 text-gray-600">{card.status === 'sold' ? new Date(card.updatedAt).toLocaleDateString('en-IN') : '-'}</td>
+                        <td className="px-5 py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${statusStyle}`}>
+                            <StatusIcon className="h-3.5 w-3.5" />
+                            {statusLabel}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
               </tbody>
             </table>
           </div>

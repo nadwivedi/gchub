@@ -15,6 +15,7 @@ const chatRoutes = require('./routes/chatRoutes');
 const seederRoutes = require('./routes/seederRoutes');
 const heroRoutes = require('./routes/heroRoutes');
 const shopCategoryRoutes = require('./routes/shopCategoryRoutes');
+const giftCardRoutes = require('./routes/giftCardRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -44,6 +45,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/seed', seederRoutes);
 app.use('/api/heroes', heroRoutes);
 app.use('/api/shop-categories', shopCategoryRoutes);
+app.use('/api/gift-cards', giftCardRoutes);
 
 // Root route
 app.get('/', (req, res) => {
