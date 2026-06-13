@@ -65,11 +65,14 @@ const createOrder = async (req, res) => {
       }
     }
     
+    // For digital products, use provided address or fall back to a placeholder
     if (!finalShippingAddress || !finalShippingAddress.fullAddress) {
-      return res.status(400).json({
-        success: false,
-        message: 'Shipping address is required'
-      });
+      finalShippingAddress = {
+        fullAddress: 'Digital Delivery',
+        city: 'Digital',
+        state: 'Digital',
+        pincode: '000000'
+      };
     }
 
     // Validate and process items
