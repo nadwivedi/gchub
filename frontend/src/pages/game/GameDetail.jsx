@@ -140,6 +140,31 @@ const GameDetail = () => {
               <p className="text-sm text-gray-500">{game.name}</p>
             </div>
 
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="text-4xl font-black text-gray-900">{formatPrice(game.price)}</span>
+                <span className="text-lg text-gray-400 line-through">{formatPrice(game.originalPrice)}</span>
+              </div>
+              <p className="text-sm font-semibold text-green-600 mb-4">
+                Save {formatPrice(savings)} &mdash; Limited time offer
+              </p>
+
+              <div className="flex flex-row gap-3">
+                <button
+                  onClick={handleBuyNow}
+                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-yellow-400/40 transform hover:scale-[1.02] cursor-pointer"
+                >
+                  Buy Now
+                </button>
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-gray-900/30 transform hover:scale-[1.02] cursor-pointer"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+
             <p className="text-sm text-gray-600 leading-relaxed">{game.description}</p>
 
             <div className="flex flex-wrap gap-4 text-sm">
@@ -172,31 +197,6 @@ const GameDetail = () => {
                 </ul>
               </div>
             )}
-
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <div className="flex items-baseline gap-3 mb-1">
-                <span className="text-4xl font-black text-gray-900">{formatPrice(game.price)}</span>
-                <span className="text-lg text-gray-400 line-through">{formatPrice(game.originalPrice)}</span>
-              </div>
-              <p className="text-sm font-semibold text-green-600 mb-4">
-                Save {formatPrice(savings)} &mdash; Limited time offer
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={handleBuyNow}
-                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-yellow-400/40 transform hover:scale-[1.02] cursor-pointer"
-                >
-                  Buy Now
-                </button>
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-gray-900/30 transform hover:scale-[1.02] cursor-pointer"
-                >
-                  Add to Cart
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 

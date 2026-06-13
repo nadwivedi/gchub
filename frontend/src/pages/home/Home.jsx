@@ -23,9 +23,9 @@ const Home = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {[
               { name: 'GTA 5', slug: 'gta-5', img: '/games/gta5.jpeg' },
-              { name: 'RDR2', slug: 'rdr2', img: null },
-              { name: 'Cyberpunk', slug: 'cyberpunk', img: null },
-              { name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: null },
+              { name: 'RDR2', slug: 'rdr2', img: '/games/rdr2.jpeg' },
+              { name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg' },
+              { name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg' },
               { name: 'Resident Evil 4', slug: 'resident-evil-4', img: null },
             ].map((game) => (
               <div key={game.name} onClick={() => navigate(`/game/${game.slug}`)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 relative group flex flex-col cursor-pointer">
