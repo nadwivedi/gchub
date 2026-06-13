@@ -133,7 +133,7 @@ const Footer = () => {
                 </span>
                 <div>
                   <p className="text-gray-500 text-xs mb-0.5">Email</p>
-                  <a href="mailto:support@vouchercash.in" className="text-gray-300 text-sm hover:text-yellow-400 transition-colors">support@vouchercash.in</a>
+                  <a href="mailto:support@vouchercash.online" className="text-gray-300 text-sm hover:text-yellow-400 transition-colors">support@vouchercash.online</a>
                 </div>
               </li>
             </ul>
@@ -156,15 +156,12 @@ const Footer = () => {
             © {currentYear} <span style={{ color: '#eab308' }}>Voucher Cash</span>. All rights reserved. Made in 🇮🇳 India.
           </p>
           <div className="flex items-center gap-4">
-            {['Privacy Policy', 'Terms of Service', 'Refund Policy'].map(link => (
-              <a
-                key={link}
-                href="#"
-                className="text-gray-500 hover:text-yellow-400 text-xs transition-colors duration-200"
-              >
-                {link}
-              </a>
-            ))}
+            <a
+              href="/refund-policy"
+              className="text-gray-500 hover:text-yellow-400 text-xs transition-colors duration-200"
+            >
+              Refund Policy
+            </a>
           </div>
         </div>
       </div>

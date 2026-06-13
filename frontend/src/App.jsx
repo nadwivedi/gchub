@@ -35,6 +35,7 @@ import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
 import GameDetail from './pages/game/GameDetail'
 import GamesPage from './pages/game/GamesPage'
 import GiftCardsPage from './pages/gift-cards/GiftCardsPage'
+import RefundPolicy from './pages/RefundPolicy'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -147,6 +148,7 @@ const AppContent = () => {
         <Route path="/gift-cards" element={<GiftCardsPage />} />
         <Route path="/gift-cards/google-play" element={<GiftCardGooglePlay />} />
         <Route path="/games/:slug" element={<GameDetail />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
       </Routes>
       {showMobileNav && <Footer />}
       {showMobileNav && <MobileBottomNav />}
