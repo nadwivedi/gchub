@@ -129,7 +129,7 @@ const Navbar = () => {
                         My Orders
                       </Link>
                       <Link
-                        to="/sell-voucher"
+                        to="/my-sales"
                         className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-emerald-700 transition-all duration-200"
                         onClick={() => setProfileDropdownOpen(false)}
                       >

@@ -1,119 +1,261 @@
-import React from 'react'
-import { ArrowLeft, Gift, CheckCircle, Clock, XCircle, Banknote, Wallet, TrendingUp } from 'lucide-react'
+import React, { useState } from 'react'
+import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X, Upload, Clock, Banknote } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
-const salesHistory = [
-  { id: 1, brand: 'Google Play', value: 1000, payout: 915, status: 'paid', date: '2026-06-10', paidOn: '2026-06-12', commission: 85 },
-  { id: 2, brand: 'Amazon', value: 2500, payout: 2288, status: 'paid', date: '2026-06-08', paidOn: '2026-06-10', commission: 212 },
-  { id: 3, brand: 'Flipkart', value: 500, payout: 460, status: 'paid', date: '2026-06-05', paidOn: '2026-06-07', commission: 40 },
-  { id: 4, brand: 'Steam', value: 2000, payout: 1830, status: 'pending', date: '2026-06-11', paidOn: '-', commission: 170 },
-  { id: 5, brand: 'Google Play', value: 750, payout: 686, status: 'processing', date: '2026-06-12', paidOn: '-', commission: 64 },
-  { id: 6, brand: 'Myntra', value: 1500, payout: 1373, status: 'paid', date: '2026-06-03', paidOn: '2026-06-05', commission: 127 },
+const brands = [
+  'Google Play',
+  'Amazon',
+  'Flipkart',
+  'Steam',
+  'Myntra',
+  'BigBasket',
 ]
 
-const statusConfig = {
-  paid: { icon: CheckCircle, bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Paid' },
-  pending: { icon: Clock, bg: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Pending' },
-  processing: { icon: TrendingUp, bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Processing' },
-}
-
 const SellVoucher = () => {
-  const totalEarnings = salesHistory.filter(s => s.status === 'paid').reduce((sum, s) => sum + s.payout, 0)
-  const pendingPayout = salesHistory.filter(s => s.status !== 'paid').reduce((sum, s) => sum + s.payout, 0)
+  const [cards, setCards] = useState([])
+  const [form, setForm] = useState({
+    brand: '',
+    balance: '',
+    code: '',
+    expiry: '',
+  })
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleAdd = () => {
+    if (!form.brand || !form.balance || !form.code || !form.expiry) {
+      toast.error('Please fill all fields')
+      return
+    }
+    setCards([...cards, { ...form, id: Date.now() }])
+    setForm({ brand: '', balance: '', code: '', expiry: '' })
+    toast.success('Gift card added successfully')
+  }
+
+  const handleDelete = (id) => {
+    setCards(cards.filter((c) => c.id !== id))
+    toast.info('Gift card removed')
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="flex items-center gap-2 sm:gap-3 mb-6">
-          <Link to="/" className="text-gray-600 hover:text-gray-900">
-            <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-          </Link>
-          <h1 className="text-lg sm:text-2xl font-bold text-gray-900">My Sales</h1>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <div className="flex items-center gap-3">
-              <div className="bg-emerald-100 rounded-lg p-3">
-                <Banknote className="h-6 w-6 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Earnings</p>
-                <p className="text-xl font-bold text-gray-900">₹{totalEarnings.toLocaleString('en-IN')}</p>
-              </div>
+          {/* Main Section */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link to="/" className="text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+              </Link>
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Sell Gift Cards</h1>
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <div className="flex items-center gap-3">
-              <div className="bg-amber-100 rounded-lg p-3">
-                <Clock className="h-6 w-6 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Pending Payout</p>
-                <p className="text-xl font-bold text-gray-900">₹{pendingPayout.toLocaleString('en-IN')}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 rounded-lg p-3">
-                <Wallet className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Sales</p>
-                <p className="text-xl font-bold text-gray-900">{salesHistory.length}</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Sales Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900">Sales History</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 mb-6 sm:mb-8">
+            <h2 className="text-center text-[13px] sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">How It Works</h2>
+            <div className="flex flex-row items-start sm:items-center gap-0">
+              <div className="flex-1 flex flex-col items-center text-center relative">
+                <div className="bg-gray-900 text-white rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mb-1.5 sm:mb-2 shadow-md relative z-10">
+                  <Upload className="h-3 w-3 sm:h-5 sm:w-5" />
+                </div>
+                <p className="font-semibold text-gray-900 text-[10px] sm:text-sm leading-tight">Add Your Card</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 mt-0.5 hidden sm:block">List your gift card for sale</p>
+                <div className="absolute top-4 sm:top-5 left-[55%] w-[80%] h-0.5 border-t-[1.5px] sm:border-t-2 border-dashed border-gray-300 z-0" />
+              </div>
+              <div className="flex-1 flex flex-col items-center text-center relative">
+                <div className="bg-gray-900 text-white rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mb-1.5 sm:mb-2 shadow-md relative z-10">
+                  <Clock className="h-3 w-3 sm:h-5 sm:w-5" />
+                </div>
+                <p className="font-semibold text-gray-900 text-[10px] sm:text-sm leading-tight">Sells in 24 Hrs</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 mt-0.5 hidden sm:block">Fast & easy selling process</p>
+                <div className="absolute top-4 sm:top-5 left-[55%] w-[80%] h-0.5 border-t-[1.5px] sm:border-t-2 border-dashed border-gray-300 z-0" />
+              </div>
+              <div className="flex-1 flex flex-col items-center text-center relative">
+                <div className="bg-gray-900 text-white rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mb-1.5 sm:mb-2 shadow-md relative z-10">
+                  <Banknote className="h-3 w-3 sm:h-5 sm:w-5" />
+                </div>
+                <p className="font-semibold text-gray-900 text-[10px] sm:text-sm leading-tight">Get Paid</p>
+                <p className="text-[9px] sm:text-xs text-gray-500 mt-0.5 hidden sm:block">Money credited to your bank</p>
+              </div>
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-left">
-                  <th className="px-5 py-3 font-semibold text-gray-600">Brand</th>
-                  <th className="px-5 py-3 font-semibold text-gray-600">Card Value</th>
-                  <th className="px-5 py-3 font-semibold text-gray-600">Commission</th>
-                  <th className="px-5 py-3 font-semibold text-gray-600">You Received</th>
-                  <th className="px-5 py-3 font-semibold text-gray-600">Listed On</th>
-                  <th className="px-5 py-3 font-semibold text-gray-600">Paid On</th>
-                  <th className="px-5 py-3 font-semibold text-gray-600">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {salesHistory.map((sale) => {
-                  const StatusIcon = statusConfig[sale.status].icon
-                  return (
-                    <tr key={sale.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          <Gift className="h-4 w-4 text-gray-400" />
-                          <span className="font-medium text-gray-900">{sale.brand}</span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 text-gray-700">₹{sale.value}</td>
-                      <td className="px-5 py-4 text-gray-500">-₹{sale.commission}</td>
-                      <td className="px-5 py-4 font-semibold text-emerald-600">₹{sale.payout}</td>
-                      <td className="px-5 py-4 text-gray-600">{sale.date}</td>
-                      <td className="px-5 py-4 text-gray-600">{sale.paidOn}</td>
-                      <td className="px-5 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${statusConfig[sale.status].bg}`}>
-                          <StatusIcon className="h-3.5 w-3.5" />
-                          {statusConfig[sale.status].label}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+
+          <div className="bg-gradient-to-br from-yellow-50 via-white to-orange-50 rounded-xl shadow-md border border-yellow-200 p-5 sm:p-6 mb-6 sm:mb-8 relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+
+            <h2 className="text-xl font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+              <Gift className="h-6 w-6 text-yellow-600" />
+              List Your Gift Card
+            </h2>
+
+            <div className="grid grid-cols-1 gap-5 relative z-10">
+              <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">Brand</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Gift className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <select
+                    name="brand"
+                    value={form.brand}
+                    onChange={handleChange}
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow appearance-none"
+                  >
+                    <option value="">Select brand</option>
+                    {brands.map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">Balance Amount (₹)</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <DollarSign className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="number"
+                    name="balance"
+                    value={form.balance}
+                    onChange={handleChange}
+                    placeholder="Enter amount"
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">Gift Card Code</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Hash className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="text"
+                    name="code"
+                    value={form.code}
+                    onChange={handleChange}
+                    placeholder="Enter gift card code"
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">Expiry Date</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="date"
+                    name="expiry"
+                    value={form.expiry}
+                    onChange={handleChange}
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3">
+                <button
+                  onClick={handleAdd}
+                  className="w-full py-3 text-white font-bold text-base rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #eab308 0%, #f59e0b 55%, #d97706 100%)',
+                    boxShadow: '0 4px 14px rgba(234,179,8,0.4)',
+                  }}
+                >
+                  <Plus className="h-5 w-5" />
+                  Publish Listing
+                </button>
+              </div>
+            </div>
           </div>
+
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Your Active Listings</h2>
+        {cards.length === 0 ? (
+          <div className="text-center py-20">
+            <Gift className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg">No gift cards added yet</p>
+            <p className="text-gray-400 text-sm mt-1">Click "Add New Card" to get started</p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {cards.map((card) => (
+              <div
+                key={card.id}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="bg-gray-100 rounded-lg p-3">
+                    <Gift className="h-6 w-6 text-gray-700" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{card.brand}</p>
+                    <p className="text-sm text-gray-500">
+                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | ₹{card.balance} | Exp: {card.expiry}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleDelete(card.id)}
+                  className="text-red-500 hover:text-red-700 transition-colors self-end sm:self-auto"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+          </div>
+
+          {/* Sidebar Section - FAQs */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 sticky top-24">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="w-1 h-5 rounded-full bg-yellow-500 block"></span>
+                Frequently Asked Questions
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">How fast will my card sell?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Most popular brand gift cards sell within 24 hours. Less common brands may take 2-3 days.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">When do I get paid?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Money is automatically transferred to your linked bank account or wallet within 48 hours after the buyer verifies the card.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">Are there any selling fees?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">We charge a flat 5% commission on successful sales. There are no listing fees.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">What if my code doesn't work?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Ensure the code and PIN are correct before listing. If a buyer reports an invalid code, we will investigate and may suspend your account if found fraudulent.</p>
+                </div>
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="font-semibold text-gray-800 text-sm mb-1">How do I add my bank account to get paid?</h4>
+                  <p className="text-gray-500 text-xs leading-relaxed">Go to your Account settings and select "Payment Methods". There, you can securely add and verify your bank account or wallet details.</p>
+                </div>
+              </div>
+
+              <div className="mt-6 bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                <h4 className="font-semibold text-yellow-800 text-sm mb-1">Need help?</h4>
+                <p className="text-yellow-700 text-xs mb-3">Our support team is available 24/7 to assist you.</p>
+                <Link to="/contact" className="inline-block text-xs font-bold text-yellow-900 hover:text-yellow-700">Contact Support &rarr;</Link>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

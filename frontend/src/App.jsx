@@ -29,6 +29,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import BlogsPage from './pages/blog/BlogsPage'
 import BlogDetailPage from './pages/blog/BlogDetailPage'
 import SellVoucher from './pages/SellVoucher'
+import MySales from './pages/MySales'
 import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
 import GameDetail from './pages/game/GameDetail'
 
@@ -66,6 +67,7 @@ const AppContent = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sell-voucher" element={<SellVoucher />} />
+        <Route path="/my-sales" element={<ProtectedRoute><MySales /></ProtectedRoute>} />
         <Route path="/blog" element={<BlogsPage />} />
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
