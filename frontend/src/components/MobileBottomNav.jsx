@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { AppContext } from '../context/AppContext'
 
 const MobileBottomNav = () => {
   const location = useLocation()
   const { getTotalItems } = useCart()
+  const { isAuthenticated } = useContext(AppContext) || {}
 
   const isActive = (path) => location.pathname === path
 
@@ -70,24 +72,24 @@ const MobileBottomNav = () => {
         {/* CENTER SPACER */}
         <div style={{ minWidth: 64 }} />
 
-        {/* LOGIN */}
-        <Link to="/login" className="flex flex-col items-center gap-0 relative" style={{ minWidth: 56 }}>
+        {/* ACCOUNT / LOGIN */}
+        <Link to={isAuthenticated ? '/account' : '/login'} className="flex flex-col items-center gap-0 relative" style={{ minWidth: 56 }}>
           <span
             className="flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200"
             style={{
-              background: isActive('/login') ? 'rgba(234,179,8,0.15)' : 'transparent',
-              color: isActive('/login') ? '#b45309' : '#6b7280',
+              background: isActive('/account') || isActive('/login') ? 'rgba(234,179,8,0.15)' : 'transparent',
+              color: isActive('/account') || isActive('/login') ? '#b45309' : '#6b7280',
             }}
           >
-            <svg className="w-[18px] h-[18px]" fill={isActive('/login') ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <svg className="w-[18px] h-[18px]" fill={isActive('/account') || isActive('/login') ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round"
-                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </span>
-          <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/login') ? '#b45309' : '#9ca3af' }}>
-            Login
+          <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/account') || isActive('/login') ? '#b45309' : '#9ca3af' }}>
+            {isAuthenticated ? 'Account' : 'Login'}
           </span>
-          {isActive('/login') && (
+          {(isActive('/account') || isActive('/login')) && (
             <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
           )}
         </Link>
