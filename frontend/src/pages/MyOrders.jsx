@@ -1,7 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
+import { 
+  ShoppingBag, 
+  Calendar, 
+  ChevronRight, 
+  Clock, 
+  CheckCircle2, 
+  XCircle, 
+  AlertCircle, 
+  Package, 
+  Loader2,
+  ExternalLink
+} from 'lucide-react'
 
 const MyOrders = () => {
   const navigate = useNavigate()
@@ -27,13 +39,25 @@ const MyOrders = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      case 'confirmed': return 'bg-blue-100 text-blue-800'
-      case 'processing': return 'bg-purple-100 text-purple-800'
-      case 'shipped': return 'bg-indigo-100 text-indigo-800'
-      case 'delivered': return 'bg-green-100 text-green-800'
-      case 'cancelled': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'pending': return 'bg-amber-50 text-amber-700 border-amber-200'
+      case 'confirmed': return 'bg-yellow-50 text-yellow-700 border-yellow-200'
+      case 'processing': return 'bg-blue-50 text-blue-700 border-blue-200'
+      case 'shipped': return 'bg-indigo-50 text-indigo-700 border-indigo-200'
+      case 'delivered': return 'bg-green-50 text-green-700 border-green-200'
+      case 'cancelled': return 'bg-red-50 text-red-700 border-red-200'
+      default: return 'bg-slate-50 text-slate-700 border-slate-200'
+    }
+  }
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'pending': return <Clock className="w-4 h-4 text-amber-500" />
+      case 'confirmed': return <CheckCircle2 className="w-4 h-4 text-yellow-500" />
+      case 'processing': return <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+      case 'shipped': return <Package className="w-4 h-4 text-indigo-500" />
+      case 'delivered': return <CheckCircle2 className="w-4 h-4 text-green-500" />
+      case 'cancelled': return <XCircle className="w-4 h-4 text-red-500" />
+      default: return <AlertCircle className="w-4 h-4 text-slate-500" />
     }
   }
 
@@ -73,144 +97,150 @@ const MyOrders = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading your orders...</p>
-          </div>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/30 to-yellow-50/20 py-16 flex flex-col items-center justify-center">
+        <Loader2 className="w-10 h-10 text-amber-500 animate-spin mb-4" />
+        <p className="text-slate-600 font-medium animate-pulse">Loading your order history...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/30 to-yellow-50/20 py-10 px-4">
+      <div className="max-w-4xl mx-auto">
+        
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
-          <p className="text-gray-600 mt-2">Track and manage your order history</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">My Orders</h1>
+          <p className="text-slate-500 text-sm mt-1">Track details, statuses, and history of all your digital voucher purchases.</p>
         </div>
 
         {orders.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 mx-auto mb-8 bg-gray-200 rounded-full flex items-center justify-center">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M8 11v6a2 2 0 002 2h4a2 2 0 002-2v-6m-6 0h6" />
-              </svg>
+          <div className="text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm px-6 max-w-lg mx-auto">
+            <div className="w-20 h-20 mx-auto mb-6 bg-amber-50 rounded-2xl flex items-center justify-center">
+              <ShoppingBag className="w-10 h-10 text-amber-500" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">No orders yet</h2>
-            <p className="text-lg text-gray-600 mb-8">When you place orders, they will appear here.</p>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-200"
+            <h2 className="text-xl font-bold text-slate-950 mb-2">No orders placed yet</h2>
+            <p className="text-slate-500 mb-8 text-sm max-w-xs mx-auto">
+              When you purchase vouchers, game topups, or gift cards, they will appear here.
+            </p>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-bold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-amber-300/40 transition-all duration-200 active:scale-[0.98]"
             >
               Start Shopping
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order._id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-                <div className="p-6 border-b border-gray-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <div className="mb-4 sm:mb-0">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Order #{order._id}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Placed on {formatDate(order.orderDate)}
-                      </p>
+              <div 
+                key={order._id} 
+                className="bg-white rounded-2xl border border-slate-150 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group"
+              >
+                {/* Order Meta Header */}
+                <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Order ID</p>
+                      <p className="text-sm font-bold text-slate-800 font-mono">#{order._id.toUpperCase()}</p>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(order.status)}`}>
-                        {order.status}
-                      </span>
-                      <div className="text-right">
-                        <p className="text-lg font-semibold text-gray-900">
-                          {formatPrice(order.totalAmount)}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {order.totalItems} {order.totalItems === 1 ? 'item' : 'items'}
-                        </p>
+                    <span className="hidden md:inline h-6 w-px bg-slate-200" />
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Date Placed</p>
+                      <div className="flex items-center gap-1.5 text-sm font-medium text-slate-600">
+                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{formatDate(order.orderDate)}</span>
                       </div>
                     </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+                    <div className="text-left md:text-right">
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total amount</p>
+                      <p className="text-base font-extrabold text-slate-900">{formatPrice(order.totalAmount)}</p>
+                    </div>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 border rounded-full text-xs font-bold capitalize ${getStatusColor(order.status)}`}>
+                      {getStatusIcon(order.status)}
+                      <span>{order.status}</span>
+                    </span>
                   </div>
                 </div>
 
-                <div className="p-6">
-                  <div className="space-y-4">
-                    {order.items.map((item, index) => (
-                      <div key={index} className="flex items-center space-x-4">
-                        <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                          {item.productId?.images && item.productId.images.length > 0 ? (
-                            <img
-                              src={item.productId.images[0]}
-                              alt={item.productName}
-                              className="w-full h-full object-center object-cover"
-                              onError={(e) => {
-                                e.target.src = '/placeholder-image.jpg'
-                              }}
-                            />
-                          ) : item.productId?.imageUrl ? (
-                            <img
-                              src={item.productId.imageUrl}
-                              alt={item.productName}
-                              className="w-full h-full object-center object-cover"
-                              onError={(e) => {
-                                e.target.src = '/placeholder-image.jpg'
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{item.productName}</h4>
-                          <p className="text-sm text-gray-600">{item.productBrand}</p>
-                          <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium text-gray-900">{formatPrice(item.subtotal)}</p>
-                          <p className="text-sm text-gray-600">{formatPrice(item.productPrice)} each</p>
+                {/* Items list */}
+                <div className="px-6 py-5 divide-y divide-slate-100">
+                  {order.items.map((item, index) => (
+                    <div key={index} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4">
+                      {/* Product Image */}
+                      <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+                        {item.productId?.images && item.productId.images.length > 0 ? (
+                          <img
+                            src={item.productId.images[0]}
+                            alt={item.productName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = '/placeholder-image.jpg'
+                            }}
+                          />
+                        ) : item.productId?.imageUrl ? (
+                          <img
+                            src={item.productId.imageUrl}
+                            alt={item.productName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = '/placeholder-image.jpg'
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                            <ShoppingBag className="w-6 h-6 text-slate-300" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Product Name & Brand */}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-slate-900 text-sm truncate">{item.productName}</h4>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-xs text-slate-500">
+                          <span className="font-semibold text-purple-600 uppercase tracking-wider text-[10px]">
+                            {item.productBrand}
+                          </span>
+                          <span>·</span>
+                          <span>Qty: {item.quantity}</span>
                         </div>
                       </div>
-                    ))}
-                  </div>
 
-                  {order.estimatedDelivery && (
-                    <div className="mt-6 pt-6 border-t border-gray-200">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h4a1 1 0 011 1v2a1 1 0 01-1 1h-4v9a1 1 0 01-1 1H9a1 1 0 01-1-1v-9H4a1 1 0 01-1-1V8a1 1 0 011-1h4z" />
-                        </svg>
+                      {/* Prices */}
+                      <div className="text-right shrink-0">
+                        <p className="font-extrabold text-slate-900 text-sm">{formatPrice(item.subtotal)}</p>
+                        <p className="text-[10px] text-slate-500 font-medium">{formatPrice(item.productPrice)} each</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer details & button */}
+                <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    {order.estimatedDelivery && (
+                      <div className="flex items-center text-xs font-semibold text-slate-500 gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-slate-400" />
                         <span>
                           {order.status === 'delivered'
                             ? `Delivered on ${formatDate(order.deliveryDate)}`
-                            : `Expected delivery: ${formatDate(order.estimatedDelivery)}`
+                            : `Estimated delivery: ${formatDate(order.estimatedDelivery)}`
                           }
                         </span>
                       </div>
-                    </div>
-                  )}
-
-                  {/* View Details Button */}
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <button
-                      onClick={() => handleOrderClick(order._id)}
-                      className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      <span>View Order Details</span>
-                    </button>
+                    )}
                   </div>
+
+                  <button
+                    onClick={() => handleOrderClick(order._id)}
+                    className="w-full sm:w-auto bg-slate-950 hover:bg-slate-800 text-white font-bold py-2.5 px-5 rounded-xl transition-all duration-200 text-xs flex items-center justify-center gap-2 cursor-pointer border border-transparent shadow hover:shadow-md active:scale-95 shrink-0"
+                  >
+                    <span>View Order Details</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             ))}
