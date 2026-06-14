@@ -183,7 +183,16 @@ const OrderDetail = () => {
                   {order.items.map((item, index) => (
                     <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
                       <div className="flex-shrink-0 w-20 h-20 bg-white rounded-lg overflow-hidden border border-gray-200">
-                        {item.productId?.images && item.productId.images.length > 0 ? (
+                        {item.productImage ? (
+                          <img
+                            src={item.productImage}
+                            alt={item.productName}
+                            className="w-full h-full object-center object-cover"
+                            onError={(e) => {
+                              e.target.src = '/placeholder-image.jpg'
+                            }}
+                          />
+                        ) : item.productId?.images && item.productId.images.length > 0 ? (
                           <img
                             src={item.productId.images[0]}
                             alt={item.productName}
@@ -216,7 +225,12 @@ const OrderDetail = () => {
                           </div>
                           <div className="text-right">
                             <p className="font-semibold text-gray-900 text-lg">{formatPrice(item.subtotal)}</p>
-                            <p className="text-sm text-gray-600">{formatPrice(item.productPrice)} each</p>
+                            <div className="flex items-baseline justify-end gap-1.5">
+                              <p className="text-sm text-gray-600">{formatPrice(item.productPrice)} each</p>
+                              {item.originalPrice && item.originalPrice > item.productPrice && (
+                                <p className="text-xs text-gray-400 line-through">{formatPrice(item.originalPrice)}</p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>

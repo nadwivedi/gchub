@@ -199,7 +199,16 @@ const Orders = () => {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                         <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                          {item.productId?.images && item.productId.images.length > 0 ? (
+                          {item.productImage ? (
+                            <img
+                              src={item.productImage}
+                              alt={item.productName}
+                              className="w-full h-full object-center object-cover"
+                              onError={(e) => {
+                                e.target.src = '/placeholder-image.jpg';
+                              }}
+                            />
+                          ) : item.productId?.images && item.productId.images.length > 0 ? (
                             <img
                               src={item.productId.images[0]}
                               alt={item.productName}
@@ -232,9 +241,16 @@ const Orders = () => {
                           <p className="text-xs text-gray-500">{item.productBrand}</p>
                           <div className="flex justify-between items-center mt-1">
                             <span className="text-xs text-gray-600">Qty: {item.quantity}</span>
-                            <span className="text-sm font-medium text-gray-900">
-                              {formatPrice(item.subtotal)}
-                            </span>
+                            <div className="text-right">
+                              <span className="text-sm font-medium text-gray-900 block">
+                                {formatPrice(item.subtotal)}
+                              </span>
+                              {item.originalPrice && item.originalPrice > item.productPrice && (
+                                <span className="text-[10px] text-gray-400 line-through">
+                                  {formatPrice(item.originalPrice)} each
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>

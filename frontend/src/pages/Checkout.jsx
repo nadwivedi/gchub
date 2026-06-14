@@ -25,7 +25,9 @@ const Checkout = () => {
           productId: String(item._id || item.id),
           name: item.name || item.seoTitle,
           price: item.price,
+          originalPrice: item.originalPrice || item.price,
           brand: item.brand || 'Digital',
+          imageUrl: item.imageUrl || (item.images && item.images[0]) || '',
           quantity: item.quantity
         })),
         customerNotes,

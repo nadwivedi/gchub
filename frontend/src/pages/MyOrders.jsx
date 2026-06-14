@@ -172,7 +172,16 @@ const MyOrders = () => {
                     <div key={index} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4">
                       {/* Product Image */}
                       <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
-                        {item.productId?.images && item.productId.images.length > 0 ? (
+                        {item.productImage ? (
+                          <img
+                            src={item.productImage}
+                            alt={item.productName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = '/placeholder-image.jpg'
+                            }}
+                          />
+                        ) : item.productId?.images && item.productId.images.length > 0 ? (
                           <img
                             src={item.productId.images[0]}
                             alt={item.productName}
@@ -212,7 +221,12 @@ const MyOrders = () => {
                       {/* Prices */}
                       <div className="text-right shrink-0">
                         <p className="font-extrabold text-slate-900 text-sm">{formatPrice(item.subtotal)}</p>
-                        <p className="text-[10px] text-slate-500 font-medium">{formatPrice(item.productPrice)} each</p>
+                        <div className="flex items-baseline justify-end gap-1.5">
+                          <p className="text-[10px] text-slate-500 font-medium">{formatPrice(item.productPrice)} each</p>
+                          {item.originalPrice && item.originalPrice > item.productPrice && (
+                            <p className="text-[9px] text-slate-400 line-through">{formatPrice(item.originalPrice)}</p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}

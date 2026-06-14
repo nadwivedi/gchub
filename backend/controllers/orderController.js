@@ -114,7 +114,9 @@ const createOrder = async (req, res) => {
           productId: product._id.toString(),
           productName: product.name || product.seoTitle,
           productBrand: product.brand || 'Unknown',
+          productImage: product.images?.[0] || product.imageUrl || '',
           productPrice: product.price,
+          originalPrice: product.originalPrice || product.price,
           quantity: item.quantity,
           subtotal: subtotal
         };
@@ -125,7 +127,9 @@ const createOrder = async (req, res) => {
           productId: item.productId,
           productName: item.name || item.productName || item.productId,
           productBrand: item.brand || item.productBrand || 'Digital Goods',
+          productImage: item.imageUrl || item.productImage || '',
           productPrice: item.price || item.productPrice || 0,
+          originalPrice: item.originalPrice || item.price || item.productPrice || 0,
           quantity: item.quantity,
           subtotal: subtotal
         };

@@ -13,10 +13,18 @@ const orderItemSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Product brand is required']
   },
+  productImage: {
+    type: String,
+    default: ''
+  },
   productPrice: {
     type: Number,
     required: [true, 'Product price is required'],
     min: [0, 'Price cannot be negative']
+  },
+  originalPrice: {
+    type: Number,
+    min: [0, 'Original price cannot be negative']
   },
   quantity: {
     type: Number,
