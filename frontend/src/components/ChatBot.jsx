@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { MessageCircle, X, Send, Bot, User, Sparkles, RotateCcw } from 'lucide-react'
 import { AppContext } from '../context/AppContext'
+import { useCart } from '../context/CartContext'
+import { gamesList } from '../data/games'
 
 const QUICK_REPLIES = [
   'How do I get my voucher code?',
@@ -11,6 +14,8 @@ const QUICK_REPLIES = [
 ]
 
 const ChatBot = () => {
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
   const { user, BACKEND_URL } = useContext(AppContext)
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
@@ -75,6 +80,19 @@ const ChatBot = () => {
     sendMessage(reason)
   }
 
+  const handleBuyGameDirectly = (game) => {
+    // Add game to cart and navigate to cart page
+    addToCart({
+      _id: game._id,
+      name: game.fullName,
+      price: game.price,
+      originalPrice: game.originalPrice,
+      images: game.img ? [game.img] : [],
+    })
+    setIsOpen(false)
+    navigate('/cart')
+  }
+
   const sendMessage = async (text) => {
     const userText = text || input.trim()
     if (!userText || loading) return
@@ -89,7 +107,24 @@ const ChatBot = () => {
 
     const textLower = userText.toLowerCase()
 
-    // 1. If currently in 'ask_reason' step, process the reason input
+    // 1. Intercept Buy Games Queries
+    if (textLower.includes('buy game') || textLower.includes('purchase game') || textLower.includes('get game') || textLower.includes('want game') || textLower.includes('games page') || (textLower.includes('buy') && textLower.includes('game'))) {
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: '🎮 Voucher Cash offers discounted game keys and downloads! Here are the games available on our platform. Select one to buy or view details:',
+          id: Date.now() + 1
+        }, {
+          role: 'assistant',
+          id: 'games_selector_msg',
+          type: 'game_selector'
+        }])
+        setLoading(false)
+      }, 600)
+      return
+    }
+
+    // 2. If currently in 'ask_reason' step, process the refund reason input
     if (refundStep === 'ask_reason' && refundItem) {
       setTimeout(() => {
         const isGameItem = ['gta-5', 'rdr2', 'cyberpunk', 'the-last-of-us-2', 'resident-evil-4', 'san-andreas', 'the-witcher-3', 'god-of-war', 'cod-modern-warfare-2', 'mafia-3', 'forza-horizon-5', 'bundle-all-11'].includes(refundItem.productId) || 
@@ -126,7 +161,7 @@ const ChatBot = () => {
       return
     }
 
-    // 2. Start refund flow if keyword matches
+    // 3. Start refund flow if keyword matches
     if (textLower.includes('refund') || textLower.includes('return') || textLower.includes('not working')) {
       if (!user) {
         setMessages(prev => [...prev, {
@@ -338,6 +373,62 @@ const ChatBot = () => {
                         >
                           {reason}
                         </button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+
+              if (msg.type === 'game_selector') {
+                return (
+                  <div key={msg.id} className="w-[calc(100vw-4rem)] max-w-sm self-start overflow-hidden pr-2">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Available Games</p>
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin snap-x">
+                      {gamesList.map((game) => (
+                        <div
+                          key={game._id}
+                          className="min-w-[140px] w-[140px] bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col snap-start shrink-0"
+                        >
+                          <div className="relative h-24 bg-slate-900 overflow-hidden">
+                            {game.img ? (
+                              <img
+                                src={game.img}
+                                alt={game.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs font-bold px-1 bg-slate-800">
+                                {game.name}
+                              </div>
+                            )}
+                            <div className="absolute top-1.5 left-1.5 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow">
+                              -{Math.round(((game.originalPrice - game.price) / game.originalPrice) * 100)}%
+                            </div>
+                          </div>
+                          <div className="p-2 flex flex-col flex-1 justify-between">
+                            <div>
+                              <h4 className="font-bold text-slate-800 text-[11px] leading-tight line-clamp-2">{game.fullName || game.name}</h4>
+                              <p className="text-xs font-black text-slate-950 mt-1">₹{game.price}</p>
+                            </div>
+                            <div className="flex flex-col gap-1 mt-2">
+                              <button
+                                onClick={() => handleBuyGameDirectly(game)}
+                                className="w-full bg-yellow-400 hover:bg-yellow-500 text-black text-[10px] font-bold py-1 rounded cursor-pointer transition-colors text-center"
+                              >
+                                Buy Now
+                              </button>
+                              <button
+                                onClick={() => {
+                                  navigate(`/games/${game.slug}`)
+                                  setIsOpen(false)
+                                }}
+                                className="w-full bg-slate-950 hover:bg-slate-800 text-white text-[10px] font-medium py-1 rounded cursor-pointer transition-colors text-center"
+                              >
+                                Details
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
