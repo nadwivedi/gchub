@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const heroImages = [
-  { id: 'hero-1', file: '/hero/hero-1.png', label: 'Hero Banner 1' },
-  { id: 'hero-2', file: '/hero/hero-2.png', label: 'Hero Banner 2' },
-  { id: 'hero-3', file: '/hero/hero-3.png', label: 'Hero Banner 3' },
+  { id: 'hero-1', file: '/hero/hero-1.avif', label: 'Hero Banner 1' },
+  { id: 'hero-2', file: '/hero/hero-2.avif', label: 'Hero Banner 2' },
+  { id: 'hero-3', file: '/hero/hero-3.avif', label: 'Hero Banner 3' },
 ];
 
 const demoHeroes = heroImages.map((img) => ({

@@ -12,7 +12,7 @@ const vouchers = [
     originalPrice: 10,
     brand: 'Google Play',
     category: 'gift-cards',
-    images: ['/products/google%20play.png'],
+    images: ['/products/google%20play.avif'],
     description: '₹10 Google Play Gift Card at just ₹9',
   },
   {
@@ -22,7 +22,7 @@ const vouchers = [
     originalPrice: 400,
     brand: 'Google Play',
     category: 'gift-cards',
-    images: ['/products/google%20play.png'],
+    images: ['/products/google%20play.avif'],
     description: '₹400 Google Play Gift Card at just ₹349',
   },
   {
@@ -32,7 +32,7 @@ const vouchers = [
     originalPrice: 520,
     brand: 'Google Play',
     category: 'gift-cards',
-    images: ['/products/google%20play.png'],
+    images: ['/products/google%20play.avif'],
     description: '₹520 Google Play Gift Card at just ₹400',
   },
   {
@@ -42,7 +42,7 @@ const vouchers = [
     originalPrice: 650,
     brand: 'Google Play',
     category: 'gift-cards',
-    images: ['/products/google%20play.png'],
+    images: ['/products/google%20play.avif'],
     description: '₹650 Google Play Gift Card at just ₹500',
     stockQuantity: 0,
   },
