@@ -9,6 +9,7 @@ const {
   isloggedin,
   handleGoogleAuth,
   updateMobileNumber,
+  updateProfile,
 } = require('../controllers/authController');
 
 // Public authentication routes
@@ -28,5 +29,8 @@ router.get('/me', isloggedin);
 
 // Update mobile number (for Google users without phone)
 router.put('/mobile', updateMobileNumber);
+
+// Update full profile (name, phone, bank payout details)
+router.put('/update-profile', updateProfile);
 
 module.exports = router;

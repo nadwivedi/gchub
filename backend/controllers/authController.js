@@ -504,6 +504,51 @@ const updateMobileNumber = async (req, res) => {
   }
 };
 
+// Update full profile (name, phone, bank details, UPI)
+const updateProfile = async (req, res) => {
+  try {
+    const token = req.cookies?.token;
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const allowedFields = [
+      'fullName', 'phone', 'bankAccountHolder', 'bankAccountNumber',
+      'bankName', 'ifscCode', 'upiId'
+    ];
+    const updates = {};
+    Object.keys(req.body).forEach((key) => {
+      if (allowedFields.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    });
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ success: false, message: 'No valid fields to update' });
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      decoded.userId,
+      updates,
+      { new: true, runValidators: false }
+    ).select('-password -resetOtp -otpExpiresAt');
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+  } catch (err) {
+    console.error('Update profile error:', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 module.exports = {
   handelUserSignup,
   handelUserLogin,
@@ -513,4 +558,5 @@ module.exports = {
   isloggedin,
   handleGoogleAuth,
   updateMobileNumber,
+  updateProfile,
 };

@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema({
     enum: ['male', 'female', 'other', 'prefer-not-to-say'],
   },
 
+  // Payout Information
+  bankAccountHolder: { type: String, trim: true },
+  bankAccountNumber: { type: String, trim: true },
+  bankName: { type: String, trim: true },
+  ifscCode: { type: String, trim: true },
+  upiId: { type: String, trim: true },
+
   // OAuth Information
   googleId: {
     type: String
