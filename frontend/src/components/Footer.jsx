@@ -13,12 +13,12 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
 
           {/* Brand Column */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-3 mb-4 group">
-              <img src="/gchublogo.png" alt="GCHUB" className="h-[150px] w-[150px] md:h-[210px] md:w-[210px] object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200" />
+            <Link to="/" className="flex items-center mb-2 group">
+              <img src="/gchublogo.png" alt="GCHUB" className="h-[70px] w-[140px] md:h-[90px] md:w-[180px] object-contain drop-shadow-lg group-hover:scale-102 transition-transform duration-200" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               India's trusted marketplace for gift cards & vouchers. Buy, sell and redeem digital vouchers from top brands at the best prices.
@@ -148,22 +148,22 @@ const Footer = () => {
           className="mt-8 pt-5 flex flex-col sm:flex-row justify-between items-center gap-3"
           style={{ borderTop: '1px solid rgba(234,179,8,0.15)' }}
         >
-          <p className="text-gray-500 text-xs">
+          <p className="text-gray-500 text-xs text-center sm:text-left">
             © {currentYear} <span style={{ color: '#eab308' }}>GCHub</span>. All rights reserved. Made in 🇮🇳 India.
           </p>
           <div className="flex items-center gap-4">
-            <a
-              href="/refund-policy"
+            <Link
+              to="/refund-policy"
               className="text-gray-500 hover:text-yellow-400 text-xs transition-colors duration-200"
             >
               Refund Policy
-            </a>
-            <a
-              href="/privacy-policy"
+            </Link>
+            <Link
+              to="/privacy-policy"
               className="text-gray-500 hover:text-yellow-400 text-xs transition-colors duration-200"
             >
               Privacy Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>
