@@ -151,7 +151,7 @@ export const games = {
     slug: 'san-andreas',
     img: '/games/gta%20san%20andreas.jpeg',
     imageUrl: '/games/gta%20san%20andreas.jpeg',
-    price: 299,
+    price: 1,
     originalPrice: 999,
     rating: 4.9,
     genre: 'Action, Adventure',

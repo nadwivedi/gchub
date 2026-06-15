@@ -2,6 +2,13 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+});
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -149,7 +156,9 @@ const createOrder = async (req, res) => {
       shippingAddress: finalShippingAddress,
       customerNotes: customerNotes || '',
       paymentMethod,
-      userId: userId || null
+      userId: userId || null,
+      status: paymentMethod === 'online' ? 'pending' : 'confirmed',
+      paymentStatus: 'pending'
     });
 
     const savedOrder = await newOrder.save();
@@ -165,13 +174,55 @@ const createOrder = async (req, res) => {
       }
     }
 
-    // Send confirmation email
-    try {
-      await sendOrderConfirmationEmail(savedOrder);
-    } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError);
-      // Don't fail the order creation if email fails
+    let razorpayOrder = null;
+    if (paymentMethod === 'online') {
+      const amountInPaise = Math.round(totalAmount * 100);
+      if (amountInPaise < 100) {
+        // Restore stock
+        for (const item of processedItems) {
+          if (item.productId.match(/^[0-9a-fA-F]{24}$/)) {
+            await Product.findByIdAndUpdate(
+              item.productId,
+              { $inc: { stockQuantity: item.quantity } }
+            );
+          }
+        }
+        await Order.findByIdAndDelete(savedOrder._id);
+        return res.status(400).json({
+          success: false,
+          message: 'Amount must be at least ₹1 (100 paise)'
+        });
+      }
+
+      try {
+        razorpayOrder = await razorpay.orders.create({
+          amount: amountInPaise,
+          currency: 'INR',
+          receipt: savedOrder._id.toString()
+        });
+        savedOrder.razorpayOrderId = razorpayOrder.id;
+        await savedOrder.save();
+      } catch (rzpErr) {
+        console.error('Razorpay order creation error:', rzpErr);
+        // Restore stock
+        for (const item of processedItems) {
+          if (item.productId.match(/^[0-9a-fA-F]{24}$/)) {
+            await Product.findByIdAndUpdate(
+              item.productId,
+              { $inc: { stockQuantity: item.quantity } }
+            );
+          }
+        }
+        await Order.findByIdAndDelete(savedOrder._id);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to initiate online payment with Razorpay',
+          error: rzpErr.message
+        });
+      }
     }
+
+
 
     res.status(201).json({
       success: true,
@@ -180,7 +231,9 @@ const createOrder = async (req, res) => {
         orderId: savedOrder._id,
         totalAmount: savedOrder.totalAmount,
         status: savedOrder.status,
-        estimatedDelivery: savedOrder.estimatedDelivery
+        estimatedDelivery: savedOrder.estimatedDelivery,
+        razorpayOrderId: razorpayOrder ? razorpayOrder.id : null,
+        razorpayKeyId: razorpayOrder ? process.env.RAZORPAY_KEY_ID : null
       }
     });
 
@@ -368,66 +421,64 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-// Send order confirmation email
-const sendOrderConfirmationEmail = async (order) => {
+
+
+// Verify payment signature
+const verifyPayment = async (req, res) => {
   try {
-    // Create transporter
-    const transporter = nodemailer.createTransporter({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !orderId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields for signature verification'
+      });
+    }
+
+    const generatedSignature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpay_order_id + '|' + razorpay_payment_id)
+      .digest('hex');
+
+    if (generatedSignature === razorpay_signature) {
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        });
       }
-    });
 
-    const itemsList = order.items.map(item => 
-      `• ${item.productName} (${item.productBrand}) - Quantity: ${item.quantity} - ₹${item.subtotal}`
-    ).join('\n');
+      order.paymentStatus = 'paid';
+      order.status = 'confirmed';
+      order.razorpayPaymentId = razorpay_payment_id;
+      order.razorpaySignature = razorpay_signature;
+      await order.save();
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: order.customerInfo.email,
-      subject: `Order Confirmation - ${order._id}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0891b2;">Order Confirmation</h2>
-          <p>Dear ${order.customerInfo.name},</p>
-          <p>Thank you for your order! We have received your order and it's being processed.</p>
-          
-          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #0891b2;">Order Details</h3>
-            <p><strong>Order ID:</strong> ${order._id}</p>
-            <p><strong>Order Date:</strong> ${order.orderDate.toLocaleDateString()}</p>
-            <p><strong>Estimated Delivery:</strong> ${order.estimatedDelivery.toLocaleDateString()}</p>
-          </div>
-          
-          <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3>Items Ordered:</h3>
-            <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${itemsList}</pre>
-            <hr style="margin: 15px 0;">
-            <p><strong>Total Amount: ₹${order.totalAmount}</strong></p>
-          </div>
-          
-          <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3>Shipping Address:</h3>
-            <p>${order.shippingAddress.fullAddress}</p>
-          </div>
-          
-          <p>We'll send you another email when your order ships with tracking information.</p>
-          <p>If you have any questions, please don't hesitate to contact us.</p>
-          
-          <p>Thank you for shopping with us!</p>
-          <p style="color: #6b7280;">Best regards,<br>Computer Store Team</p>
-        </div>
-      `
-    };
 
-    await transporter.sendMail(mailOptions);
-    console.log('Order confirmation email sent successfully');
-    
+
+      return res.json({
+        success: true,
+        message: 'Payment verified successfully'
+      });
+    } else {
+      const order = await Order.findById(orderId);
+      if (order) {
+        order.paymentStatus = 'failed';
+        await order.save();
+      }
+      return res.status(400).json({
+        success: false,
+        message: 'Payment verification failed: Signature mismatch'
+      });
+    }
   } catch (error) {
-    console.error('Error sending confirmation email:', error);
-    throw error;
+    console.error('Error verifying payment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to verify payment',
+      error: error.message
+    });
   }
 };
 
@@ -436,5 +487,6 @@ module.exports = {
   getOrder,
   getOrdersByEmail,
   updateOrderStatus,
-  getAllOrders
+  getAllOrders,
+  verifyPayment
 };

@@ -5,11 +5,13 @@ const {
   getOrder,
   getOrdersByEmail,
   updateOrderStatus,
-  getAllOrders
+  getAllOrders,
+  verifyPayment
 } = require('../controllers/orderController');
 
 // Public routes
 router.post('/', createOrder);                    // POST /api/orders - Create new order
+router.post('/verify-payment', verifyPayment);     // POST /api/orders/verify-payment - Verify payment signature
 router.get('/detail/:orderId', getOrder);         // GET /api/orders/detail/:orderId - Get order details by ID
 router.get('/customer/:email', getOrdersByEmail); // GET /api/orders/customer/:email - Get orders by customer email
 router.get('/:identifier', getOrder);             // GET /api/orders/:id - Get order by ID or order number

@@ -11,8 +11,9 @@ const Checkout = () => {
   const navigate = useNavigate()
 
   const [customerNotes, setCustomerNotes] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState('cod')
+  const [paymentMethod, setPaymentMethod] = useState('online')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasAutoSubmitted, setHasAutoSubmitted] = useState(false)
 
   const formatPrice = (price) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price)
@@ -51,20 +52,89 @@ const Checkout = () => {
 
       const result = await response.json()
 
-      if (result.success) {
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to place order')
+      }
+
+      if (paymentMethod === 'online') {
+        const options = {
+          key: result.data.razorpayKeyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount: Math.round(result.data.totalAmount * 100),
+          currency: 'INR',
+          name: 'GCHub',
+          description: 'Purchase of Digital Vouchers',
+          image: '/favicon.png',
+          order_id: result.data.razorpayOrderId,
+          handler: async function (response) {
+            try {
+              setIsSubmitting(true)
+              const verifyResponse = await fetch(`${BACKEND_URL}/api/orders/verify-payment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  orderId: result.data.orderId
+                })
+              })
+              const verifyResult = await verifyResponse.json()
+              if (verifyResult.success) {
+                toast.success('🎉 Payment successful! Order placed.')
+                clearCart()
+                navigate('/my-orders')
+              } else {
+                throw new Error(verifyResult.message || 'Payment verification failed')
+              }
+            } catch (verifyErr) {
+              console.error('Verification error:', verifyErr)
+              toast.error(verifyErr.message || 'Verification failed. Please contact support.')
+            } finally {
+              setIsSubmitting(false)
+            }
+          },
+          prefill: {
+            name: user?.fullName || '',
+            email: user?.email || '',
+            contact: user?.phone || '',
+            method: 'upi'
+          },
+          theme: {
+            color: '#f59e0b'
+          },
+          modal: {
+            ondismiss: function () {
+              toast.warning('Payment process was cancelled.')
+              setIsSubmitting(false)
+            }
+          }
+        }
+        const rzp = new window.Razorpay(options)
+        rzp.on('payment.failed', function (resp) {
+          toast.error(resp.error.description || 'Payment failed.')
+          setIsSubmitting(false)
+        })
+        rzp.open()
+      } else {
+        // Cash on Delivery success path
         toast.success('🎉 Order placed! Your voucher will be delivered soon.')
         clearCart()
         navigate('/my-orders')
-      } else {
-        throw new Error(result.message || 'Failed to place order')
       }
     } catch (error) {
       console.error('Error placing order:', error)
       toast.error(error.message || 'Failed to place order. Please try again.')
-    } finally {
       setIsSubmitting(false)
     }
   }
+
+  React.useEffect(() => {
+    if (items.length > 0 && !hasAutoSubmitted) {
+      setHasAutoSubmitted(true)
+      handlePlaceOrder()
+    }
+  }, [items, hasAutoSubmitted])
 
   if (items.length === 0) {
     return (
@@ -184,24 +254,18 @@ const Checkout = () => {
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-3">
+              <div className="flex items-center gap-2 mb-2">
                 <CreditCard className="w-4 h-4 text-slate-500" />
                 <h3 className="text-sm font-semibold text-slate-700">Payment Method</h3>
               </div>
-              <label className="flex items-center gap-3 p-3 border border-amber-300 bg-amber-50 rounded-xl cursor-pointer">
-                <input
-                  type="radio"
-                  value="cod"
-                  checked={paymentMethod === 'cod'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="accent-amber-500"
-                />
+              <div className="flex items-center gap-3 p-3 border border-amber-300 bg-amber-50/50 rounded-xl">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
                 <div>
-                  <p className="font-semibold text-slate-800 text-sm">Cash on Delivery</p>
-                  <p className="text-xs text-slate-500">Pay when you receive your voucher code</p>
+                  <p className="font-semibold text-slate-800 text-sm">Pay Online (Razorpay QR & UPI)</p>
+                  <p className="text-xs text-slate-500">Fast & secure digital delivery via UPI, QR code, or Cards</p>
                 </div>
-              </label>
+              </div>
             </div>
 
             {/* Place Order Button */}

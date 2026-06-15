@@ -1,20 +1,123 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { AppContext } from '../context/AppContext'
 import { Trash2, ShoppingBag, ArrowRight, Plus, Minus, Lock, Tag, Zap } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 const Cart = () => {
   const { items, loading, removeFromCart, updateQuantity, clearCart, getTotalPrice, getTotalItems } = useCart()
-  const { isAuthenticated } = useContext(AppContext)
+  const { isAuthenticated, BACKEND_URL, user } = useContext(AppContext)
   const navigate = useNavigate()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!isAuthenticated) {
       navigate('/login')
       return
     }
-    navigate('/checkout')
+
+    setIsSubmitting(true)
+    try {
+      const orderData = {
+        items: items.map(item => ({
+          productId: String(item._id || item.id),
+          name: item.name || item.seoTitle,
+          price: item.price,
+          originalPrice: item.originalPrice || item.price,
+          brand: item.brand || 'Digital',
+          imageUrl: item.imageUrl || (item.images && item.images[0]) || '',
+          quantity: item.quantity
+        })),
+        customerNotes: '',
+        paymentMethod: 'online',
+        userId: user._id,
+        // Digital product — no shipping address needed
+        shippingAddress: {
+          fullAddress: 'Digital Delivery',
+          city: 'Digital',
+          state: 'Digital',
+          pincode: '000000'
+        }
+      }
+
+      const response = await fetch(`${BACKEND_URL}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(orderData)
+      })
+
+      const result = await response.json()
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to initiate order')
+      }
+
+      const options = {
+        key: result.data.razorpayKeyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: Math.round(result.data.totalAmount * 100),
+        currency: 'INR',
+        name: 'GCHub',
+        description: 'Purchase of Digital Vouchers',
+        image: '/favicon.png',
+        order_id: result.data.razorpayOrderId,
+        handler: async function (response) {
+          try {
+            setIsSubmitting(true)
+            const verifyResponse = await fetch(`${BACKEND_URL}/api/orders/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: result.data.orderId
+              })
+            })
+            const verifyResult = await verifyResponse.json()
+            if (verifyResult.success) {
+              toast.success('🎉 Payment successful! Order placed.')
+              clearCart()
+              navigate('/my-orders')
+            } else {
+              throw new Error(verifyResult.message || 'Payment verification failed')
+            }
+          } catch (verifyErr) {
+            console.error('Verification error:', verifyErr)
+            toast.error(verifyErr.message || 'Verification failed. Please contact support.')
+          } finally {
+            setIsSubmitting(false)
+          }
+        },
+        prefill: {
+          name: user?.fullName || '',
+          email: user?.email || '',
+          contact: user?.phone || '',
+          method: 'upi'
+        },
+        theme: {
+          color: '#f59e0b'
+        },
+        modal: {
+          ondismiss: function () {
+            toast.warning('Payment process was cancelled.')
+            setIsSubmitting(false)
+          }
+        }
+      }
+      const rzp = new window.Razorpay(options)
+      rzp.on('payment.failed', function (resp) {
+        toast.error(resp.error.description || 'Payment failed.')
+        setIsSubmitting(false)
+      })
+      rzp.open()
+    } catch (error) {
+      console.error('Error placing order:', error)
+      toast.error(error.message || 'Failed to place order. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   const formatPrice = (price) =>
@@ -235,9 +338,15 @@ const Cart = () => {
 
               <button
                 onClick={handleCheckout}
-                className="w-full mt-5 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-bold py-3.5 px-4 rounded-xl hover:shadow-lg hover:shadow-amber-300/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-sm"
+                disabled={isSubmitting}
+                className="w-full mt-5 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-bold py-3.5 px-4 rounded-xl hover:shadow-lg hover:shadow-amber-300/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {!isAuthenticated ? (
+                {isSubmitting ? (
+                  <>
+                    <span className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+                    Opening QR Code...
+                  </>
+                ) : !isAuthenticated ? (
                   <>Login to Checkout <ArrowRight className="w-4 h-4" /></>
                 ) : (
                   <>Proceed to Checkout <ArrowRight className="w-4 h-4" /></>
