@@ -73,8 +73,8 @@ const Contact = () => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Email</p>
-                    <a href="mailto:support@vouchercash.online" className="text-sm font-semibold text-gray-900 hover:text-yellow-600 transition-colors truncate block">
-                      support@vouchercash.online
+                    <a href="mailto:support@gchub.in" className="text-sm font-semibold text-gray-900 hover:text-yellow-600 transition-colors truncate block">
+                      support@gchub.in
                     </a>
                   </div>
                 </div>
