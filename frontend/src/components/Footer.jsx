@@ -18,11 +18,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-4 group">
-              <img src="/gchublogo.png" alt="GCHUB" className="h-12 w-12 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200" />
-              <span className="text-xl font-extrabold tracking-tight leading-none">
-                <span style={{ color: '#eab308' }}>Voucher</span>
-                <span className="text-gray-100"> Cash</span>
-              </span>
+              <img src="/gchublogo.png" alt="GCHUB" className="h-[150px] w-[150px] md:h-[210px] md:w-[210px] object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               India's trusted marketplace for gift cards & vouchers. Buy, sell and redeem digital vouchers from top brands at the best prices.
@@ -153,7 +149,7 @@ const Footer = () => {
           style={{ borderTop: '1px solid rgba(234,179,8,0.15)' }}
         >
           <p className="text-gray-500 text-xs">
-            © {currentYear} <span style={{ color: '#eab308' }}>Voucher Cash</span>. All rights reserved. Made in 🇮🇳 India.
+            © {currentYear} <span style={{ color: '#eab308' }}>GCHub</span>. All rights reserved. Made in 🇮🇳 India.
           </p>
           <div className="flex items-center gap-4">
             <a
@@ -161,6 +157,12 @@ const Footer = () => {
               className="text-gray-500 hover:text-yellow-400 text-xs transition-colors duration-200"
             >
               Refund Policy
+            </a>
+            <a
+              href="/privacy-policy"
+              className="text-gray-500 hover:text-yellow-400 text-xs transition-colors duration-200"
+            >
+              Privacy Policy
             </a>
           </div>
         </div>

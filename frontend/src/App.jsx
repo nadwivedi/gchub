@@ -40,6 +40,7 @@ import GameDetail from './pages/game/GameDetail'
 import GamesPage from './pages/game/GamesPage'
 import GiftCardsPage from './pages/gift-cards/GiftCardsPage'
 import RefundPolicy from './pages/RefundPolicy'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 import PayoutDetails from './pages/PayoutDetails'
 
 const ScrollToTop = () => {
@@ -161,6 +162,7 @@ const AppContent = () => {
         <Route path="/gift-cards/bigbasket" element={<GiftCardBigBasket />} />
         <Route path="/games/:slug" element={<GameDetail />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
       {showMobileNav && <Footer />}
       {showMobileNav && <MobileBottomNav />}
