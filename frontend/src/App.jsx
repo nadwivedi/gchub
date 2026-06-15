@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react'
-import { Agentation } from 'agentation'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { Phone } from 'lucide-react'
 import { ToastContainer, toast } from 'react-toastify'
@@ -173,7 +172,6 @@ const App = () => {
       <AppContextProvider>
         <CartProvider>
           <AppContent />
-          {process.env.NODE_ENV === "development" && <Agentation />}
         </CartProvider>
       </AppContextProvider>
     </Router>

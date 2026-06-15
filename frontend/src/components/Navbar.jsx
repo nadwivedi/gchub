@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { AppContext } from '../context/AppContext'
 
@@ -12,6 +12,7 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useContext(AppContext) || {}
   const dropdownRef = useRef(null)
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -37,12 +38,25 @@ const Navbar = () => {
     <nav className="bg-gray-100 shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-[70px] md:h-[90px]">
+          {/* Mobile Back Button */}
+          {location.pathname !== '/' && (
+            <button
+              onClick={() => navigate(-1)}
+              className="md:hidden p-2 text-gray-700 hover:text-blue-600 cursor-pointer"
+              aria-label="Back"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
           {/* Logo Section */}
-          <Link to="/" className="flex items-center flex-shrink-0">
+          <Link to="/" className="flex items-center flex-shrink-0 mx-auto md:mx-0">
             <img
-              src="/vouchercashlogo2.png"
-              alt="Voucher Cash Logo"
-              className="h-[202px] w-[202px] md:h-[246px] md:w-[246px] object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200"
+              src="/gchublogo.png"
+              alt="GCHUB Logo"
+              className="h-[175px] w-[175px] md:h-[246px] md:w-[246px] object-contain drop-shadow-lg transition-transform duration-200"
             />
           </Link>
 
@@ -184,8 +198,8 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile Buttons */}
-            <div className="md:hidden flex items-center gap-1">
+            {/* Mobile Search Button */}
+            <div className="md:hidden flex items-center">
               <button
                 onClick={() => navigate('/search')}
                 className="text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors duration-200 cursor-pointer"
@@ -195,18 +209,6 @@ const Navbar = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
-              <Link
-                to="/cart"
-                className="relative text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors duration-200"
-                aria-label="Cart"
-              >
-                <img src="/cart.avif" alt="Cart" className="h-5 w-5 md:h-6 md:w-6 object-contain" />
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center shadow">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </Link>
             </div>
           </div>
         </div>

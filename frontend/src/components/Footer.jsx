@@ -18,7 +18,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-4 group">
-              <img src="/vouchercashlogo.png" alt="Voucher Cash" className="h-12 w-12 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200" />
+              <img src="/gchublogo.png" alt="GCHUB" className="h-12 w-12 object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-200" />
               <span className="text-xl font-extrabold tracking-tight leading-none">
                 <span style={{ color: '#eab308' }}>Voucher</span>
                 <span className="text-gray-100"> Cash</span>

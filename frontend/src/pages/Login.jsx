@@ -149,7 +149,7 @@ const Login = () => {
         <div className='bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-6 border border-white/20'>
           <div className='text-center mb-6'>
             <Link to='/' className='inline-block'>
-              <img src='/vouchercashlogo2.png' alt='Voucher Cash' className='h-20 w-auto mx-auto object-contain' />
+              <img src='/gchublogo.png' alt='GCHUB' className='h-20 w-auto mx-auto object-contain' />
             </Link>
             {forgotStep === 0 ? (
               <>

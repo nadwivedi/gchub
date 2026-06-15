@@ -13,33 +13,11 @@ const MobileBottomNav = () => {
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
 
-      {/* Floating Sell Card button — 35% above the bar */}
-      <div className="absolute left-1/2 -translate-x-1/2 -top-[17px] flex flex-col items-center z-10">
-        <Link to="/sell-voucher" className="flex flex-col items-center gap-1.5">
-          <span
-            className="flex items-center justify-center w-11 h-11 rounded-full active:scale-95 transition-transform duration-150"
-            style={{
-              background: 'linear-gradient(135deg, #eab308 0%, #f59e0b 55%, #d97706 100%)',
-              boxShadow: '0 4px 16px rgba(234,179,8,0.55), 0 2px 6px rgba(0,0,0,0.18)',
-              border: '3px solid white',
-            }}
-          >
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="black" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round"
-                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-          </span>
-          <span className="text-[9px] font-bold leading-none" style={{ color: '#92400e' }}>
-            Sell Card
-          </span>
-        </Link>
-      </div>
-
       {/* Nav Bar */}
       <div
         className="flex items-center justify-around px-6"
         style={{
-          height: 52,
+          height: 54,
           background: 'rgba(255,255,255,0.98)',
           boxShadow: '0 -1px 0 rgba(0,0,0,0.07), 0 -6px 24px rgba(0,0,0,0.09)',
           borderTop: '1.5px solid rgba(234,179,8,0.28)',
@@ -69,8 +47,51 @@ const MobileBottomNav = () => {
           )}
         </Link>
 
-        {/* CENTER SPACER */}
-        <div style={{ minWidth: 64 }} />
+        {/* SELL CARD */}
+        <Link to="/sell-voucher" className="flex flex-col items-center gap-0 relative" style={{ minWidth: 56 }}>
+          <span
+            className="flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200"
+            style={{
+              background: isActive('/sell-voucher') ? 'rgba(234,179,8,0.15)' : 'transparent',
+              color: isActive('/sell-voucher') ? '#b45309' : '#6b7280',
+            }}
+          >
+            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+          </span>
+          <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/sell-voucher') ? '#b45309' : '#9ca3af' }}>
+            Sell Card
+          </span>
+          {isActive('/sell-voucher') && (
+            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
+          )}
+        </Link>
+
+        {/* CART */}
+        <Link to="/cart" className="flex flex-col items-center gap-0 relative" style={{ minWidth: 56 }}>
+          <span
+            className="flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200"
+            style={{
+              background: isActive('/cart') ? 'rgba(234,179,8,0.15)' : 'transparent',
+              color: isActive('/cart') ? '#b45309' : '#6b7280',
+            }}
+          >
+            <img src="/cart.avif" alt="Cart" className="w-[18px] h-[18px] object-contain" />
+          </span>
+          <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/cart') ? '#b45309' : '#9ca3af' }}>
+            Cart
+          </span>
+          {getTotalItems() > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow">
+              {getTotalItems()}
+            </span>
+          )}
+          {isActive('/cart') && (
+            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
+          )}
+        </Link>
 
         {/* ACCOUNT / LOGIN */}
         <Link to={isAuthenticated ? '/account' : '/login'} className="flex flex-col items-center gap-0 relative" style={{ minWidth: 56 }}>
