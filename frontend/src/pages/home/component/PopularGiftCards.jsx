@@ -27,19 +27,19 @@ const PopularGiftCards = () => {
             </svg>
           </button>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2">
           {products.map((product) => (
             <Link
               key={product.name}
               to={product.link}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 group flex flex-col items-center p-1"
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200 group flex flex-col items-center p-0.5"
             >
               <img
                 src={product.file}
                 alt={product.name}
-                className="h-24 w-24 sm:h-36 sm:w-36 object-contain"
+                className="h-28 w-28 sm:h-44 sm:w-44 object-contain"
               />
-              <span className="w-full py-0.5 bg-gray-800 text-white text-[10px] font-medium rounded hover:bg-gray-700 transition-colors duration-200 text-center">
+              <span className="w-full py-0.5 sm:py-1.5 bg-gray-800 text-white text-[9px] sm:text-xs font-medium rounded hover:bg-gray-700 transition-colors duration-200 text-center">
                 Shop Now
               </span>
             </Link>
