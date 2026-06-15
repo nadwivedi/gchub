@@ -39,8 +39,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-[70px] md:h-[90px] relative">
           {/* Mobile Back Button */}
-          <div className="md:hidden flex items-center w-10">
-            {location.pathname !== '/' && (
+          {location.pathname !== '/' && (
+            <div className="md:hidden flex items-center w-10">
               <button
                 onClick={() => navigate(-1)}
                 className="p-2 text-gray-700 hover:text-blue-600 cursor-pointer"
@@ -50,11 +50,11 @@ const Navbar = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Logo Section - perfectly centered on mobile */}
-          <Link to="/" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center flex-shrink-0">
+          {/* Logo Section - left on home, centered on other pages (mobile) */}
+          <Link to="/" className={`${location.pathname === '/' ? 'left-0' : 'left-1/2 -translate-x-1/2'} absolute md:static md:translate-x-0 flex items-center flex-shrink-0`}>
             <img
               src="/gchublogo.png"
               alt="GCHUB Logo"
