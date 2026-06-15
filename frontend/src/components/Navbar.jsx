@@ -37,22 +37,24 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-100 shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-[70px] md:h-[90px]">
+        <div className="flex items-center h-[70px] md:h-[90px] relative">
           {/* Mobile Back Button */}
-          {location.pathname !== '/' && (
-            <button
-              onClick={() => navigate(-1)}
-              className="md:hidden p-2 text-gray-700 hover:text-blue-600 cursor-pointer"
-              aria-label="Back"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
+          <div className="md:hidden flex items-center w-10">
+            {location.pathname !== '/' && (
+              <button
+                onClick={() => navigate(-1)}
+                className="p-2 text-gray-700 hover:text-blue-600 cursor-pointer"
+                aria-label="Back"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+          </div>
 
-          {/* Logo Section */}
-          <Link to="/" className="flex items-center flex-shrink-0 mx-auto md:mx-0">
+          {/* Logo Section - perfectly centered on mobile */}
+          <Link to="/" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center flex-shrink-0">
             <img
               src="/gchublogo.png"
               alt="GCHUB Logo"
