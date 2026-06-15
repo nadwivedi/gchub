@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://gchub.in'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://gchub.in', 'https://api.gchub.in'],
   credentials: true,
 }))
 app.use(cookieParser());
