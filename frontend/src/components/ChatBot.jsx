@@ -286,10 +286,15 @@ const ChatBot = () => {
         )}
       </button>
 
+      {/* Chat backdrop (mobile) */}
+      {isOpen && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:hidden" onClick={() => setIsOpen(false)} />
+      )}
+
       {/* Chat window */}
       {isOpen && (
-        <div className="fixed bottom-36 right-4 md:bottom-28 md:right-8 z-[60] w-[calc(100vw-2rem)] max-w-sm shadow-2xl rounded-2xl overflow-hidden flex flex-col bg-white"
-          style={{ height: '480px' }}
+        <div className="fixed inset-0 md:bottom-28 md:right-8 md:inset-auto z-[60] w-full md:w-[calc(100vw-2rem)] md:max-w-sm shadow-2xl md:rounded-2xl overflow-hidden flex flex-col bg-white"
+          style={{ height: '100%', maxHeight: '100vh' }}
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-4 py-3 flex items-center justify-between shrink-0">
