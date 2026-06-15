@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X, Upload, Clock, Banknote } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { AppContext } from '../context/AppContext'
@@ -15,7 +15,8 @@ const brands = [
 ]
 
 const SellVoucher = () => {
-  const { BACKEND_URL } = useContext(AppContext)
+  const { BACKEND_URL, isAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
@@ -44,6 +45,11 @@ const SellVoucher = () => {
   }
 
   const handleAdd = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to publish a listing')
+      navigate('/login')
+      return
+    }
     if (!form.brand || !form.balance || !form.code || !form.expiry) {
       toast.error('Please fill all fields')
       return
