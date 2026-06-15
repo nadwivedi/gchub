@@ -42,9 +42,6 @@ const MobileBottomNav = () => {
           <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/') ? '#b45309' : '#9ca3af' }}>
             Home
           </span>
-          {isActive('/') && (
-            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
-          )}
         </Link>
 
         {/* SELL CARD */}
@@ -64,9 +61,6 @@ const MobileBottomNav = () => {
           <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/sell-voucher') ? '#b45309' : '#9ca3af' }}>
             Sell Card
           </span>
-          {isActive('/sell-voucher') && (
-            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
-          )}
         </Link>
 
         {/* CART */}
@@ -88,9 +82,6 @@ const MobileBottomNav = () => {
               {getTotalItems()}
             </span>
           )}
-          {isActive('/cart') && (
-            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
-          )}
         </Link>
 
         {/* ACCOUNT / LOGIN */}
@@ -110,9 +101,6 @@ const MobileBottomNav = () => {
           <span className="text-[9px] font-semibold leading-none" style={{ color: isActive('/account') || isActive('/login') ? '#b45309' : '#9ca3af' }}>
             {isAuthenticated ? 'Account' : 'Login'}
           </span>
-          {(isActive('/account') || isActive('/login')) && (
-            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: '#eab308' }} />
-          )}
         </Link>
       </div>
     </div>

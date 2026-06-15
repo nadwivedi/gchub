@@ -278,7 +278,7 @@ const ChatBot = () => {
           <X className="w-6 h-6 text-black" />
         ) : (
           <>
-            <MessageCircle className="w-6 h-6 text-black" />
+            <MessageCircle className="w-[22px] h-[22px] md:w-6 md:h-6 text-black" />
             {hasNewMessage && (
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white" />
             )}
