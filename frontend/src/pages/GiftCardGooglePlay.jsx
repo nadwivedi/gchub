@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
+import { useSEO } from '../hooks/useSEO'
 
 const vouchers = [
   {
@@ -65,6 +66,33 @@ const GiftCardGooglePlay = () => {
   const { addToCart } = useCart()
   const { isAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
+
+  useSEO({
+    title: 'Google Play Gift Cards | Buy Online & Save | GCHub',
+    description: 'Get Google Play gift card codes instantly. Save up to 20% on Google Play vouchers with instant digital delivery via email on GCHub.',
+    keywords: 'buy google play gift card, google play voucher, cheap google play codes, google play redeem codes, GCHub',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Google Play Gift Cards on GCHub",
+      "numberOfItems": vouchers.length,
+      "itemListElement": vouchers.map((v, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "Product",
+          "name": v.name,
+          "description": v.description,
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "price": v.price,
+            "availability": v.stockQuantity === 0 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"
+          }
+        }
+      }))
+    }
+  })
 
   const handleAddToCart = (voucher) => {
     if (voucher.stockQuantity <= 0) {

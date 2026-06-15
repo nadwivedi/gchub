@@ -1,7 +1,14 @@
 import React from 'react'
 import { ShieldAlert, RotateCcw, Clock, AlertTriangle, FileText, Mail } from 'lucide-react'
+import { useSEO } from '../hooks/useSEO'
 
 const RefundPolicy = () => {
+  useSEO({
+    title: 'Refund Policy | GCHub Gift Cards & Game Vouchers',
+    description: 'Read the GCHub Refund Policy. Learn about conditions under which refunds, exchanges, or returns for digital gift cards and game keys may be processed.',
+    keywords: 'GCHub refund policy, digital voucher returns, game key refunds, gift card returns policy'
+  })
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 sm:py-16">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { AppContext } from '../context/AppContext'
+import { useSEO } from '../hooks/useSEO'
 
 const brands = [
   'Google Play',
@@ -19,6 +20,18 @@ const SellVoucher = () => {
   const navigate = useNavigate()
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(false)
+
+  useSEO({
+    title: 'Sell Gift Cards Online | Instant Cash Out | GCHub',
+    description: 'Sell your unused gift cards and digital vouchers instantly. List cards from Google Play, Amazon, Steam, and more to receive fast payouts directly to your bank account.',
+    keywords: 'sell gift cards, sell vouchers online, gift card cash out, instant cash for gift cards, flipkart voucher cashout, GCHub',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Sell Gift Cards | GCHub",
+      "description": "Sell your unused gift cards and digital vouchers instantly on GCHub. Get paid directly to your bank account."
+    }
+  })
   const [form, setForm] = useState({
     brand: '',
     balance: '',

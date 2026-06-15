@@ -6,10 +6,28 @@ import PopularGiftCards from './component/PopularGiftCards'
 import { useCart } from '../../context/CartContext'
 import { toast } from 'react-toastify'
 import { games, bundleGameSlugs } from '../../data/games'
+import { useSEO } from '../../hooks/useSEO'
 
 const Home = () => {
   const navigate = useNavigate()
   const { addToCart } = useCart()
+
+  useSEO({
+    title: 'GCHub | Buy & Sell Gift Cards, Vouchers & Games',
+    description: 'Welcome to GCHub. The premier platform to buy and sell gift cards, game keys, and digital vouchers instantly. Find the best rates and instant payout options.',
+    keywords: 'buy gift cards, sell gift cards, game vouchers, gift card exchange, GCHub',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "GCHub",
+      "url": "https://gchub.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://gchub.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  })
 
   const bundleGameImages = bundleGameSlugs.map((slug) => games[slug]?.img).filter(Boolean)
 

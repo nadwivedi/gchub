@@ -3,11 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 
 const products = [
   { name: 'Google Play', file: '/products/google%20play.avif', link: '/gift-cards/google-play' },
-  { name: 'Amazon', file: '/products/amazon.avif', link: '/search?q=Amazon' },
-  { name: 'BigBasket', file: '/products/bigbasket.avif', link: '/search?q=BigBasket' },
-  { name: 'Flipkart', file: '/products/flipkart.avif', link: '/search?q=Flipkart' },
-  { name: 'Steam', file: '/products/steam.avif', link: '/search?q=Steam' },
-  { name: 'Myntra', file: '/products/myntra.avif', link: '/search?q=Myntra' },
+  { name: 'Amazon', file: '/products/amazon.avif', link: '/gift-cards/amazon' },
+  { name: 'BigBasket', file: '/products/bigbasket.avif', link: '/gift-cards/bigbasket' },
+  { name: 'Flipkart', file: '/products/flipkart.avif', link: '/gift-cards/flipkart' },
+  { name: 'Steam', file: '/products/steam.avif', link: '/gift-cards/steam' },
+  { name: 'Myntra', file: '/products/myntra.avif', link: '/gift-cards/myntra' },
 ]
 
 const PopularGiftCards = () => {

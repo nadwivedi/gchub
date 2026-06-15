@@ -5,6 +5,7 @@ import { AppContext } from '../../context/AppContext'
 import { toast } from 'react-toastify'
 import { games, bundleGamesList } from '../../data/games'
 import { Sparkles } from 'lucide-react'
+import { useSEO } from '../../hooks/useSEO'
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('en-IN', {
@@ -29,6 +30,29 @@ const GameDetail = () => {
   const { isAuthenticated } = useContext(AppContext)
 
   const game = games[slug]
+
+  useSEO({
+    title: game ? `${game.fullName} | Buy AAA Games | GCHub` : 'Loading Game... | GCHub',
+    description: game ? game.description?.substring(0, 160) : 'Buy popular AAA games at cheap prices on GCHub.',
+    keywords: game ? `${game.name}, buy ${game.name}, cheap ${game.name}, pc games, gchub` : 'pc games, buy games, gchub',
+    ogImage: game ? game.img : null,
+    structuredData: game ? {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": game.fullName,
+      "image": game.img,
+      "description": game.description,
+      "applicationCategory": "GameApplication",
+      "operatingSystem": game.platform || "PC",
+      "offers": {
+        "@type": "Offer",
+        "url": window.location.href,
+        "priceCurrency": "INR",
+        "price": game.price,
+        "availability": "https://schema.org/InStock"
+      }
+    } : null
+  })
 
   if (!game) {
     return (

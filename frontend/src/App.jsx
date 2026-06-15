@@ -31,6 +31,11 @@ import BlogDetailPage from './pages/blog/BlogDetailPage'
 import SellVoucher from './pages/SellVoucher'
 import MySales from './pages/MySales'
 import GiftCardGooglePlay from './pages/GiftCardGooglePlay'
+import GiftCardAmazon from './pages/GiftCardAmazon'
+import GiftCardFlipkart from './pages/GiftCardFlipkart'
+import GiftCardSteam from './pages/GiftCardSteam'
+import GiftCardMyntra from './pages/GiftCardMyntra'
+import GiftCardBigBasket from './pages/GiftCardBigBasket'
 import GameDetail from './pages/game/GameDetail'
 import GamesPage from './pages/game/GamesPage'
 import GiftCardsPage from './pages/gift-cards/GiftCardsPage'
@@ -141,9 +146,19 @@ const AppContent = () => {
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/gift-card/google-play" element={<GiftCardGooglePlay />} />
+        <Route path="/gift-card/amazon" element={<GiftCardAmazon />} />
+        <Route path="/gift-card/flipkart" element={<GiftCardFlipkart />} />
+        <Route path="/gift-card/steam" element={<GiftCardSteam />} />
+        <Route path="/gift-card/myntra" element={<GiftCardMyntra />} />
+        <Route path="/gift-card/bigbasket" element={<GiftCardBigBasket />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/gift-cards" element={<GiftCardsPage />} />
         <Route path="/gift-cards/google-play" element={<GiftCardGooglePlay />} />
+        <Route path="/gift-cards/amazon" element={<GiftCardAmazon />} />
+        <Route path="/gift-cards/flipkart" element={<GiftCardFlipkart />} />
+        <Route path="/gift-cards/steam" element={<GiftCardSteam />} />
+        <Route path="/gift-cards/myntra" element={<GiftCardMyntra />} />
+        <Route path="/gift-cards/bigbasket" element={<GiftCardBigBasket />} />
         <Route path="/games/:slug" element={<GameDetail />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
       </Routes>

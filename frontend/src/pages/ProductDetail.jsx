@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useSEO } from '../hooks/useSEO'
 
 const ProductDetail = () => {
   const { id } = useParams()
@@ -8,6 +9,31 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
+
+  useSEO({
+    title: product ? `${product.seoTitle || product.name} | GCHub` : 'Loading Product... | GCHub',
+    description: product ? product.description?.substring(0, 160) : 'Buy gift cards and vouchers online at GCHub.',
+    keywords: product ? `${product.brand}, ${product.name}, buy ${product.name}, gift card, GCHub` : 'gift card, GCHub',
+    ogImage: product && product.images && product.images[0] ? product.images[0] : null,
+    structuredData: product ? {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": product.name,
+      "image": product.images || [],
+      "description": product.description,
+      "brand": {
+        "@type": "Brand",
+        "name": product.brand
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": window.location.href,
+        "priceCurrency": "INR",
+        "price": product.price,
+        "availability": product.stockQuantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+      }
+    } : null
+  })
 
   const API_BASE_URL = 'http://localhost:5000'
 

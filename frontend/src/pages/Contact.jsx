@@ -2,8 +2,15 @@ import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Zap } from 'lucide-react'
+import { useSEO } from '../hooks/useSEO'
 
 const Contact = () => {
+  useSEO({
+    title: 'Contact GCHub Support | Get Assistance Instantly',
+    description: 'Contact GCHub support team for assistance with gift card sales, voucher payouts, game key purchases, or other inquiries.',
+    keywords: 'contact GCHub, gift card support, GCHub customer care, support email, vouchercash support'
+  })
+
   const { isAuthenticated } = useContext(AppContext) || {}
   const [formData, setFormData] = useState({
     name: '',

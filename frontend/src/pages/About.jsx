@@ -1,7 +1,14 @@
 import React from 'react'
 import { Gift, Gamepad2, Banknote, ShieldCheck, Zap, Users, ArrowRightLeft, BadgePercent } from 'lucide-react'
+import { useSEO } from '../hooks/useSEO'
 
 const About = () => {
+  useSEO({
+    title: 'About GCHub | India\'s Trusted Gift Card & Voucher Marketplace',
+    description: 'Learn about GCHub, India\'s premier peer-to-peer gift card marketplace. Sell unused vouchers for cash and buy gift cards & games at discounts.',
+    keywords: 'about GCHub, how to sell gift cards, buy cheap games, gift card marketplace india'
+  })
+
   const stats = [
     { label: 'Active Users', value: '10K+' },
     { label: 'Vouchers Sold', value: '50K+' },
