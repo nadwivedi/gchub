@@ -7,6 +7,7 @@ import { AppContext } from '../context/AppContext'
 const Navbar = () => {
   // State Management
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { getTotalItems } = useCart()
   const { isAuthenticated, user, logout } = useContext(AppContext) || {}
@@ -203,8 +204,8 @@ const Navbar = () => {
             {/* Mobile Search Button */}
             <div className="md:hidden flex items-center">
               <button
-                onClick={() => navigate('/search')}
-                className="text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors duration-200 cursor-pointer"
+                onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                className={`p-2 rounded-md transition-colors duration-200 cursor-pointer ${mobileSearchOpen ? 'text-blue-600 bg-gray-200' : 'text-gray-700 hover:text-blue-600'}`}
                 aria-label="Search"
               >
                 <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,6 +216,32 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Bar Dropdown */}
+      {mobileSearchOpen && (
+        <div className="md:hidden px-4 pb-4 pt-1 border-t border-gray-200 bg-gray-100 animate-fadeIn">
+          <form onSubmit={(e) => { handleSearch(e); setMobileSearchOpen(false); }} className="flex items-center w-full">
+            <div className="relative w-full">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                autoFocus
+                className="w-full pl-5 pr-12 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 bg-white transition-colors shadow-sm"
+              />
+              <button
+                type="submit"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 bg-yellow-500 text-gray-900 rounded-full hover:bg-yellow-400 transition-colors cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </nav>
   )
 }
