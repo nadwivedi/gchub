@@ -40,6 +40,11 @@ app.use(express.urlencoded({ extended: true }));
 // Static file serving for uploaded images
 app.use('/uploads', express.static('uploads'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'GCHub API is working fine' });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -56,10 +61,7 @@ app.use('/api/shop-categories', shopCategoryRoutes);
 app.use('/api/gift-cards', giftCardRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({ message: 'GCHub API is working fine' });
-});
+
 
 // Connect to MongoDB and start server
 const startServer = async () => {
