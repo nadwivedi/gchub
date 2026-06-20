@@ -58,7 +58,7 @@ app.use('/api/chatbot', chatbotRoutes);
 
 // Root route
 app.get('/', (req, res) => {
-  res.json({ message: 'Computer Store API Server' });
+  res.json({ message: 'GCHub API is working fine' });
 });
 
 // Connect to MongoDB and start server
