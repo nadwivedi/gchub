@@ -19,7 +19,10 @@ const giftCardRoutes = require('./routes/giftCardRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
+
+console.log('port is ', PORT);
+
 
 // Middleware
 app.use(cors({
