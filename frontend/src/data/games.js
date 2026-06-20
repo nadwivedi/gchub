@@ -325,7 +325,7 @@ export const games = {
     slug: 'bundle-all-11',
     img: null,
     imageUrl: '/placeholder-image.jpg',
-    price: 999,
+    price: 799,
     originalPrice: 6300,
     isBundle: true,
     genre: 'Bundle',

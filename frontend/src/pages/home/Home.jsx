@@ -62,7 +62,7 @@ const Home = () => {
               { _id: 'cyberpunk', name: 'Cyberpunk', slug: 'cyberpunk', img: '/games/cyberpunk%202077.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/cyberpunk%202077.jpeg' },
               { _id: 'the-last-of-us-2', name: 'The Last of Us 2', slug: 'the-last-of-us-2', img: '/games/the%20last%20of%20us%202.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/the%20last%20of%20us%202.jpeg' },
               { _id: 'resident-evil-4', name: 'Resident Evil 4', slug: 'resident-evil-4', img: '/games/resident%20evil%204.jpeg', price: 359, originalPrice: 1200, imageUrl: '/games/resident%20evil%204.jpeg' },
-              { _id: 'bundle-all-11', name: 'Top 6 Bundle', fullName: 'Top 6 AAA Game Bundle', slug: 'bundle-all-11', price: 999, originalPrice: 6300, isBundle: true },
+              { _id: 'bundle-all-11', name: 'Top 6 Bundle', fullName: 'Top 6 AAA Game Bundle', slug: 'bundle-all-11', price: 799, originalPrice: 6300, isBundle: true },
             ].map((game) => {
               const isBundle = game.isBundle
               return (
