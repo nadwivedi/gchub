@@ -9,6 +9,8 @@ const vouchers = [
   { _id: 'flipkart-100', name: 'Flipkart Gift Card - ₹100', price: 89, originalPrice: 100, brand: 'Flipkart', category: 'gift-cards', images: ['/products/flipkart.avif'], description: '₹100 Flipkart Gift Card at just ₹89', stockQuantity: 0 },
   { _id: 'flipkart-500', name: 'Flipkart Gift Card - ₹500', price: 440, originalPrice: 500, brand: 'Flipkart', category: 'gift-cards', images: ['/products/flipkart.avif'], description: '₹500 Flipkart Gift Card at just ₹440', stockQuantity: 0 },
   { _id: 'flipkart-1000', name: 'Flipkart Gift Card - ₹1000', price: 875, originalPrice: 1000, brand: 'Flipkart', category: 'gift-cards', images: ['/products/flipkart.avif'], description: '₹1000 Flipkart Gift Card at just ₹875', stockQuantity: 0 },
+  { _id: 'flipkart-200', name: 'Flipkart Gift Card - ₹200', price: 178, originalPrice: 200, brand: 'Flipkart', category: 'gift-cards', images: ['/products/flipkart.avif'], description: '₹200 Flipkart Gift Card at just ₹178', stockQuantity: 0 },
+  { _id: 'flipkart-2000', name: 'Flipkart Gift Card - ₹2000', price: 1750, originalPrice: 2000, brand: 'Flipkart', category: 'gift-cards', images: ['/products/flipkart.avif'], description: '₹2000 Flipkart Gift Card at just ₹1750', stockQuantity: 0 },
 ]
 
 const formatPrice = (price) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price)
@@ -40,7 +42,7 @@ const GiftCardFlipkart = () => {
           <p className="text-base sm:text-base text-slate-500 max-w-2xl mx-auto">Get Flipkart codes at the best prices. Instant delivery via email.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
           {vouchers.map((voucher) => {
             const discountPercent = calculateDiscount(voucher.originalPrice, voucher.price)
             const savings = voucher.originalPrice - voucher.price
@@ -53,13 +55,13 @@ const GiftCardFlipkart = () => {
                   </div>
                 )}
 
-                <div className="aspect-[1.6/1] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
+                <div className="aspect-[6/5] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
                   <img src={voucher.images?.[0]} alt={voucher.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className={`absolute inset-0 bg-gradient-to-t ${voucher.stockQuantity === 0 ? 'from-slate-900/80 via-slate-900/20' : 'from-black/40 via-transparent'} to-transparent`}></div>
                   
                   {voucher.stockQuantity === 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center backdrop-blur-[2px]">
-                      <div className="bg-slate-900/80 text-white px-4 py-2 rounded-lg font-bold tracking-wider uppercase shadow-xl transform border border-slate-700">Out of Stock</div>
+                      <div className="bg-slate-900/80 text-white px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider uppercase shadow-xl transform border border-slate-700">Out of Stock</div>
                     </div>
                   ) : (
                     <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 shadow-sm flex items-center gap-1.5">
