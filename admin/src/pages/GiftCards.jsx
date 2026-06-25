@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Gift, Trash2, Plus, DollarSign, Hash, Calendar, Lock, Search } from 'lucide-react'
+import { Gift, Trash2, Plus, Search, ShieldCheck, User } from 'lucide-react'
 
 const brands = ['Google Play', 'Amazon', 'Flipkart', 'Steam', 'Myntra', 'BigBasket']
 
@@ -10,6 +10,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
 const GiftCards = () => {
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState('all') // 'all' | 'admin' | 'user'
   const [form, setForm] = useState({
     brand: '', balance: '', code: '', pin: '', expiry: '',
   })
@@ -61,11 +62,26 @@ const GiftCards = () => {
     }
   }
 
-  const filtered = listings.filter((c) =>
+  const adminCount = listings.filter(c => c.listedBy === 'admin').length
+  const userCount = listings.filter(c => c.listedBy === 'user' || !c.listedBy).length
+
+  const tabFiltered = listings.filter(c => {
+    if (activeTab === 'admin') return c.listedBy === 'admin'
+    if (activeTab === 'user') return c.listedBy === 'user' || !c.listedBy
+    return true
+  })
+
+  const filtered = tabFiltered.filter((c) =>
     c.brand.toLowerCase().includes(search.toLowerCase()) ||
     c.code.toLowerCase().includes(search.toLowerCase()) ||
     (c.user?.fullName || '').toLowerCase().includes(search.toLowerCase())
   )
+
+  const tabs = [
+    { key: 'all', label: 'All Listings', count: listings.length },
+    { key: 'admin', label: 'Admin Listed', count: adminCount, icon: ShieldCheck, color: 'blue' },
+    { key: 'user', label: 'User Listed', count: userCount, icon: User, color: 'green' },
+  ]
 
   return (
     <div className="space-y-6">
@@ -74,10 +90,14 @@ const GiftCards = () => {
         <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border">{listings.length} total</span>
       </div>
 
+      {/* Add New Form */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Plus className="h-5 w-5 text-gray-500" />
           Add New Gift Card Listing
+          <span className="ml-auto text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+            <ShieldCheck className="h-3 w-3" /> Listed as Admin
+          </span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
@@ -111,14 +131,44 @@ const GiftCards = () => {
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center gap-3">
-          <h2 className="text-lg font-semibold text-gray-900 flex-1">All Listings</h2>
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search brand, code, user..." className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <div className="border-b border-gray-100">
+          <div className="flex items-center gap-1 px-4 pt-3">
+            {tabs.map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${
+                  activeTab === tab.key
+                    ? tab.key === 'admin'
+                      ? 'border-blue-600 text-blue-700 bg-blue-50'
+                      : tab.key === 'user'
+                      ? 'border-green-600 text-green-700 bg-green-50'
+                      : 'border-gray-900 text-gray-900 bg-gray-50'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {tab.icon && <tab.icon className="h-4 w-4" />}
+                {tab.label}
+                <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${
+                  activeTab === tab.key
+                    ? tab.key === 'admin' ? 'bg-blue-100 text-blue-700' : tab.key === 'user' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'
+                    : 'bg-gray-100 text-gray-500'
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+
+            {/* Search */}
+            <div className="relative ml-auto mb-1 w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search brand, code, user..." className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
           </div>
         </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -128,7 +178,8 @@ const GiftCards = () => {
                 <th className="px-4 py-3 font-semibold text-gray-600">Code</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">PIN</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Expiry</th>
-                <th className="px-4 py-3 font-semibold text-gray-600">Listed By</th>
+                <th className="px-4 py-3 font-semibold text-gray-600">Listed By (User)</th>
+                <th className="px-4 py-3 font-semibold text-gray-600">Source</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Status</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Date</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Action</th>
@@ -137,7 +188,7 @@ const GiftCards = () => {
             <tbody className="divide-y divide-gray-100">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={10} className="px-4 py-12 text-center text-gray-400">
                     <Gift className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                     <p>No gift card listings found</p>
                   </td>
@@ -150,7 +201,23 @@ const GiftCards = () => {
                     <td className="px-4 py-3 text-gray-700 font-mono text-xs">{card.code.replace(/.(?=.{4})/g, '*')}</td>
                     <td className="px-4 py-3 text-gray-700 font-mono text-xs">{card.pin ? card.pin.replace(/.(?=.{4})/g, '*') : '-'}</td>
                     <td className="px-4 py-3 text-gray-600">{new Date(card.expiry).toLocaleDateString('en-IN')}</td>
-                    <td className="px-4 py-3 text-gray-600">{card.user?.fullName || 'Unknown'}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col">
+                        <span className="text-gray-800 font-medium text-xs">{card.user?.fullName || 'Unknown'}</span>
+                        {card.user?.email && <span className="text-gray-400 text-xs">{card.user.email}</span>}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {card.listedBy === 'admin' ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                          <ShieldCheck className="h-3 w-3" /> Admin
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                          <User className="h-3 w-3" /> User
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                         card.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :

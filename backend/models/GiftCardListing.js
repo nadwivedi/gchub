@@ -33,6 +33,11 @@ const giftCardListingSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'sold', 'expired'],
     default: 'active'
+  },
+  listedBy: {
+    type: String,
+    enum: ['admin', 'user'],
+    default: 'user'
   }
 }, {
   timestamps: true
