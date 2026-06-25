@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const giftCardListingSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   brand: {
     type: String,
     required: [true, 'Brand is required'],
@@ -14,6 +19,10 @@ const giftCardListingSchema = new mongoose.Schema({
   code: {
     type: String,
     required: [true, 'Gift card code is required'],
+    trim: true
+  },
+  pin: {
+    type: String,
     trim: true
   },
   expiry: {

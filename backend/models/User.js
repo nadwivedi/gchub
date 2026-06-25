@@ -128,6 +128,13 @@ const userSchema = new mongoose.Schema({
     }
   }],
 
+  // Role
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+
   // Account Status
   isEmailVerified: {
     type: Boolean,

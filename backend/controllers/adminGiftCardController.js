@@ -1,5 +1,24 @@
 const GiftCardListing = require('../models/GiftCardListing');
 
+const getAllListings = async (req, res) => {
+  try {
+    const listings = await GiftCardListing.find()
+      .populate('user', 'fullName email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: listings.length,
+      data: listings
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 const addListing = async (req, res) => {
   try {
     const { brand, balance, code, expiry, pin } = req.body;
@@ -27,27 +46,10 @@ const addListing = async (req, res) => {
   }
 };
 
-const getListings = async (req, res) => {
-  try {
-    const listings = await GiftCardListing.find({ user: req.user._id }).sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      count: listings.length,
-      data: listings
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
 const deleteListing = async (req, res) => {
   try {
     const { id } = req.params;
-    const listing = await GiftCardListing.findById(id);
+    const listing = await GiftCardListing.findByIdAndDelete(id);
 
     if (!listing) {
       return res.status(404).json({
@@ -55,15 +57,6 @@ const deleteListing = async (req, res) => {
         message: 'Listing not found'
       });
     }
-
-    if (listing.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. You can only delete your own listings.'
-      });
-    }
-
-    await GiftCardListing.findByIdAndDelete(id);
 
     res.status(200).json({
       success: true,
@@ -77,4 +70,4 @@ const deleteListing = async (req, res) => {
   }
 };
 
-module.exports = { addListing, getListings, deleteListing };
+module.exports = { getAllListings, addListing, deleteListing };

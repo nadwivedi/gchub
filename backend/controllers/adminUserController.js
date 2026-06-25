@@ -223,7 +223,7 @@ const getUserStats = async (req, res) => {
     // Get user count by role
     const adminUsers = await User.countDocuments({ role: 'admin' });
     const regularUsers = await User.countDocuments({ role: 'user' });
-    const moderatorUsers = await User.countDocuments({ role: 'moderator' });
+
 
     // Get users registered in last 30 days
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -251,8 +251,7 @@ const getUserStats = async (req, res) => {
         },
         roles: {
           admin: adminUsers,
-          user: regularUsers,
-          moderator: moderatorUsers
+          user: regularUsers
         },
         verification: {
           emailVerified: emailVerifiedUsers,

@@ -49,7 +49,7 @@ router.post('/send', protect, async (req, res) => {
 });
 
 // Get all chat messages (admin)
-router.get('/messages', protect, authorize('admin', 'moderator'), async (req, res) => {
+router.get('/messages', protect, authorize('admin'), async (req, res) => {
   try {
     const { page = 1, limit = 50, category, isRead } = req.query;
 
@@ -98,7 +98,7 @@ router.get('/my-messages', protect, async (req, res) => {
 });
 
 // Mark message as read (admin)
-router.patch('/mark-read/:id', protect, authorize('admin', 'moderator'), async (req, res) => {
+router.patch('/mark-read/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const message = await ChatMessage.findByIdAndUpdate(
       req.params.id,
@@ -118,7 +118,7 @@ router.patch('/mark-read/:id', protect, authorize('admin', 'moderator'), async (
 });
 
 // Reply to message (admin)
-router.patch('/reply/:id', protect, authorize('admin', 'moderator'), async (req, res) => {
+router.patch('/reply/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const { adminReply } = req.body;
 

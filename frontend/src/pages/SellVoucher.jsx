@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X, Upload, Clock, Banknote } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Gift, DollarSign, Hash, Calendar, X, Upload, Clock, Banknote, Lock } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -36,6 +36,7 @@ const SellVoucher = () => {
     brand: '',
     balance: '',
     code: '',
+    pin: '',
     expiry: '',
   })
 
@@ -72,7 +73,7 @@ const SellVoucher = () => {
       const res = await axios.post(`${BACKEND_URL}/api/gift-cards`, form, { withCredentials: true })
       if (res.data.success) {
         setCards([res.data.data, ...cards])
-        setForm({ brand: '', balance: '', code: '', expiry: '' })
+        setForm({ brand: '', balance: '', code: '', pin: '', expiry: '' })
         toast.success('Gift card listed successfully')
       }
     } catch (err) {
@@ -203,6 +204,25 @@ const SellVoucher = () => {
               </div>
 
               <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                  PIN <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 text-yellow-600" />
+                  </div>
+                  <input
+                    type="text"
+                    name="pin"
+                    value={form.pin}
+                    onChange={handleChange}
+                    placeholder="Enter PIN if required"
+                    className="w-full pl-10 border border-yellow-300 bg-white/80 rounded-lg px-3 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm transition-shadow"
+                  />
+                </div>
+              </div>
+
+              <div>
                 <label className="block text-sm font-semibold text-gray-800 mb-1.5">Expiry Date</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -272,7 +292,7 @@ const SellVoucher = () => {
                   <div>
                     <p className="font-semibold text-gray-900">{card.brand}</p>
                     <p className="text-sm text-gray-500">
-                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | ₹{card.balance} | Exp: {new Date(card.expiry).toLocaleDateString('en-IN')}
+                      Code: {card.code.replace(/.(?=.{4})/g, '*')} | {card.pin ? `PIN: ${card.pin.replace(/.(?=.{4})/g, '*')} |` : ''} ₹{card.balance} | Exp: {new Date(card.expiry).toLocaleDateString('en-IN')}
                     </p>
                   </div>
                 </div>

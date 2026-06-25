@@ -16,6 +16,7 @@ const seederRoutes = require('./routes/seederRoutes');
 const heroRoutes = require('./routes/heroRoutes');
 const shopCategoryRoutes = require('./routes/shopCategoryRoutes');
 const giftCardRoutes = require('./routes/giftCardRoutes');
+const adminGiftCardRoutes = require('./routes/adminGiftCardRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 
 const app = express();
@@ -66,6 +67,7 @@ app.use('/api/seed', seederRoutes);
 app.use('/api/heroes', heroRoutes);
 app.use('/api/shop-categories', shopCategoryRoutes);
 app.use('/api/gift-cards', giftCardRoutes);
+app.use('/api/admin/gift-cards', adminGiftCardRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 
 
