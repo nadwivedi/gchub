@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -8,21 +8,32 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
 
 const Login = () => {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ emailOrMobile: '', password: '' })
   const [loading, setLoading] = useState(false)
+
+  // Redirect if already logged in as admin
+  useEffect(() => {
+    axios.get(`${BACKEND_URL}/api/auth/me`, { withCredentials: true })
+      .then(res => {
+        if (res.data.isLoggedIn && res.data.user?.role === 'admin') {
+          navigate('/', { replace: true })
+        }
+      })
+      .catch(() => {}) // not logged in, stay on login page
+  }, [navigate])
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.email || !form.password) {
+    if (!form.emailOrMobile || !form.password) {
       toast.error('Please fill all fields')
       return
     }
     setLoading(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/api/auth/login`, form, { withCredentials: true })
-      if (res.data.success) {
+      if (res.data.success || res.data.userData) {
         toast.success('Login successful')
         navigate('/')
       } else {
@@ -45,7 +56,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="admin@example.com" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <input type="email" name="emailOrMobile" value={form.emailOrMobile} onChange={handleChange} placeholder="admin@example.com" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
