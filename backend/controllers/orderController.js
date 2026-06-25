@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const GiftCardListing = require('../models/GiftCardListing');
 const nodemailer = require('nodemailer');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
@@ -453,6 +454,51 @@ const verifyPayment = async (req, res) => {
       order.status = 'confirmed';
       order.razorpayPaymentId = razorpay_payment_id;
       order.razorpaySignature = razorpay_signature;
+
+      // Assign gift card redeem codes for digital gift card items
+      const giftCodes = [];
+      for (const item of order.items) {
+        // Detect gift card items by productId pattern (e.g. 'google-play-10')
+        if (!String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
+          // Parse brand and balance from productId like 'google-play-10'
+          const parts = item.productId.split('-');
+          const balance = parseFloat(parts[parts.length - 1]);
+          // Build brand name: e.g. 'google-play' -> 'Google Play'
+          const brandSlug = parts.slice(0, parts.length - 1).join(' ');
+          const brandName = brandSlug
+            .split(' ')
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+
+          // Find an available admin-listed gift card for this brand & balance
+          const availableListing = await GiftCardListing.findOne({
+            brand: brandName,
+            balance: balance,
+            status: 'active',
+            listedBy: 'admin'
+          });
+
+          if (availableListing) {
+            // Mark as sold
+            availableListing.status = 'sold';
+            await availableListing.save();
+
+            giftCodes.push({
+              productId: item.productId,
+              brand: availableListing.brand,
+              code: availableListing.code,
+              pin: availableListing.pin || null,
+              balance: availableListing.balance,
+              listingId: availableListing._id
+            });
+          }
+        }
+      }
+
+      if (giftCodes.length > 0) {
+        order.giftCodes = giftCodes;
+      }
+
       await order.save();
 
 

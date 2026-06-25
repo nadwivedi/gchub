@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
-import { ArrowLeft, Package, MapPin, Phone, Mail, Calendar, CreditCard, Truck, CheckCircle, Clock, AlertCircle, XCircle } from 'lucide-react'
+import { ArrowLeft, Package, MapPin, Phone, Mail, Calendar, CreditCard, Truck, CheckCircle, Clock, AlertCircle, XCircle, Key, Copy } from 'lucide-react'
 
 const OrderDetail = () => {
   const { orderId } = useParams()
@@ -240,7 +240,65 @@ const OrderDetail = () => {
               </div>
             </div>
 
-            {/* Delivery Information */}
+            {/* Gift Card Redeem Codes */}
+            {order.giftCodes && order.giftCodes.length > 0 && (
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg shadow-sm border-2 border-emerald-300">
+                <div className="p-6 border-b border-emerald-200">
+                  <h2 className="text-lg font-semibold text-emerald-800 flex items-center">
+                    <Key className="w-5 h-5 mr-2" />
+                    Your Redeem Code{order.giftCodes.length > 1 ? 's' : ''}
+                  </h2>
+                  <p className="text-sm text-emerald-600 mt-1">Use this code to redeem your gift card</p>
+                </div>
+                <div className="p-6 space-y-4">
+                  {order.giftCodes.map((gc, i) => (
+                    <div key={i} className="bg-white rounded-xl border border-emerald-200 p-5 shadow-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-semibold text-gray-800">{gc.brand} — ₹{gc.balance} Gift Card</span>
+                        <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">Ready to Use</span>
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Redeem Code</label>
+                          <div className="flex items-center gap-2 mt-1">
+                            <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-lg font-bold text-gray-900 tracking-widest select-all">
+                              {gc.code}
+                            </div>
+                            <button
+                              onClick={() => { navigator.clipboard.writeText(gc.code); toast.success('Code copied!') }}
+                              className="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                              title="Copy code"
+                            >
+                              <Copy className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                        {gc.pin && (
+                          <div>
+                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">PIN</label>
+                            <div className="flex items-center gap-2 mt-1">
+                              <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-lg font-bold text-gray-900 tracking-widest select-all">
+                                {gc.pin}
+                              </div>
+                              <button
+                                onClick={() => { navigator.clipboard.writeText(gc.pin); toast.success('PIN copied!') }}
+                                className="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                                title="Copy PIN"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <p className="text-xs text-emerald-700 bg-emerald-100 rounded-lg p-3">
+                    💡 <strong>How to redeem:</strong> Go to your Google Play / respective store, tap "Redeem code" and enter the code above.
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-6 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900 flex items-center">

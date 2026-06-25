@@ -9,12 +9,12 @@ const vouchers = [
   {
     _id: 'google-play-10',
     name: 'Google Play Code - ₹10 Voucher',
-    price: 9,
+    price: 8,
     originalPrice: 10,
     brand: 'Google Play',
     category: 'gift-cards',
     images: ['/products/google%20play.avif'],
-    description: '₹10 Google Play Gift Card at just ₹9',
+    description: '₹10 Google Play Gift Card at just ₹8',
   },
   {
     _id: 'google-play-400',

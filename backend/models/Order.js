@@ -157,6 +157,16 @@ const orderSchema = new mongoose.Schema({
     maxlength: [500, 'Notes cannot exceed 500 characters']
   },
 
+  // Assigned gift card redeem codes (for digital gift card products)
+  giftCodes: [{
+    productId: { type: String }, // matches the item's productId (e.g. 'google-play-10')
+    brand: { type: String },
+    code: { type: String },
+    pin: { type: String },
+    balance: { type: Number },
+    listingId: { type: mongoose.Schema.Types.ObjectId, ref: 'GiftCardListing' }
+  }],
+
   // Reference to user (optional, if user is registered)
   userId: {
     type: mongoose.Schema.Types.ObjectId,
