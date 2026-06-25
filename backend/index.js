@@ -37,7 +37,8 @@ app.use(cors({
     'https://gchub.in',
     'https://www.gchub.in',
     'https://api.gchub.in',
-    'https://www.api.gchub.in'
+    'https://www.api.gchub.in',
+    'http://adm.gchub.in'
   ],
   credentials: true,
 }))
