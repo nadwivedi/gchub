@@ -296,6 +296,9 @@ const OrderDetail = () => {
                   <p className="text-xs text-emerald-700 bg-emerald-100 rounded-lg p-3">
                     💡 <strong>How to redeem:</strong> Go to your Google Play / respective store, tap "Redeem code" and enter the code above.
                   </p>
+                  <p className="text-sm font-medium text-emerald-800 text-center pt-2 border-t border-emerald-200/50">
+                    Your code has been successfully sent to your email address. You can also check it here in the order section.
+                  </p>
                 </div>
               </div>
             )}

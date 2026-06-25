@@ -148,6 +148,13 @@ const createOrder = async (req, res) => {
       processedItems.push(processedItem);
     }
 
+    const isDigital = finalShippingAddress.city === 'Digital';
+    let estimatedDelivery;
+    if (isDigital) {
+      estimatedDelivery = new Date();
+      estimatedDelivery.setHours(estimatedDelivery.getHours() + 24);
+    }
+
     // Create order
     const newOrder = new Order({
       customerInfo,
@@ -159,7 +166,8 @@ const createOrder = async (req, res) => {
       paymentMethod,
       userId: userId || null,
       status: paymentMethod === 'online' ? 'pending' : 'confirmed',
-      paymentStatus: 'pending'
+      paymentStatus: 'pending',
+      ...(estimatedDelivery && { estimatedDelivery })
     });
 
     const savedOrder = await newOrder.save();
@@ -497,6 +505,8 @@ const verifyPayment = async (req, res) => {
 
       if (giftCodes.length > 0) {
         order.giftCodes = giftCodes;
+        order.status = 'delivered';
+        order.deliveryDate = new Date();
       }
 
       await order.save();
