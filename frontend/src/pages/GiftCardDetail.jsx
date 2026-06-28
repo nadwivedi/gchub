@@ -181,28 +181,31 @@ const GiftCardDetail = () => {
 
               <div className="mb-6">
                 <p className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Select Denomination</p>
-                <div className="flex flex-nowrap gap-2.5 overflow-x-auto pb-2 scrollbar-thin">
-                  {vouchers.map((v) => {
-                    const isSelected = (selected?._id === v._id)
-                    const isOos = v.stockQuantity === 0
-                    return (
-                      <button
-                        key={v._id}
-                        onClick={() => handleVariantClick(v)}
-                        disabled={isOos}
-                        className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all duration-200 cursor-pointer ${
-                          isOos
-                            ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed line-through'
-                            : isSelected
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50'
-                        }`}
-                      >
-                        {'\u20B9'}{v.denom}
-                        {isOos && <span className="block text-[10px] font-normal normal-case">Out of stock</span>}
-                      </button>
-                    )
-                  })}
+                <div className="relative">
+                  <div className="flex flex-nowrap gap-2.5 overflow-x-auto pb-2 scrollbar-thin pe-6">
+                    {vouchers.map((v) => {
+                      const isSelected = (selected?._id === v._id)
+                      const isOos = v.stockQuantity === 0
+                      return (
+                        <button
+                          key={v._id}
+                          onClick={() => handleVariantClick(v)}
+                          disabled={isOos}
+                          className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all duration-200 cursor-pointer ${
+                            isOos
+                              ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed line-through'
+                              : isSelected
+                                ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm'
+                                : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50'
+                          }`}
+                        >
+                          {'\u20B9'}{v.denom}
+                          {isOos && <span className="block text-[10px] font-normal normal-case">Out of stock</span>}
+                        </button>
+                      )
+                    })}
+                  </div>
+                  <div className="absolute right-0 top-0 bottom-2 w-10 bg-gradient-to-l from-white via-white/90 to-transparent pointer-events-none sm:hidden"></div>
                 </div>
               </div>
 
