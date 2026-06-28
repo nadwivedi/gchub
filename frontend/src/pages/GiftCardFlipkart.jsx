@@ -55,7 +55,7 @@ const GiftCardFlipkart = () => {
                   </div>
                 )}
 
-                <div className="aspect-[6/5] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
+                <div className="aspect-[1/1] sm:aspect-[6/5] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
                   <img src={voucher.images?.[0]} alt={voucher.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className={`absolute inset-0 bg-gradient-to-t ${voucher.stockQuantity === 0 ? 'from-slate-900/80 via-slate-900/20' : 'from-black/40 via-transparent'} to-transparent`}></div>
                   

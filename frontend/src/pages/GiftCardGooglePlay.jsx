@@ -148,7 +148,7 @@ const GiftCardGooglePlay = () => {
                   </div>
                 )}
 
-                <div className="aspect-[1.6/1] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
+                <div className="aspect-[4/3] sm:aspect-[1.6/1] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
                   <img
                     src={voucher.images?.[0]}
                     alt={voucher.name}
