@@ -36,6 +36,7 @@ import GiftCardFlipkart from './pages/GiftCardFlipkart'
 import GiftCardSteam from './pages/GiftCardSteam'
 import GiftCardMyntra from './pages/GiftCardMyntra'
 import GiftCardBigBasket from './pages/GiftCardBigBasket'
+import GiftCardDetail from './pages/GiftCardDetail'
 import GameDetail from './pages/game/GameDetail'
 import GamesPage from './pages/game/GamesPage'
 import GiftCardsPage from './pages/gift-cards/GiftCardsPage'
@@ -160,6 +161,7 @@ const AppContent = () => {
         <Route path="/gift-cards/steam" element={<GiftCardSteam />} />
         <Route path="/gift-cards/myntra" element={<GiftCardMyntra />} />
         <Route path="/gift-cards/bigbasket" element={<GiftCardBigBasket />} />
+        <Route path="/gift-card/:brand/detail" element={<GiftCardDetail />} />
         <Route path="/games/:slug" element={<GameDetail />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />

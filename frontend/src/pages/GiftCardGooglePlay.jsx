@@ -129,7 +129,7 @@ const GiftCardGooglePlay = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {vouchers.map((voucher) => {
             const discountPercent = calculateDiscount(voucher.originalPrice, voucher.price)
             const savings = voucher.originalPrice - voucher.price
@@ -137,11 +137,12 @@ const GiftCardGooglePlay = () => {
             return (
               <div
                 key={voucher._id}
-                className="group relative bg-white rounded-2xl border border-slate-200/80 overflow-hidden hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-200/50 transition-all duration-300 flex flex-col"
+                onClick={() => navigate('/gift-card/google-play/detail')}
+                className="group relative bg-white rounded-2xl border border-slate-200/80 overflow-hidden hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-200/50 transition-all duration-300 flex flex-col cursor-pointer"
               >
                 {discountPercent > 0 && (
                   <div className="absolute top-3 left-3 z-10">
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm">
                       -{discountPercent}% OFF
                     </div>
                   </div>
@@ -162,7 +163,7 @@ const GiftCardGooglePlay = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 shadow-sm flex items-center gap-1.5">
+                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 shadow-sm hidden sm:flex items-center gap-1.5">
                       <svg className="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                       </svg>
@@ -216,13 +217,13 @@ const GiftCardGooglePlay = () => {
                     ) : (
                       <div className="flex flex-col gap-2">
                         <button
-                          onClick={() => handleBuyNow(voucher)}
+                          onClick={(e) => { e.stopPropagation(); handleBuyNow(voucher) }}
                           className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer text-xs sm:text-sm"
                         >
                           Buy Now
                         </button>
                         <button
-                          onClick={() => handleAddToCart(voucher)}
+                          onClick={(e) => { e.stopPropagation(); handleAddToCart(voucher) }}
                           className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer text-xs sm:text-sm"
                         >
                           Add to Cart

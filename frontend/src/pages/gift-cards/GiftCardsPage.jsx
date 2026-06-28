@@ -128,7 +128,8 @@ const GiftCardsPage = () => {
               return (
                 <div
                   key={card._id}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden border border-gray-200 relative group flex flex-col hover:-translate-y-1"
+                  onClick={() => navigate(`/gift-card/${card.brand.toLowerCase().replace(/\s+/g, '-')}/detail`)}
+                  className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden border border-gray-200 relative group flex flex-col hover:-translate-y-1 cursor-pointer"
                 >
                   {/* Image */}
                   <div className="relative">
