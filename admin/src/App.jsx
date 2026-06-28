@@ -5,6 +5,7 @@ import AdminLayout from './components/AdminLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import GiftCards from './pages/GiftCards'
+import Users from './pages/Users'
 import Login from './pages/Login'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/gift-cards" element={<GiftCards />} />
+            <Route path="/users" element={<Users />} />
           </Route>
         </Route>
 

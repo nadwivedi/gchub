@@ -35,8 +35,7 @@ const getAllUsers = async (req, res) => {
       .select('-password')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
-      .populate('orders', 'orderNumber totalAmount status createdAt');
+      .limit(limit);
 
     const total = await User.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Gift, Menu, X, LogOut } from 'lucide-react'
+import { LayoutDashboard, Gift, Users, Menu, X, LogOut } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -9,6 +9,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
   { label: 'Gift Cards', icon: Gift, path: '/gift-cards' },
+  { label: 'Users', icon: Users, path: '/users' },
 ]
 
 const AdminLayout = () => {
