@@ -21,15 +21,20 @@ const handelUserSignup = async (req, res) => {
     password = password?.trim();
     const resolvedPhone = String(phone || mobile || "").trim();
 
-    if (!fullName || !password || !resolvedPhone) {
-      return res.status(400).json({ success: false, message: "missing field" });
+    if (!fullName) {
+      return res.status(400).json({ success: false, message: "Full name is required" });
+    }
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+    if (!resolvedPhone) {
+      return res.status(400).json({ success: false, message: "Mobile number is required" });
+    }
+    if (!password) {
+      return res.status(400).json({ success: false, message: "Password is required" });
     }
 
-    // Email is optional. If sent, validate format.
-    if (
-      email &&
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
-    ) {
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       return res.status(400).json({
         success: false,
         message: "Please enter a valid email address",
@@ -44,15 +49,13 @@ const handelUserSignup = async (req, res) => {
       });
     }
 
-    // Check duplicate by phone and, if present, email.
-    const duplicateFilter = [{ phone: resolvedPhone }];
-    if (email) {
-      duplicateFilter.push({ email });
-    }
-    const existingUser = await userModel.findOne({ $or: duplicateFilter });
+    // Check duplicate by phone and email
+    const existingUser = await userModel.findOne({
+      $or: [{ phone: resolvedPhone }, { email }],
+    });
 
     if (existingUser) {
-      if (email && existingUser.email === email) {
+      if (existingUser.email === email) {
         return res.status(400).json({
           success: false,
           message: "Email already exists",
@@ -71,7 +74,7 @@ const handelUserSignup = async (req, res) => {
 
     const newUserData = {
       fullName,
-      email: email || undefined,
+      email,
       password: hashedPassword,
       phone: resolvedPhone,
       city: city?.trim() || undefined,

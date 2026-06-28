@@ -65,6 +65,31 @@ const Login = () => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    if (!signupData.fullName.trim()) {
+      setError('Full name is required')
+      setLoading(false)
+      return
+    }
+    if (!signupData.email.trim()) {
+      setError('Email is required')
+      setLoading(false)
+      return
+    }
+    if (!signupData.mobile.trim()) {
+      setError('Mobile number is required')
+      setLoading(false)
+      return
+    }
+    if (!signupData.password) {
+      setError('Password is required')
+      setLoading(false)
+      return
+    }
+    if (!signupData.confirmPassword) {
+      setError('Please confirm your password')
+      setLoading(false)
+      return
+    }
     if (signupData.password !== signupData.confirmPassword) {
       setError('Passwords do not match')
       setLoading(false)
@@ -282,7 +307,7 @@ const Login = () => {
                     </div>
                   </div>
                   <div>
-                    <label className='block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 ml-1'>Mobile <span className='text-slate-400 font-medium normal-case'>(optional)</span></label>
+                    <label className='block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 ml-1'>Mobile</label>
                     <div className='relative group'>
                       <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-amber-500'>
                         <svg className='w-5 h-5 text-slate-400' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
