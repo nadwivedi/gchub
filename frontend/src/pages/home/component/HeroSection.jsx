@@ -22,9 +22,9 @@ const DEFAULT_HERO_TARGET_URL = '/';
 
 const HeroSection = () => {
   const [mobileTrackIndex, setMobileTrackIndex] = useState(MOBILE_CLONE_COUNT);
-  const [isMobileTransitionEnabled, setIsMobileTransitionEnabled] = useState(true);
+  const [isMobileTransitionEnabled, setIsMobileTransitionEnabled] = useState(false);
   const [desktopTrackIndex, setDesktopTrackIndex] = useState(0);
-  const [isDesktopTransitionEnabled, setIsDesktopTransitionEnabled] = useState(true);
+  const [isDesktopTransitionEnabled, setIsDesktopTransitionEnabled] = useState(false);
   const [isAutoPlayPaused, setIsAutoPlayPaused] = useState(false);
   const touchStartXRef = useRef(0);
   const touchCurrentXRef = useRef(0);
@@ -68,12 +68,12 @@ const HeroSection = () => {
 
   useEffect(() => {
     setMobileTrackIndex(displayHeroes.length > 1 ? mobileCloneCount : 0);
-    setIsMobileTransitionEnabled(true);
+    setIsMobileTransitionEnabled(false);
     setIsAutoPlayPaused(false);
   }, [displayHeroes.length, mobileCloneCount]);
   useEffect(() => {
     setDesktopTrackIndex(displayHeroes.length > 1 ? desktopCloneCount : 0);
-    setIsDesktopTransitionEnabled(true);
+    setIsDesktopTransitionEnabled(false);
   }, [displayHeroes.length, desktopCloneCount]);
 
   useEffect(() => {
