@@ -14,10 +14,10 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
 
           {/* Brand Column */}
-          <div className="lg:col-span-1">
+          <div>
             <Link to="/" className="flex items-center mb-2 group">
               <img src="/gchublogo.png" alt="GCHUB" className="h-[70px] w-[140px] md:h-[90px] md:w-[180px] object-contain drop-shadow-lg group-hover:scale-102 transition-transform duration-200" />
             </Link>
@@ -48,59 +48,62 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Shop by Category */}
-          <div>
-            <h3 className="text-white font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
-              <span className="w-4 h-0.5 inline-block rounded" style={{ background: '#eab308' }} />
-              Categories
-            </h3>
-            <ul className="space-y-2.5">
-              {[
-                { to: '/search?category=e-commerce', label: '🛒 E-Commerce' },
-                { to: '/search?category=gaming', label: '🎮 Gaming' },
-                { to: '/search?category=food-dining', label: '🍔 Food & Dining' },
-                { to: '/search?category=fashion-lifestyle', label: '👗 Fashion & Lifestyle' },
-                { to: '/search?category=travel-entertainment', label: '✈️ Travel & Entertainment' },
-              ].map(({ to, label }) => (
-                <li key={to}>
-                  <Link
-                    to={to}
-                    className="text-gray-400 text-sm hover:text-yellow-400 transition-colors duration-200 flex items-center gap-1.5 group"
-                  >
-                    <span className="w-0 group-hover:w-2 h-px rounded transition-all duration-200 inline-block" style={{ background: '#eab308' }} />
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Categories + Quick Links in same row */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Shop by Category */}
+            <div>
+              <h3 className="text-white font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
+                <span className="w-4 h-0.5 inline-block rounded" style={{ background: '#eab308' }} />
+                Categories
+              </h3>
+              <ul className="space-y-2.5">
+                {[
+                  { to: '/search?category=e-commerce', label: '🛒 E-Commerce' },
+                  { to: '/search?category=gaming', label: '🎮 Gaming' },
+                  { to: '/search?category=food-dining', label: '🍔 Food & Dining' },
+                  { to: '/search?category=fashion-lifestyle', label: '👗 Fashion & Lifestyle' },
+                  { to: '/search?category=travel-entertainment', label: '✈️ Travel & Entertainment' },
+                ].map(({ to, label }) => (
+                  <li key={to}>
+                    <Link
+                      to={to}
+                      className="text-gray-400 text-sm hover:text-yellow-400 transition-colors duration-200 flex items-center gap-1.5 group"
+                    >
+                      <span className="w-0 group-hover:w-2 h-px rounded transition-all duration-200 inline-block" style={{ background: '#eab308' }} />
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
-              <span className="w-4 h-0.5 inline-block rounded" style={{ background: '#eab308' }} />
-              Quick Links
-            </h3>
-            <ul className="space-y-2.5">
-              {[
-                { to: '/', label: 'Home' },
-                { to: '/about', label: 'About Us' },
-                { to: '/contact', label: 'Contact Us' },
-                { to: '/sell-voucher', label: 'Sell Gift Card' },
-                { to: '/my-orders', label: 'My Orders' },
-                { to: '/customer-support', label: 'Support' },
-              ].map(({ to, label }) => (
-                <li key={to}>
-                  <Link
-                    to={to}
-                    className="text-gray-400 text-sm hover:text-yellow-400 transition-colors duration-200 flex items-center gap-1.5 group"
-                  >
-                    <span className="w-0 group-hover:w-2 h-px rounded transition-all duration-200 inline-block" style={{ background: '#eab308' }} />
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-white font-bold text-sm uppercase tracking-widest mb-4 flex items-center gap-2">
+                <span className="w-4 h-0.5 inline-block rounded" style={{ background: '#eab308' }} />
+                Quick Links
+              </h3>
+              <ul className="space-y-2.5">
+                {[
+                  { to: '/', label: 'Home' },
+                  { to: '/about', label: 'About Us' },
+                  { to: '/contact', label: 'Contact Us' },
+                  { to: '/sell-voucher', label: 'Sell Gift Card' },
+                  { to: '/my-orders', label: 'My Orders' },
+                  { to: '/customer-support', label: 'Support' },
+                ].map(({ to, label }) => (
+                  <li key={to}>
+                    <Link
+                      to={to}
+                      className="text-gray-400 text-sm hover:text-yellow-400 transition-colors duration-200 flex items-center gap-1.5 group"
+                    >
+                      <span className="w-0 group-hover:w-2 h-px rounded transition-all duration-200 inline-block" style={{ background: '#eab308' }} />
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Contact & Trust */}
