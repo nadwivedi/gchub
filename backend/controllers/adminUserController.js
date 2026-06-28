@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // @desc    Get all users
@@ -383,6 +384,32 @@ const toggleUserStatus = async (req, res) => {
 // @access  Private/Admin
 const impersonateUser = async (req, res) => {
   try {
+    const adminToken = req.cookies?.admin_token;
+    if (!adminToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(adminToken, process.env.JWT_SECRET || 'your-secret-key');
+    } catch {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid or expired token'
+      });
+    }
+
+    const admin = await User.findById(decoded.userId);
+    if (!admin || admin.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin privileges required.'
+      });
+    }
+
     const user = await User.findById(req.params.id).select('-password');
 
     if (!user) {
@@ -399,7 +426,6 @@ const impersonateUser = async (req, res) => {
       });
     }
 
-    const jwt = require('jsonwebtoken');
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET || 'your-secret-key',

@@ -30,6 +30,6 @@ router.route('/:id')
 
 router.post('/:id/reset-password', resetUserPassword);
 router.patch('/:id/toggle-status', toggleUserStatus);
-router.post('/:id/impersonate', protect, authorize('admin'), impersonateUser);
+router.post('/:id/impersonate', impersonateUser);
 
 module.exports = router;

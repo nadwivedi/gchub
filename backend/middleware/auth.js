@@ -14,6 +14,10 @@ const protect = async (req, res, next) => {
     else if (req.cookies && req.cookies.token) {
       token = req.cookies.token;
     }
+    // Check for admin token in cookies
+    else if (req.cookies && req.cookies.admin_token) {
+      token = req.cookies.admin_token;
+    }
 
     if (!token) {
       return res.status(401).json({
