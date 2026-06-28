@@ -4,6 +4,7 @@ const getAllListings = async (req, res) => {
   try {
     const listings = await GiftCardListing.find()
       .populate('user', 'fullName email')
+      .populate('soldTo', 'fullName email')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -79,9 +80,14 @@ const updateListingStatus = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid status' });
     }
 
+    const updateData = { status };
+    if (status === 'active') {
+      updateData.$unset = { soldTo: 1 };
+    }
+
     const listing = await GiftCardListing.findByIdAndUpdate(
       id,
-      { status },
+      updateData,
       { new: true, runValidators: true }
     );
 

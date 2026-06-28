@@ -489,6 +489,11 @@ const verifyPayment = async (req, res) => {
           if (availableListing) {
             // Mark as sold
             availableListing.status = 'sold';
+            if (order.user) {
+              availableListing.soldTo = order.user;
+            } else if (order.customerInfo && order.customerInfo.email) {
+              // If guest checkout, try to find user by email or leave empty
+            }
             await availableListing.save();
 
             giftCodes.push({

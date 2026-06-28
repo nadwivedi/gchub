@@ -253,13 +253,22 @@ const GiftCards = () => {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
-                        card.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :
-                        card.status === 'sold' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                        'bg-red-50 text-red-700 border-red-200'
-                      }`}>
-                        {card.status}
-                      </span>
+                      <div className="flex flex-col gap-1.5 items-start">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                          card.status === 'active' ? 'bg-green-50 text-green-700 border-green-200' :
+                          card.status === 'sold' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                          'bg-red-50 text-red-700 border-red-200'
+                        }`}>
+                          {card.status}
+                        </span>
+                        {card.status === 'sold' && card.soldTo && (
+                          <div className="text-[10px] leading-tight text-gray-500 bg-gray-100/80 px-2 py-1 rounded-md border border-gray-200">
+                            <span className="font-semibold text-gray-700 block mb-0.5">Buyer:</span>
+                            <span className="block truncate max-w-[120px]">{card.soldTo.fullName}</span>
+                            <span className="block truncate max-w-[120px]" title={card.soldTo.email}>{card.soldTo.email}</span>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{new Date(card.createdAt).toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3">
