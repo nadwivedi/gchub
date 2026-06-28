@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { protect, authorize } = require('../middleware/auth');
 const {
   createOrder,
   getOrder,
@@ -16,8 +17,8 @@ router.get('/detail/:orderId', getOrder);         // GET /api/orders/detail/:ord
 router.get('/customer/:email', getOrdersByEmail); // GET /api/orders/customer/:email - Get orders by customer email
 router.get('/:identifier', getOrder);             // GET /api/orders/:id - Get order by ID or order number
 
-// Admin routes (you can add authentication middleware here later)
-router.get('/', getAllOrders);                   // GET /api/orders - Get all orders (admin)
-router.patch('/:orderId/status', updateOrderStatus); // PATCH /api/orders/:id/status - Update order status (admin)
+// Admin routes
+router.get('/', protect, authorize('admin'), getAllOrders);
+router.patch('/:orderId/status', protect, authorize('admin'), updateOrderStatus);
 
 module.exports = router;

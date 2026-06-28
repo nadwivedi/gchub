@@ -148,6 +148,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  lastActivity: {
+    type: Date,
+    default: null
+  },
 
   cart: [{
     product: {

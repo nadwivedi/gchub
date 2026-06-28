@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import GiftCards from './pages/GiftCards'
 import Users from './pages/Users'
+import Orders from './pages/Orders'
 import Login from './pages/Login'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/gift-cards" element={<GiftCards />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/orders" element={<Orders />} />
           </Route>
         </Route>
 

@@ -44,6 +44,9 @@ const protect = async (req, res, next) => {
         });
       }
 
+      // Update last activity timestamp (fire and forget)
+      User.updateOne({ _id: user._id }, { lastActivity: new Date() }).exec();
+
       // Add user to request object
       req.user = user;
       next();

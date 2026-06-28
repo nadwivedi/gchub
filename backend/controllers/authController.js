@@ -159,6 +159,10 @@ const handelUserLogin = async (req, res) => {
         .json({ success: false, message: "Invalid password" });
     }
 
+    // Update last activity
+    user.lastActivity = new Date();
+    await user.save();
+
     const token = jwt.sign(
       { userId: user._id, role: "user" },
       process.env.JWT_SECRET,
@@ -422,6 +426,10 @@ const handleGoogleAuth = async (req, res) => {
 
       user = await userModel.create(newUserData);
     }
+
+    // Update last activity
+    user.lastActivity = new Date();
+    await user.save();
 
     // Generate JWT token
     const token = jwt.sign(

@@ -1,9 +1,25 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Users as UsersIcon, Search, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Users as UsersIcon, Search, ToggleLeft, ToggleRight, Activity } from 'lucide-react'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
+
+function timeAgo(date) {
+  if (!date) return 'Never'
+  const now = new Date()
+  const past = new Date(date)
+  const diffMs = now - past
+  const diffSec = Math.floor(diffMs / 1000)
+  if (diffSec < 60) return 'Just now'
+  const diffMin = Math.floor(diffSec / 60)
+  if (diffMin < 60) return `${diffMin}m ago`
+  const diffHr = Math.floor(diffMin / 60)
+  if (diffHr < 24) return `${diffHr}h ago`
+  const diffDays = Math.floor(diffHr / 24)
+  if (diffDays < 30) return `${diffDays}d ago`
+  return past.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 
 const Users = () => {
   const [users, setUsers] = useState([])
@@ -75,6 +91,7 @@ const Users = () => {
                 <th className="px-4 py-3 font-semibold text-gray-600">Email</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Role</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Status</th>
+                <th className="px-4 py-3 font-semibold text-gray-600">Last Activity</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Joined</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Action</th>
               </tr>
@@ -82,11 +99,11 @@ const Users = () => {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-gray-400">Loading...</td>
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-400">Loading...</td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-gray-400">
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-400">
                     <UsersIcon className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                     <p>No users found</p>
                   </td>
@@ -111,6 +128,14 @@ const Users = () => {
                       }`}>
                         {user.isActive ? 'Active' : 'Inactive'}
                       </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5" title={user.lastActivity ? new Date(user.lastActivity).toLocaleString('en-IN') : ''}>
+                        <Activity className="h-3.5 w-3.5 text-gray-400" />
+                        <span className={`text-xs ${user.lastActivity ? 'text-gray-600' : 'text-gray-400'}`}>
+                          {timeAgo(user.lastActivity)}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{new Date(user.createdAt).toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3">
