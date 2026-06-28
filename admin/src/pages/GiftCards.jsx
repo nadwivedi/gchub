@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Gift, Trash2, Plus, Search, ShieldCheck, User } from 'lucide-react'
+import { Gift, Trash2, Plus, Search, ShieldCheck, User, Copy, RefreshCcw } from 'lucide-react'
 
 const brands = ['Google Play', 'Amazon', 'Flipkart', 'Steam', 'Myntra', 'BigBasket']
 
@@ -59,6 +59,24 @@ const GiftCards = () => {
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to delete')
+    }
+  }
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text)
+    toast.success('Copied to clipboard')
+  }
+
+  const handleMakeActive = async (id) => {
+    if (!window.confirm('Are you sure you want to change the status from sold to active?')) return
+    try {
+      const res = await axios.patch(`${BACKEND_URL}/api/admin/gift-cards/${id}/status`, { status: 'active' }, { withCredentials: true })
+      if (res.data.success) {
+        setListings(listings.map(c => c._id === id ? { ...c, status: 'active' } : c))
+        toast.success('Status updated to active')
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update status')
     }
   }
 
@@ -198,8 +216,24 @@ const GiftCards = () => {
                   <tr key={card._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3 font-medium text-gray-900">{card.brand}</td>
                     <td className="px-4 py-3 text-gray-700">₹{card.balance}</td>
-                    <td className="px-4 py-3 text-gray-700 font-mono text-xs">{card.code.replace(/.(?=.{4})/g, '*')}</td>
-                    <td className="px-4 py-3 text-gray-700 font-mono text-xs">{card.pin ? card.pin.replace(/.(?=.{4})/g, '*') : '-'}</td>
+                    <td className="px-4 py-3 text-gray-700 font-mono text-xs">
+                      <div className="flex items-center gap-2">
+                        {card.code.replace(/.(?=.{4})/g, '*')}
+                        <button onClick={() => handleCopy(card.code)} className="text-gray-400 hover:text-blue-600 transition-colors" title="Copy Code">
+                          <Copy className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-700 font-mono text-xs">
+                      <div className="flex items-center gap-2">
+                        {card.pin ? card.pin.replace(/.(?=.{4})/g, '*') : '-'}
+                        {card.pin && (
+                          <button onClick={() => handleCopy(card.pin)} className="text-gray-400 hover:text-blue-600 transition-colors" title="Copy PIN">
+                            <Copy className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{new Date(card.expiry).toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col">
@@ -229,9 +263,16 @@ const GiftCards = () => {
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{new Date(card.createdAt).toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => handleDelete(card._id)} className="text-red-500 hover:text-red-700 transition-colors p-1" title="Delete">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {card.status === 'sold' && (
+                          <button onClick={() => handleMakeActive(card._id)} className="text-blue-500 hover:text-blue-700 transition-colors p-1" title="Mark as Active">
+                            <RefreshCcw className="h-4 w-4" />
+                          </button>
+                        )}
+                        <button onClick={() => handleDelete(card._id)} className="text-red-500 hover:text-red-700 transition-colors p-1" title="Delete">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -70,4 +70,36 @@ const deleteListing = async (req, res) => {
   }
 };
 
-module.exports = { getAllListings, addListing, deleteListing };
+const updateListingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['active', 'sold', 'expired'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+
+    const listing = await GiftCardListing.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!listing) {
+      return res.status(404).json({ success: false, message: 'Listing not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Listing status updated to ${status}`,
+      data: listing
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+module.exports = { getAllListings, addListing, deleteListing, updateListingStatus };
