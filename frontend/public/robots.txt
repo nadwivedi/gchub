@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://gchub.com/sitemap.xml
+Sitemap: https://gchub.in/sitemap.xml

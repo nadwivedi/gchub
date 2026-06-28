@@ -5,20 +5,21 @@ import { Users as UsersIcon, Search, ToggleLeft, ToggleRight, Activity, External
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
 
-function timeAgo(date) {
+function formatExactDateTime(date) {
   if (!date) return 'Never'
-  const now = new Date()
-  const past = new Date(date)
-  const diffMs = now - past
-  const diffSec = Math.floor(diffMs / 1000)
-  if (diffSec < 60) return 'Just now'
-  const diffMin = Math.floor(diffSec / 60)
-  if (diffMin < 60) return `${diffMin}m ago`
-  const diffHr = Math.floor(diffMin / 60)
-  if (diffHr < 24) return `${diffHr}h ago`
-  const diffDays = Math.floor(diffHr / 24)
-  if (diffDays < 30) return `${diffDays}d ago`
-  return past.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+  const d = new Date(date)
+  
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  
+  let hours = d.getHours()
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12
+  hours = hours ? hours : 12 // the hour '0' should be '12'
+  
+  return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`
 }
 
 const Users = () => {
@@ -144,8 +145,8 @@ const Users = () => {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5" title={user.lastActivity ? new Date(user.lastActivity).toLocaleString('en-IN') : ''}>
                         <Activity className="h-3.5 w-3.5 text-gray-400" />
-                        <span className={`text-xs ${user.lastActivity ? 'text-gray-600' : 'text-gray-400'}`}>
-                          {timeAgo(user.lastActivity)}
+                        <span className={`text-xs ${user.lastActivity ? 'text-gray-600 font-medium' : 'text-gray-400'}`}>
+                          {formatExactDateTime(user.lastActivity)}
                         </span>
                       </div>
                     </td>
