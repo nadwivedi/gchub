@@ -413,7 +413,7 @@ const impersonateUser = async (req, res) => {
       maxAge: 2 * 60 * 60 * 1000,
     });
 
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://gchub.in';
 
     res.status(200).json({
       success: true,
