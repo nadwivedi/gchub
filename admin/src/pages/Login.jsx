@@ -13,7 +13,7 @@ const Login = () => {
 
   // Redirect if already logged in as admin
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/auth/me`, { withCredentials: true })
+    axios.get(`${BACKEND_URL}/api/auth/me/admin`, { withCredentials: true })
       .then(res => {
         if (res.data.isLoggedIn && res.data.user?.role === 'admin') {
           navigate('/', { replace: true })

@@ -163,13 +163,15 @@ const handelUserLogin = async (req, res) => {
     user.lastActivity = new Date();
     await user.save();
 
+    const isAdmin = user.role === 'admin';
     const token = jwt.sign(
-      { userId: user._id, role: "user" },
+      { userId: user._id, role: isAdmin ? 'admin' : 'user' },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRE || "30d" }
     );
 
-    res.cookie("token", token, {
+    const cookieName = isAdmin ? 'admin_token' : 'token';
+    res.cookie(cookieName, token, {
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       secure: process.env.NODE_ENV === "production",
@@ -198,6 +200,11 @@ const handelUserLogin = async (req, res) => {
 const handleUserLogout = async (req, res) => {
   try {
     res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.clearCookie("admin_token", {
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       secure: process.env.NODE_ENV === "production",
@@ -308,19 +315,15 @@ const submitResetPassOTP = async (req, res) => {
 };
 
 const isloggedin = async (req, res) => {
-  const token = req.cookies?.token;
-  if (!token) {
-    return res
-      .status(401)
-      .json({ isLoggedIn: false, message: "No token found" });
-  }
   try {
-    const token = req.cookies.token;
+    const token = req.cookies?.token;
+
     if (!token) {
       return res
         .status(401)
         .json({ isLoggedIn: false, message: "No token found" });
     }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await userModel
       .findById(decoded.userId)
@@ -332,7 +335,37 @@ const isloggedin = async (req, res) => {
         .json({ isLoggedIn: false, message: "User not found" });
     }
 
-    // Convert to object for manipulation
+    const userObj = user.toObject();
+
+    return res.status(200).json({ isLoggedIn: true, user: userObj });
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ isLoggedIn: false, message: "Invalid or expired token" });
+  }
+};
+
+const isAdminLoggedIn = async (req, res) => {
+  try {
+    const token = req.cookies?.admin_token;
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ isLoggedIn: false, message: "No admin token found" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await userModel
+      .findById(decoded.userId)
+      .select("-password -resetOtp -otpExpiresAt");
+
+    if (!user || user.role !== 'admin') {
+      return res
+        .status(401)
+        .json({ isLoggedIn: false, message: "Not authorized as admin" });
+    }
+
     const userObj = user.toObject();
 
     return res.status(200).json({ isLoggedIn: true, user: userObj });
@@ -564,6 +597,7 @@ module.exports = {
   generateResetPassOTP,
   submitResetPassOTP,
   isloggedin,
+  isAdminLoggedIn,
   handleGoogleAuth,
   updateMobileNumber,
   updateProfile,

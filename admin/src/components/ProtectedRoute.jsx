@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/api/auth/me`, { withCredentials: true })
+        const res = await axios.get(`${BACKEND_URL}/api/auth/me/admin`, { withCredentials: true })
         if (res.data.isLoggedIn && res.data.user?.role === 'admin') {
           setStatus('authorized')
         } else {

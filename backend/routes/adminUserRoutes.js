@@ -7,7 +7,8 @@ const {
   deleteUser,
   getUserStats,
   resetUserPassword,
-  toggleUserStatus
+  toggleUserStatus,
+  impersonateUser
 } = require('../controllers/adminUserController');
 
 const { protect, authorize } = require('../middleware/auth');
@@ -29,5 +30,6 @@ router.route('/:id')
 
 router.post('/:id/reset-password', resetUserPassword);
 router.patch('/:id/toggle-status', toggleUserStatus);
+router.post('/:id/impersonate', protect, authorize('admin'), impersonateUser);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const {
   generateResetPassOTP,
   submitResetPassOTP,
   isloggedin,
+  isAdminLoggedIn,
   handleGoogleAuth,
   updateMobileNumber,
   updateProfile,
@@ -26,6 +27,7 @@ router.post('/google', handleGoogleAuth);
 
 // Check authentication status
 router.get('/me', isloggedin);
+router.get('/me/admin', isAdminLoggedIn);
 
 // Update mobile number (for Google users without phone)
 router.put('/mobile', updateMobileNumber);

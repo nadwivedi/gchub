@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Users as UsersIcon, Search, ToggleLeft, ToggleRight, Activity } from 'lucide-react'
+import { Users as UsersIcon, Search, ToggleLeft, ToggleRight, Activity, ExternalLink } from 'lucide-react'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
 
@@ -55,6 +55,18 @@ const Users = () => {
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to toggle status')
+    }
+  }
+
+  const handleAccess = async (user) => {
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/admin/users/${user._id}/impersonate`, {}, { withCredentials: true })
+      if (res.data.success) {
+        toast.success(res.data.message)
+        window.open(res.data.data.frontendUrl, '_blank')
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to access account')
     }
   }
 
@@ -139,15 +151,24 @@ const Users = () => {
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{new Date(user.createdAt).toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3">
-                      <button
-                        onClick={() => handleToggleStatus(user)}
-                        className={`p-1.5 rounded-lg transition-colors ${
-                          user.isActive ? 'text-red-500 hover:bg-red-50' : 'text-green-500 hover:bg-green-50'
-                        }`}
-                        title={user.isActive ? 'Deactivate user' : 'Activate user'}
-                      >
-                        {user.isActive ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleAccess(user)}
+                          className="p-1.5 rounded-lg text-blue-500 hover:bg-blue-50 transition-colors"
+                          title="Access account"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleToggleStatus(user)}
+                          className={`p-1.5 rounded-lg transition-colors ${
+                            user.isActive ? 'text-red-500 hover:bg-red-50' : 'text-green-500 hover:bg-green-50'
+                          }`}
+                          title={user.isActive ? 'Deactivate user' : 'Activate user'}
+                        >
+                          {user.isActive ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
