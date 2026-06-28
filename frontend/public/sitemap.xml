@@ -2,56 +2,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
-    <loc>https://gchub.com/</loc>
+    <loc>https://gchub.in/</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <!-- Sell Voucher Page -->
   <url>
-    <loc>https://gchub.com/sell-voucher</loc>
+    <loc>https://gchub.in/sell-voucher</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <!-- Gift Cards Page -->
   <url>
-    <loc>https://gchub.com/gift-cards</loc>
+    <loc>https://gchub.in/gift-cards</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <!-- Games Page -->
   <url>
-    <loc>https://gchub.com/games</loc>
+    <loc>https://gchub.in/games</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <!-- Blog Page -->
   <url>
-    <loc>https://gchub.com/blog</loc>
+    <loc>https://gchub.in/blog</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- About Page -->
   <url>
-    <loc>https://gchub.com/about</loc>
+    <loc>https://gchub.in/about</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <!-- Contact Page -->
   <url>
-    <loc>https://gchub.com/contact</loc>
+    <loc>https://gchub.in/contact</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <!-- Refund Policy Page -->
   <url>
-    <loc>https://gchub.com/refund-policy</loc>
+    <loc>https://gchub.in/refund-policy</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
