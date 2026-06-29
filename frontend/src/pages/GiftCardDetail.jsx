@@ -12,6 +12,9 @@ const brandData = {
     description: 'Get Google Play codes at the best prices. Instant delivery via email.',
     vouchers: [
       { _id: 'google-play-10', denom: 10, price: 8, originalPrice: 10 },
+      { _id: 'google-play-50', denom: 50, price: 45, originalPrice: 50 },
+      { _id: 'google-play-100', denom: 100, price: 90, originalPrice: 100 },
+      { _id: 'google-play-200', denom: 200, price: 150, originalPrice: 200 },
       { _id: 'google-play-400', denom: 400, price: 349, originalPrice: 400 },
       { _id: 'google-play-520', denom: 520, price: 400, originalPrice: 520 },
       { _id: 'google-play-650', denom: 650, price: 500, originalPrice: 650, stockQuantity: 0 },
