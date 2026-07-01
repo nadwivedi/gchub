@@ -30,6 +30,7 @@ const GiftCards = () => {
 
   const [showInactive, setShowInactive] = useState(true) // show inactive variants by default in admin
   const [addCodeForm, setAddCodeForm] = useState({})
+  const [showAddCodeModal, setShowAddCodeModal] = useState(null) // productId of variant to add code to
 
   const [search, setSearch] = useState('')
 
@@ -87,8 +88,10 @@ const GiftCards = () => {
     }
   }
 
-  const handleAddCode = async (product) => {
-    const form = addCodeForm[product._id]
+  const handleAddCode = async () => {
+    const productId = showAddCodeModal
+    const product = products.find(p => p._id === productId)
+    const form = addCodeForm[productId]
     if (!form?.code || !form?.expiry) return toast.error('Code and expiry are required')
 
     try {
@@ -102,10 +105,11 @@ const GiftCards = () => {
       }
       const res = await axios.post(`${BACKEND_URL}/api/admin/gift-cards`, payload, { withCredentials: true })
       if (res.data.success) {
-        toast.success('Code added & stock synced!')
-        setAddCodeForm(prev => ({ ...prev, [product._id]: { ...prev[product._id], code: '', pin: '' } }))
-        // Refresh codes for this variant & product stock
-        fetchCodesForVariant(product._id)
+        toast.success('Code added!')
+        setAddCodeForm(prev => ({ ...prev, [productId]: { ...prev[productId], code: '', pin: '' } }))
+        setShowAddCodeModal(null)
+        // Refresh codes for this variant
+        fetchCodesForVariant(productId)
         fetchData()
       }
     } catch (err) {
@@ -349,112 +353,93 @@ const GiftCards = () => {
                     </button>
 
                     {/* Edit / Save / Cancel */}
-                    {isEditing ? (
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => setEditingVariant(null)} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg"><X className="w-4 h-4" /></button>
-                        <button onClick={() => handleSaveVariant(p._id)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg"><Save className="w-4 h-4" /></button>
-                      </div>
-                    ) : (
-                      <button onClick={() => handleEditClick(p)} className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg"><Settings className="w-4 h-4" /></button>
-                    )}
+                    <div className="flex items-center gap-1">
+                      <button 
+                        onClick={() => setShowAddCodeModal(p._id)} 
+                        className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-lg flex items-center gap-1 text-xs font-bold mr-2"
+                        title="Add Code to Variant"
+                      >
+                        <Plus className="w-4 h-4" /> Add Code
+                      </button>
+                      
+                      {isEditing ? (
+                        <>
+                          <button onClick={() => setEditingVariant(null)} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg"><X className="w-4 h-4" /></button>
+                          <button onClick={() => handleSaveVariant(p._id)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg"><Save className="w-4 h-4" /></button>
+                        </>
+                      ) : (
+                        <button onClick={() => handleEditClick(p)} className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg"><Settings className="w-4 h-4" /></button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Expanded: Codes panel */}
                   {isExpanded && (
                     <div className="border-t border-dashed border-gray-200 bg-slate-50 px-8 py-5 space-y-4">
-                      {/* Add code form */}
-                      <div className="bg-white rounded-lg border border-dashed border-indigo-300 p-4">
-                        <h4 className="text-sm font-bold text-indigo-700 mb-3 flex items-center gap-2"><Key className="w-4 h-4" /> Add Redeem Code for this Variant</h4>
-                        <div className="flex items-end gap-3">
-                          <div className="flex-1">
-                            <label className="block text-xs text-gray-500 mb-1">Code *</label>
-                            <input
-                              type="text"
-                              value={codeForm.code || ''}
-                              onChange={e => setAddCodeForm(prev => ({ ...prev, [p._id]: { ...prev[p._id], code: e.target.value } }))}
-                              className="w-full px-3 py-2 text-sm font-mono border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
-                              placeholder="XXXX-XXXX-XXXX-XXXX"
-                            />
-                          </div>
-                          <div className="w-32">
-                            <label className="block text-xs text-gray-500 mb-1">PIN (optional)</label>
-                            <input
-                              type="text"
-                              value={codeForm.pin || ''}
-                              onChange={e => setAddCodeForm(prev => ({ ...prev, [p._id]: { ...prev[p._id], pin: e.target.value } }))}
-                              className="w-full px-3 py-2 text-sm font-mono border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
-                              placeholder="1234"
-                            />
-                          </div>
-                          <div className="w-44">
-                            <label className="block text-xs text-gray-500 mb-1 flex items-center gap-1"><Calendar className="w-3 h-3" /> Expiry *</label>
-                            <input
-                              type="date"
-                              value={codeForm.expiry || ''}
-                              onChange={e => setAddCodeForm(prev => ({ ...prev, [p._id]: { ...prev[p._id], expiry: e.target.value } }))}
-                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
-                            />
-                          </div>
-                          <button
-                            onClick={() => handleAddCode(p)}
-                            className="bg-indigo-600 text-white text-sm font-semibold py-2 px-5 rounded-md hover:bg-indigo-700 whitespace-nowrap"
-                          >
-                            Add Code
-                          </button>
-                        </div>
-                      </div>
-
                       {/* Codes Table */}
                       {codeLoadingFor === p._id ? (
                         <div className="text-center py-4 text-gray-400 text-sm">Loading codes…</div>
-                      ) : codes.length === 0 ? (
-                        <div className="text-center py-4 text-gray-400 text-sm">No codes for this variant yet. Add one above.</div>
                       ) : (
                         <div>
-                          <div className="flex gap-4 mb-3 text-xs font-semibold">
-                            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">{activeCodes.length} Active</span>
-                            <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{soldCodes.length} Sold</span>
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="flex gap-4 text-xs font-semibold">
+                              <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">{activeCodes.length} Active</span>
+                              <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{soldCodes.length} Sold</span>
+                            </div>
+                            <button
+                              onClick={() => setShowAddCodeModal(p._id)}
+                              className="flex items-center gap-1.5 text-xs font-semibold bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg hover:bg-indigo-200"
+                            >
+                              <Plus className="w-3.5 h-3.5" /> Add Code
+                            </button>
                           </div>
-                          <table className="w-full text-sm border-collapse">
-                            <thead>
-                              <tr className="text-left text-xs uppercase tracking-wider text-gray-400">
-                                <th className="pb-2 pr-4">Code</th>
-                                <th className="pb-2 pr-4">PIN</th>
-                                <th className="pb-2 pr-4">Expiry</th>
-                                <th className="pb-2 pr-4">Status</th>
-                                <th className="pb-2 pr-4">Sold To</th>
-                                <th className="pb-2 text-right">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                              {codes.map(c => (
-                                <tr key={c._id} className="hover:bg-white transition-colors">
-                                  <td className="py-2 pr-4 font-mono text-xs">
-                                    <div className="flex items-center gap-2">
-                                      <span className="bg-gray-100 px-2 py-0.5 rounded">{c.code}</span>
-                                      <button onClick={() => { navigator.clipboard.writeText(c.code); toast.success('Copied!') }} className="text-gray-400 hover:text-gray-700"><Copy className="w-3 h-3" /></button>
-                                    </div>
-                                  </td>
-                                  <td className="py-2 pr-4 font-mono text-xs text-gray-500">{c.pin || '—'}</td>
-                                  <td className="py-2 pr-4 text-xs text-gray-500">{new Date(c.expiry).toLocaleDateString('en-IN')}</td>
-                                  <td className="py-2 pr-4">
-                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase ${
-                                      c.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
-                                      c.status === 'sold' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'
-                                    }`}>{c.status}</span>
-                                  </td>
-                                  <td className="py-2 pr-4 text-xs text-gray-500">
-                                    {c.soldTo ? <span>{c.soldTo.email}</span> : '—'}
-                                  </td>
-                                  <td className="py-2 text-right">
-                                    <button onClick={() => handleDeleteCode(c._id, p._id)} className="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded">
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                  </td>
+                          
+                          {codes.length === 0 ? (
+                            <div className="text-center py-8 text-gray-400 text-sm border-2 border-dashed border-gray-200 rounded-lg bg-white">
+                              No codes have been added to this variant yet.
+                            </div>
+                          ) : (
+                            <table className="w-full text-sm border-collapse">
+                              <thead>
+                                <tr className="text-left text-xs uppercase tracking-wider text-gray-400">
+                                  <th className="pb-2 pr-4">Code</th>
+                                  <th className="pb-2 pr-4">PIN</th>
+                                  <th className="pb-2 pr-4">Expiry</th>
+                                  <th className="pb-2 pr-4">Status</th>
+                                  <th className="pb-2 pr-4">Sold To</th>
+                                  <th className="pb-2 text-right">Action</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody className="divide-y divide-gray-100">
+                                {codes.map(c => (
+                                  <tr key={c._id} className="hover:bg-white transition-colors">
+                                    <td className="py-2 pr-4 font-mono text-xs">
+                                      <div className="flex items-center gap-2">
+                                        <span className="bg-gray-100 px-2 py-0.5 rounded">{c.code}</span>
+                                        <button onClick={() => { navigator.clipboard.writeText(c.code); toast.success('Copied!') }} className="text-gray-400 hover:text-gray-700"><Copy className="w-3 h-3" /></button>
+                                      </div>
+                                    </td>
+                                    <td className="py-2 pr-4 font-mono text-xs text-gray-500">{c.pin || '—'}</td>
+                                    <td className="py-2 pr-4 text-xs text-gray-500">{new Date(c.expiry).toLocaleDateString('en-IN')}</td>
+                                    <td className="py-2 pr-4">
+                                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase ${
+                                        c.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                                        c.status === 'sold' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'
+                                      }`}>{c.status}</span>
+                                    </td>
+                                    <td className="py-2 pr-4 text-xs text-gray-500">
+                                      {c.soldTo ? <span>{c.soldTo.email}</span> : '—'}
+                                    </td>
+                                    <td className="py-2 text-right">
+                                      <button onClick={() => handleDeleteCode(c._id, p._id)} className="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded">
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
                         </div>
                       )}
                     </div>
@@ -550,6 +535,70 @@ const GiftCards = () => {
       {renderTabs()}
       {activeTab === 'manage' && renderManage()}
       {activeTab === 'user_listings' && renderUserListings()}
+
+      {/* Add Code Modal */}
+      {showAddCodeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <Key className="w-4 h-4 text-indigo-600" />
+                Add Redeem Code
+              </h3>
+              <button onClick={() => setShowAddCodeModal(null)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Code *</label>
+                <input
+                  type="text"
+                  value={addCodeForm[showAddCodeModal]?.code || ''}
+                  onChange={e => setAddCodeForm(prev => ({ ...prev, [showAddCodeModal]: { ...prev[showAddCodeModal], code: e.target.value } }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono"
+                  placeholder="XXXX-XXXX-XXXX-XXXX"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">PIN (optional)</label>
+                <input
+                  type="text"
+                  value={addCodeForm[showAddCodeModal]?.pin || ''}
+                  onChange={e => setAddCodeForm(prev => ({ ...prev, [showAddCodeModal]: { ...prev[showAddCodeModal], pin: e.target.value } }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono"
+                  placeholder="1234"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1">
+                  <Calendar className="w-4 h-4" /> Expiry *
+                </label>
+                <input
+                  type="date"
+                  value={addCodeForm[showAddCodeModal]?.expiry || ''}
+                  onChange={e => setAddCodeForm(prev => ({ ...prev, [showAddCodeModal]: { ...prev[showAddCodeModal], expiry: e.target.value } }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+              <button
+                onClick={() => setShowAddCodeModal(null)}
+                className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddCode}
+                className="px-4 py-2 text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg transition-colors"
+              >
+                Save Code
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
