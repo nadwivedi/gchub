@@ -324,67 +324,82 @@ const GiftCards = () => {
               return (
                 <div key={p._id}>
                   {/* Variant row */}
-                  <div className="px-5 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
-                    {/* Expand toggle */}
-                    <button onClick={() => handleToggleExpand(p._id)} className="text-gray-400 hover:text-indigo-500">
-                      {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                    </button>
+                  <div className="px-4 py-4 flex flex-col md:flex-row md:items-center gap-3 md:gap-4 hover:bg-gray-50 transition-colors">
+                    
+                    {/* Top Section for Mobile: Expand + Name */}
+                    <div className="flex items-start md:items-center gap-3 w-full md:w-auto flex-1">
+                      {/* Expand toggle */}
+                      <button onClick={() => handleToggleExpand(p._id)} className="text-gray-400 hover:text-indigo-500 mt-1 md:mt-0 flex-shrink-0">
+                        {isExpanded ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+                      </button>
 
-                    {/* Denomination */}
-                    <div className="flex-1 flex items-center gap-2">
-                      <span className={`font-bold ${p.isActive ? 'text-gray-800' : 'text-gray-400'}`}>{selectedBrand} — ₹{p.originalPrice || p.price}</span>
-                      {!p.isActive && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-600 px-2 py-0.5 rounded-full border border-red-200">Inactive</span>
-                      )}
-                      <span className="text-xs text-gray-400">{p.stockQuantity} in stock</span>
+                      {/* Denomination */}
+                      <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`font-bold ${p.isActive ? 'text-gray-800' : 'text-gray-400'}`}>{selectedBrand} — ₹{p.originalPrice || p.price}</span>
+                          {!p.isActive && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-600 px-2 py-0.5 rounded-full border border-red-200">Inactive</span>
+                          )}
+                          <button onClick={() => !isEditing && handleToggleActive(p)} title={p.isActive ? 'Active — click to deactivate' : 'Inactive — click to activate'} className="ml-1 mt-0.5 disabled:opacity-50" disabled={isEditing}>
+                            {p.isActive ? <ToggleRight className="w-6 h-6 text-emerald-500" /> : <ToggleLeft className="w-6 h-6 text-gray-300" />}
+                          </button>
+                        </div>
+                        <span className="text-xs text-gray-400">{p.stockQuantity} in stock</span>
+                      </div>
                     </div>
 
-                    {/* Prices */}
-                    {isEditing ? (
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <label className="block text-[10px] text-gray-500 mb-0.5">Original ₹</label>
-                          <input type="number" value={editForm.originalPrice} onChange={e => setEditForm({...editForm, originalPrice: e.target.value})} className="w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] text-gray-500 mb-0.5">Sell Price ₹</label>
-                          <input type="number" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} className="w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] text-gray-500 mb-0.5">Stock Qty</label>
-                          <input type="number" value={editForm.stockQuantity} onChange={e => setEditForm({...editForm, stockQuantity: e.target.value})} className="w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-gray-400 line-through">₹{p.originalPrice}</span>
-                        <span className="text-emerald-600 font-bold text-base">₹{p.price}</span>
-                      </div>
-                    )}
-
-                    {/* Status toggle */}
-                    <button onClick={() => !isEditing && handleToggleActive(p)} title={p.isActive ? 'Active — click to deactivate' : 'Inactive — click to activate'}>
-                      {p.isActive ? <ToggleRight className="w-7 h-7 text-emerald-500" /> : <ToggleLeft className="w-7 h-7 text-gray-300" />}
-                    </button>
-
-                    {/* Edit / Save / Cancel */}
-                    <div className="flex items-center gap-1">
-                      <button 
-                        onClick={() => handleOpenAddCodeModal(p._id)} 
-                        className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-lg flex items-center gap-1 text-xs font-bold mr-2"
-                        title="Add Code to Variant"
-                      >
-                        <Plus className="w-4 h-4" /> Add Code
-                      </button>
+                    {/* Bottom Section for Mobile: Prices + Actions */}
+                    <div className="flex flex-wrap items-center justify-between w-full md:w-auto gap-4 pl-8 md:pl-0">
                       
+                      {/* Prices */}
                       {isEditing ? (
-                        <>
-                          <button onClick={() => setEditingVariant(null)} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg"><X className="w-4 h-4" /></button>
-                          <button onClick={() => handleSaveVariant(p._id)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg"><Save className="w-4 h-4" /></button>
-                        </>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <div>
+                            <label className="block text-[10px] text-gray-500 mb-0.5">Original ₹</label>
+                            <input type="number" value={editForm.originalPrice} onChange={e => setEditForm({...editForm, originalPrice: e.target.value})} className="w-16 md:w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-500 mb-0.5">Sell ₹</label>
+                            <input type="number" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} className="w-16 md:w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-500 mb-0.5">Stock</label>
+                            <input type="number" value={editForm.stockQuantity} onChange={e => setEditForm({...editForm, stockQuantity: e.target.value})} className="w-16 md:w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
+                          </div>
+                        </div>
                       ) : (
-                        <button onClick={() => handleEditClick(p)} className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg"><Settings className="w-4 h-4" /></button>
+                        <div className="flex items-center gap-3 text-sm">
+                          <span className="text-gray-400 line-through">₹{p.originalPrice}</span>
+                          <span className="text-emerald-600 font-bold text-base">₹{p.price}</span>
+                        </div>
                       )}
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 md:gap-4 ml-auto">
+
+
+                        {/* Edit / Save / Cancel */}
+                        <div className="flex items-center gap-1 bg-white border border-gray-100 shadow-sm rounded-lg p-0.5">
+                          {!isEditing && (
+                            <button 
+                              onClick={() => handleOpenAddCodeModal(p._id)} 
+                              className="px-2 py-1 text-indigo-600 hover:bg-indigo-50 rounded flex items-center gap-1 text-xs font-bold"
+                              title="Add Code to Variant"
+                            >
+                              <Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Add Code</span>
+                            </button>
+                          )}
+                          
+                          {isEditing ? (
+                            <>
+                              <button onClick={() => setEditingVariant(null)} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded"><X className="w-4 h-4" /></button>
+                              <button onClick={() => handleSaveVariant(p._id)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded"><Save className="w-4 h-4" /></button>
+                            </>
+                          ) : (
+                            <button onClick={() => handleEditClick(p)} className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded"><Settings className="w-4 h-4" /></button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -414,46 +429,48 @@ const GiftCards = () => {
                               No codes have been added to this variant yet.
                             </div>
                           ) : (
-                            <table className="w-full text-sm border-collapse">
-                              <thead>
-                                <tr className="text-left text-xs uppercase tracking-wider text-gray-400">
-                                  <th className="pb-2 pr-4">Code</th>
-                                  <th className="pb-2 pr-4">PIN</th>
-                                  <th className="pb-2 pr-4">Expiry</th>
-                                  <th className="pb-2 pr-4">Status</th>
-                                  <th className="pb-2 pr-4">Sold To</th>
-                                  <th className="pb-2 text-right">Action</th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-gray-100">
-                                {codes.map(c => (
-                                  <tr key={c._id} className="hover:bg-white transition-colors">
-                                    <td className="py-2 pr-4 font-mono text-xs">
-                                      <div className="flex items-center gap-2">
-                                        <span className="bg-gray-100 px-2 py-0.5 rounded">{c.code}</span>
-                                        <button onClick={() => { navigator.clipboard.writeText(c.code); toast.success('Copied!') }} className="text-gray-400 hover:text-gray-700"><Copy className="w-3 h-3" /></button>
-                                      </div>
-                                    </td>
-                                    <td className="py-2 pr-4 font-mono text-xs text-gray-500">{c.pin || '—'}</td>
-                                    <td className="py-2 pr-4 text-xs text-gray-500">{new Date(c.expiry).toLocaleDateString('en-IN')}</td>
-                                    <td className="py-2 pr-4">
-                                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase ${
-                                        c.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
-                                        c.status === 'sold' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'
-                                      }`}>{c.status}</span>
-                                    </td>
-                                    <td className="py-2 pr-4 text-xs text-gray-500">
-                                      {c.soldTo ? <span>{c.soldTo.email}</span> : '—'}
-                                    </td>
-                                    <td className="py-2 text-right">
-                                      <button onClick={() => handleDeleteCode(c._id, p._id)} className="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded">
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                      </button>
-                                    </td>
+                            <div className="overflow-x-auto pb-2">
+                              <table className="w-full text-sm border-collapse min-w-[500px]">
+                                <thead>
+                                  <tr className="text-left text-xs uppercase tracking-wider text-gray-400">
+                                    <th className="pb-2 pr-4">Code</th>
+                                    <th className="pb-2 pr-4">PIN</th>
+                                    <th className="pb-2 pr-4">Expiry</th>
+                                    <th className="pb-2 pr-4">Status</th>
+                                    <th className="pb-2 pr-4">Sold To</th>
+                                    <th className="pb-2 text-right">Action</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                  {codes.map(c => (
+                                    <tr key={c._id} className="hover:bg-white transition-colors">
+                                      <td className="py-2 pr-4 font-mono text-xs">
+                                        <div className="flex items-center gap-2">
+                                          <span className="bg-gray-100 px-2 py-0.5 rounded">{c.code}</span>
+                                          <button onClick={() => { navigator.clipboard.writeText(c.code); toast.success('Copied!') }} className="text-gray-400 hover:text-gray-700"><Copy className="w-3 h-3" /></button>
+                                        </div>
+                                      </td>
+                                      <td className="py-2 pr-4 font-mono text-xs text-gray-500">{c.pin || '—'}</td>
+                                      <td className="py-2 pr-4 text-xs text-gray-500">{new Date(c.expiry).toLocaleDateString('en-IN')}</td>
+                                      <td className="py-2 pr-4">
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase ${
+                                          c.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                                          c.status === 'sold' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'
+                                        }`}>{c.status}</span>
+                                      </td>
+                                      <td className="py-2 pr-4 text-xs text-gray-500">
+                                        {c.soldTo ? <span>{c.soldTo.email}</span> : '—'}
+                                      </td>
+                                      <td className="py-2 text-right">
+                                        <button onClick={() => handleDeleteCode(c._id, p._id)} className="text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded">
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
                           )}
                         </div>
                       )}
