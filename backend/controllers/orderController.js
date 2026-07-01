@@ -467,10 +467,15 @@ const verifyPayment = async (req, res) => {
       order.razorpaySignature = razorpay_signature;
 
       // Assign gift card redeem codes for digital gift card items
+      // Assign gift card redeem codes for digital gift card items
       const giftCodes = [];
+      let totalRequiredCodes = 0;
+
       for (const item of order.items) {
         // Detect gift card items by checking the category
         if (item.category === 'gift-cards' || (!String(item.productId).match(/^[0-9a-fA-F]{24}$/))) {
+          totalRequiredCodes += item.quantity;
+          
           let balance = parseFloat(item.originalPrice || item.productPrice);
           let brandName = item.productBrand;
 
@@ -485,66 +490,65 @@ const verifyPayment = async (req, res) => {
               .join(' ');
           }
 
-          // Find an available admin-listed gift card - prefer matching by productId for precision
-          let availableListing = null;
-          if (String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
-            // Match by exact product ID first
-            availableListing = await GiftCardListing.findOne({
-              productId: item.productId,
-              status: 'active',
-              listedBy: 'admin'
-            });
-          }
-          // Fallback: match by brand + balance (handles old orders & user-listed codes)
-          if (!availableListing) {
-            availableListing = await GiftCardListing.findOne({
-              brand: brandName,
-              balance: balance,
-              status: 'active',
-              listedBy: 'admin'
-            });
-          }
-
-          if (availableListing) {
-            // Mark as sold
-            availableListing.status = 'sold';
-            if (order.user) {
-              availableListing.soldTo = order.user;
-            } else if (order.customerInfo && order.customerInfo.email) {
-              // If guest checkout, try to find user by email or leave empty
+          // Loop for the quantity purchased of this specific item
+          for (let q = 0; q < item.quantity; q++) {
+            // Find an available admin-listed gift card - prefer matching by productId for precision
+            let availableListing = null;
+            if (String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
+              // Match by exact product ID first
+              availableListing = await GiftCardListing.findOne({
+                productId: item.productId,
+                status: 'active',
+                listedBy: 'admin'
+              });
             }
-            await availableListing.save();
+            // Fallback: match by brand + balance (handles old orders & user-listed codes)
+            if (!availableListing) {
+              availableListing = await GiftCardListing.findOne({
+                brand: brandName,
+                balance: balance,
+                status: 'active',
+                listedBy: 'admin'
+              });
+            }
 
-            giftCodes.push({
-              productId: item.productId,
-              brand: availableListing.brand,
-              code: availableListing.code,
-              pin: availableListing.pin || null,
-              balance: availableListing.balance,
-              listingId: availableListing._id
-            });
+            if (availableListing) {
+              // Mark as sold
+              availableListing.status = 'sold';
+              if (order.user) {
+                availableListing.soldTo = order.user;
+              } else if (order.customerInfo && order.customerInfo.email) {
+                // If guest checkout, try to find user by email or leave empty
+              }
+              await availableListing.save();
+
+              giftCodes.push({
+                productId: item.productId,
+                brand: availableListing.brand,
+                code: availableListing.code,
+                pin: availableListing.pin || null,
+                balance: availableListing.balance,
+                listingId: availableListing._id
+              });
+            }
+            // If no code found for this iteration, we do NOT fail. We just don't add to giftCodes.
           }
-          // If no code found, we do NOT fail - order remains confirmed but status will be set to pending_delivery
         }
       }
-
-      // Count how many gift card items we have vs how many codes were assigned
-      const giftCardItems = order.items.filter(i => i.category === 'gift-cards' || !String(i.productId).match(/^[0-9a-fA-F]{24}$/));
-      const allCodesAssigned = giftCodes.length >= giftCardItems.length;
 
       if (giftCodes.length > 0) {
         order.giftCodes = giftCodes;
       }
 
-      if (giftCardItems.length > 0) {
-        // If all gift card codes have been assigned, mark as delivered
-        if (allCodesAssigned) {
+      if (totalRequiredCodes > 0) {
+        // If all required gift card codes have been assigned, mark as delivered
+        if (giftCodes.length >= totalRequiredCodes) {
           order.status = 'delivered';
           order.deliveryDate = new Date();
         } else {
           // Some or all codes are missing - mark as pending delivery
           order.status = 'pending';
-          console.log(`Order ${order._id} has gift card items but insufficient codes. Marked as pending.`);
+          console.log(`Order ${order._id} requires ${totalRequiredCodes} codes but only ${giftCodes.length} found. Marked as pending.`);
         }
       }
 
