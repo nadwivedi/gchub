@@ -19,13 +19,13 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['e-commerce', 'gaming', 'food-dining', 'fashion-lifestyle', 'travel-entertainment']
+    enum: ['e-commerce', 'gaming', 'food-dining', 'fashion-lifestyle', 'travel-entertainment', 'gift-cards']
   },
   subCategory: {
     type: String,
     required: true,
     enum: [
-      'shopping', 'gaming-credits', 'subscription', 'food-beverage', 'clothing', 'movies-music', 'travel'
+      'shopping', 'gaming-credits', 'subscription', 'food-beverage', 'clothing', 'movies-music', 'travel', 'digital-vouchers'
     ]
   },
 

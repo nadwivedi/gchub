@@ -1,83 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
 import { useSEO } from '../hooks/useSEO'
-
-const vouchers = [
-  {
-    _id: 'google-play-10',
-    name: 'Google Play Code - ₹10 Voucher',
-    price: 8,
-    originalPrice: 10,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹10 Google Play Gift Card at just ₹8',
-  },
-  {
-    _id: 'google-play-50',
-    name: 'Google Play Code - ₹50 Voucher',
-    price: 45,
-    originalPrice: 50,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹50 Google Play Gift Card at just ₹45',
-  },
-  {
-    _id: 'google-play-100',
-    name: 'Google Play Code - ₹100 Voucher',
-    price: 90,
-    originalPrice: 100,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹100 Google Play Gift Card at just ₹90',
-  },
-  {
-    _id: 'google-play-200',
-    name: 'Google Play Code - ₹200 Voucher',
-    price: 150,
-    originalPrice: 200,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹200 Google Play Gift Card at just ₹150',
-  },
-  {
-    _id: 'google-play-400',
-    name: 'Google Play Code - ₹400 Voucher',
-    price: 349,
-    originalPrice: 400,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹400 Google Play Gift Card at just ₹349',
-  },
-  {
-    _id: 'google-play-520',
-    name: 'Google Play Code - ₹520 Voucher',
-    price: 400,
-    originalPrice: 520,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹520 Google Play Gift Card at just ₹400',
-  },
-  {
-    _id: 'google-play-650',
-    name: 'Google Play Code - ₹650 Voucher',
-    price: 500,
-    originalPrice: 650,
-    brand: 'Google Play',
-    category: 'gift-cards',
-    images: ['/products/google%20play.avif'],
-    description: '₹650 Google Play Gift Card at just ₹500',
-    stockQuantity: 0,
-  },
-]
 
 const formatPrice = (price) => {
   return new Intl.NumberFormat('en-IN', {
@@ -94,8 +20,30 @@ const calculateDiscount = (original, current) => {
 
 const GiftCardGooglePlay = () => {
   const { addToCart } = useCart()
-  const { isAuthenticated } = useContext(AppContext)
+  const { isAuthenticated, BACKEND_URL } = useContext(AppContext)
   const navigate = useNavigate()
+  
+  const [vouchers, setVouchers] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/products/category/gift-cards?brand=Google Play&limit=50`)
+        const data = await response.json()
+        if (data.success) {
+          // Sort vouchers by price ascending
+          const sorted = data.data.sort((a, b) => a.price - b.price)
+          setVouchers(sorted)
+        }
+      } catch (error) {
+        console.error('Error fetching vouchers:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchVouchers()
+  }, [BACKEND_URL])
 
   useSEO({
     title: 'Google Play Gift Cards | Buy Online & Save | GCHub',
@@ -111,7 +59,7 @@ const GiftCardGooglePlay = () => {
         "position": index + 1,
         "item": {
           "@type": "Product",
-          "name": v.name,
+          "name": v.seoTitle || v.name,
           "description": v.description,
           "offers": {
             "@type": "Offer",
@@ -160,9 +108,18 @@ const GiftCardGooglePlay = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
-          {vouchers.map((voucher) => {
-            const discountPercent = calculateDiscount(voucher.originalPrice, voucher.price)
-            const savings = voucher.originalPrice - voucher.price
+          {loading ? (
+            <div className="col-span-full flex justify-center py-10">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+            </div>
+          ) : vouchers.length === 0 ? (
+            <div className="col-span-full text-center text-slate-500 py-10">
+              No Google Play Gift Cards available right now.
+            </div>
+          ) : (
+            vouchers.map((voucher) => {
+              const discountPercent = calculateDiscount(voucher.originalPrice, voucher.price)
+              const savings = voucher.originalPrice - voucher.price
 
             return (
               <div
@@ -180,8 +137,8 @@ const GiftCardGooglePlay = () => {
 
                 <div className="aspect-[4/3] sm:aspect-[1.6/1] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
                   <img
-                    src={voucher.images?.[0]}
-                    alt={voucher.name}
+                    src={voucher.images?.[0] || '/products/google%20play.avif'}
+                    alt={voucher.seoTitle || voucher.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${voucher.stockQuantity === 0 ? 'from-slate-900/80 via-slate-900/20' : 'from-black/40 via-transparent'} to-transparent`}></div>
@@ -205,7 +162,7 @@ const GiftCardGooglePlay = () => {
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-bold text-slate-800 mb-1 text-sm sm:text-base leading-tight group-hover:text-emerald-600 transition-colors">
-                      {voucher.name}
+                      {voucher.seoTitle || voucher.name}
                     </h3>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-[10px] sm:text-xs tracking-wider font-extrabold text-emerald-600 uppercase">
@@ -264,7 +221,8 @@ const GiftCardGooglePlay = () => {
                 </div>
               </div>
             )
-          })}
+            })
+          )}
         </div>
       </div>
     </div>

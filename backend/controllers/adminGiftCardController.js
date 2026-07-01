@@ -22,7 +22,7 @@ const getAllListings = async (req, res) => {
 
 const addListing = async (req, res) => {
   try {
-    const { brand, balance, code, expiry, pin } = req.body;
+    const { brand, balance, code, expiry, pin, productId } = req.body;
 
     if (!brand || !balance || !code || !expiry) {
       return res.status(400).json({
@@ -31,7 +31,16 @@ const addListing = async (req, res) => {
       });
     }
 
-    const listing = new GiftCardListing({ user: req.user._id, brand, balance, code, expiry, pin, listedBy: 'admin' });
+    const listing = new GiftCardListing({ 
+      user: req.user._id, 
+      brand, 
+      balance, 
+      code, 
+      expiry, 
+      pin, 
+      listedBy: 'admin',
+      productId: productId || null
+    });
     const saved = await listing.save();
 
     res.status(201).json({
@@ -108,4 +117,25 @@ const updateListingStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAllListings, addListing, deleteListing, updateListingStatus };
+const getListingsByProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const listings = await GiftCardListing.find({ productId })
+      .populate('user', 'fullName email')
+      .populate('soldTo', 'fullName email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: listings.length,
+      data: listings
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+module.exports = { getAllListings, addListing, deleteListing, updateListingStatus, getListingsByProduct };

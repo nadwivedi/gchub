@@ -13,6 +13,10 @@ const orderItemSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Product brand is required']
   },
+  category: {
+    type: String,
+    default: 'product'
+  },
   productImage: {
     type: String,
     default: ''

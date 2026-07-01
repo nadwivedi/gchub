@@ -122,6 +122,7 @@ const createOrder = async (req, res) => {
           productId: product._id.toString(),
           productName: product.name || product.seoTitle,
           productBrand: product.brand || 'Unknown',
+          category: product.category || 'product',
           productImage: product.images?.[0] || product.imageUrl || '',
           productPrice: product.price,
           originalPrice: product.originalPrice || product.price,
@@ -135,6 +136,7 @@ const createOrder = async (req, res) => {
           productId: item.productId,
           productName: item.name || item.productName || item.productId,
           productBrand: item.brand || item.productBrand || 'Digital Goods',
+          category: item.category || 'gift-cards',
           productImage: item.imageUrl || item.productImage || '',
           productPrice: item.price || item.productPrice || 0,
           originalPrice: item.originalPrice || item.price || item.productPrice || 0,
@@ -467,25 +469,41 @@ const verifyPayment = async (req, res) => {
       // Assign gift card redeem codes for digital gift card items
       const giftCodes = [];
       for (const item of order.items) {
-        // Detect gift card items by productId pattern (e.g. 'google-play-10')
-        if (!String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
-          // Parse brand and balance from productId like 'google-play-10'
-          const parts = item.productId.split('-');
-          const balance = parseFloat(parts[parts.length - 1]);
-          // Build brand name: e.g. 'google-play' -> 'Google Play'
-          const brandSlug = parts.slice(0, parts.length - 1).join(' ');
-          const brandName = brandSlug
-            .split(' ')
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
+        // Detect gift card items by checking the category
+        if (item.category === 'gift-cards' || (!String(item.productId).match(/^[0-9a-fA-F]{24}$/))) {
+          let balance = parseFloat(item.originalPrice || item.productPrice);
+          let brandName = item.productBrand;
 
-          // Find an available admin-listed gift card for this brand & balance
-          const availableListing = await GiftCardListing.findOne({
-            brand: brandName,
-            balance: balance,
-            status: 'active',
-            listedBy: 'admin'
-          });
+          // Legacy fallback for old hardcoded item format (e.g. 'google-play-10')
+          if (!String(item.productId).match(/^[0-9a-fA-F]{24}$/) && (!balance || brandName === 'Digital Goods')) {
+            const parts = item.productId.split('-');
+            balance = parseFloat(parts[parts.length - 1]);
+            const brandSlug = parts.slice(0, parts.length - 1).join(' ');
+            brandName = brandSlug
+              .split(' ')
+              .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(' ');
+          }
+
+          // Find an available admin-listed gift card - prefer matching by productId for precision
+          let availableListing = null;
+          if (String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
+            // Match by exact product ID first
+            availableListing = await GiftCardListing.findOne({
+              productId: item.productId,
+              status: 'active',
+              listedBy: 'admin'
+            });
+          }
+          // Fallback: match by brand + balance (handles old orders & user-listed codes)
+          if (!availableListing) {
+            availableListing = await GiftCardListing.findOne({
+              brand: brandName,
+              balance: balance,
+              status: 'active',
+              listedBy: 'admin'
+            });
+          }
 
           if (availableListing) {
             // Mark as sold
@@ -506,13 +524,28 @@ const verifyPayment = async (req, res) => {
               listingId: availableListing._id
             });
           }
+          // If no code found, we do NOT fail - order remains confirmed but status will be set to pending_delivery
         }
       }
 
+      // Count how many gift card items we have vs how many codes were assigned
+      const giftCardItems = order.items.filter(i => i.category === 'gift-cards' || !String(i.productId).match(/^[0-9a-fA-F]{24}$/));
+      const allCodesAssigned = giftCodes.length >= giftCardItems.length;
+
       if (giftCodes.length > 0) {
         order.giftCodes = giftCodes;
-        order.status = 'delivered';
-        order.deliveryDate = new Date();
+      }
+
+      if (giftCardItems.length > 0) {
+        // If all gift card codes have been assigned, mark as delivered
+        if (allCodesAssigned) {
+          order.status = 'delivered';
+          order.deliveryDate = new Date();
+        } else {
+          // Some or all codes are missing - mark as pending delivery
+          order.status = 'pending';
+          console.log(`Order ${order._id} has gift card items but insufficient codes. Marked as pending.`);
+        }
       }
 
       await order.save();
@@ -582,7 +615,7 @@ const verifyPayment = async (req, res) => {
           `;
 
           await transporter.sendMail({
-            from: \`"GCHub" <\${process.env.EMAIL_USER}>\`,
+            from: `"GCHub" <${process.env.EMAIL_USER}>`,
             to: recipientEmail,
             subject: '🎉 Your Digital Voucher Codes from GCHub',
             html: emailHtml

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllListings, addListing, deleteListing, updateListingStatus } = require('../controllers/adminGiftCardController');
+const { getAllListings, addListing, deleteListing, updateListingStatus, getListingsByProduct } = require('../controllers/adminGiftCardController');
 const { protect, authorize } = require('../middleware/auth');
 
 router.use(protect);
@@ -12,5 +12,6 @@ router.route('/')
 
 router.delete('/:id', deleteListing);
 router.patch('/:id/status', updateListingStatus);
+router.get('/product/:productId', getListingsByProduct);
 
 module.exports = router;

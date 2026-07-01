@@ -6,6 +6,11 @@ const giftCardListingSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    default: null
+  },
   brand: {
     type: String,
     required: [true, 'Brand is required'],
