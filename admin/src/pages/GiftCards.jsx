@@ -339,6 +339,10 @@ const GiftCards = () => {
                           <label className="block text-[10px] text-gray-500 mb-0.5">Sell Price ₹</label>
                           <input type="number" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} className="w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
                         </div>
+                        <div>
+                          <label className="block text-[10px] text-gray-500 mb-0.5">Stock Qty</label>
+                          <input type="number" value={editForm.stockQuantity} onChange={e => setEditForm({...editForm, stockQuantity: e.target.value})} className="w-20 px-2 py-1 text-sm border border-gray-300 rounded" />
+                        </div>
                       </div>
                     ) : (
                       <div className="flex items-center gap-4 text-sm">
