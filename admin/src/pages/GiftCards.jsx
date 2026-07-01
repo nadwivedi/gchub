@@ -77,15 +77,22 @@ const GiftCards = () => {
       if (!variantCodes[productId]) {
         fetchCodesForVariant(productId)
       }
-      // Initialize add code form for this variant
-      const product = products.find(p => p._id === productId)
-      const nextYear = new Date()
-      nextYear.setFullYear(nextYear.getFullYear() + 1)
-      setAddCodeForm(prev => ({
-        ...prev,
-        [productId]: { code: '', pin: '', expiry: nextYear.toISOString().split('T')[0] }
-      }))
     }
+  }
+
+  const handleOpenAddCodeModal = (productId) => {
+    setShowAddCodeModal(productId)
+    setAddCodeForm(prev => {
+      if (!prev[productId]?.expiry) {
+        const nextYear = new Date()
+        nextYear.setFullYear(nextYear.getFullYear() + 1)
+        return {
+          ...prev,
+          [productId]: { code: '', pin: '', expiry: nextYear.toISOString().split('T')[0] }
+        }
+      }
+      return prev
+    })
   }
 
   const handleAddCode = async () => {
@@ -106,7 +113,11 @@ const GiftCards = () => {
       const res = await axios.post(`${BACKEND_URL}/api/admin/gift-cards`, payload, { withCredentials: true })
       if (res.data.success) {
         toast.success('Code added!')
-        setAddCodeForm(prev => ({ ...prev, [productId]: { ...prev[productId], code: '', pin: '' } }))
+        
+        const nextYear = new Date()
+        nextYear.setFullYear(nextYear.getFullYear() + 1)
+        setAddCodeForm(prev => ({ ...prev, [productId]: { code: '', pin: '', expiry: nextYear.toISOString().split('T')[0] } }))
+        
         setShowAddCodeModal(null)
         // Refresh codes for this variant
         fetchCodesForVariant(productId)
@@ -359,7 +370,7 @@ const GiftCards = () => {
                     {/* Edit / Save / Cancel */}
                     <div className="flex items-center gap-1">
                       <button 
-                        onClick={() => setShowAddCodeModal(p._id)} 
+                        onClick={() => handleOpenAddCodeModal(p._id)} 
                         className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-lg flex items-center gap-1 text-xs font-bold mr-2"
                         title="Add Code to Variant"
                       >
@@ -391,7 +402,7 @@ const GiftCards = () => {
                               <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{soldCodes.length} Sold</span>
                             </div>
                             <button
-                              onClick={() => setShowAddCodeModal(p._id)}
+                              onClick={() => handleOpenAddCodeModal(p._id)}
                               className="flex items-center gap-1.5 text-xs font-semibold bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg hover:bg-indigo-200"
                             >
                               <Plus className="w-3.5 h-3.5" /> Add Code
