@@ -293,9 +293,7 @@ const ChatBot = () => {
 
       {/* Chat window */}
       {isOpen && (
-        <div className="fixed inset-0 md:bottom-28 md:right-8 md:inset-auto z-[60] w-full md:w-[calc(100vw-2rem)] md:max-w-sm shadow-2xl md:rounded-2xl overflow-hidden flex flex-col bg-white"
-          style={{ height: '100%', maxHeight: '100vh' }}
-        >
+        <div className="fixed inset-0 md:bottom-28 md:right-8 md:top-auto md:left-auto z-[60] w-full md:w-[calc(100vw-2rem)] md:max-w-sm shadow-2xl md:rounded-2xl overflow-hidden flex flex-col bg-white h-full md:h-[600px] md:max-h-[calc(100vh-8rem)]">
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
