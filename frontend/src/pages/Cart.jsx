@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { AppContext } from '../context/AppContext'
-import { Trash2, ShoppingBag, ArrowRight, Plus, Minus, Lock, Tag, Zap } from 'lucide-react'
+import { Trash2, ShoppingBag, ArrowRight, Plus, Minus, Lock, Tag, Zap, Mail, Edit2, Check, User } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 const Cart = () => {
@@ -10,6 +10,16 @@ const Cart = () => {
   const { isAuthenticated, BACKEND_URL, user } = useContext(AppContext)
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [recipientEmail, setRecipientEmail] = useState('')
+  const [recipientName, setRecipientName] = useState('')
+  const [isEditingRecipient, setIsEditingRecipient] = useState(false)
+
+  React.useEffect(() => {
+    if (user && !recipientEmail && !recipientName) {
+      setRecipientEmail(user.email || '')
+      setRecipientName(user.fullName || '')
+    }
+  }, [user])
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
@@ -38,6 +48,10 @@ const Cart = () => {
           city: 'Digital',
           state: 'Digital',
           pincode: '000000'
+        },
+        recipientInfo: {
+          name: recipientName || user?.fullName || 'Guest',
+          email: recipientEmail || user?.email || 'guest@example.com'
         }
       }
 
@@ -334,6 +348,76 @@ const Cart = () => {
               <div className="border-t border-slate-100 mt-4 pt-4 flex justify-between items-baseline">
                 <span className="font-bold text-slate-900 text-base">Total</span>
                 <span className="font-bold text-slate-900 text-xl">{formatPrice(subtotal)}</span>
+              </div>
+
+              {/* Delivery Info */}
+              <div className="mt-5 p-4 bg-amber-50/50 border border-amber-200 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-amber-500" />
+                    Delivery Details
+                  </h3>
+                  {!isEditingRecipient ? (
+                    <button 
+                      onClick={() => setIsEditingRecipient(true)}
+                      className="text-xs text-amber-600 font-semibold hover:text-amber-700 flex items-center gap-1 cursor-pointer"
+                    >
+                      <Edit2 className="w-3 h-3" /> Edit
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => setIsEditingRecipient(false)}
+                      className="text-xs text-green-600 font-semibold hover:text-green-700 flex items-center gap-1 cursor-pointer"
+                    >
+                      <Check className="w-3 h-3" /> Save
+                    </button>
+                  )}
+                </div>
+                
+                {!isEditingRecipient ? (
+                  <div>
+                    <p className="text-xs text-slate-600 mb-1">
+                      The redeem code will be sent to:
+                    </p>
+                    <p className="text-sm font-semibold text-slate-900 truncate">{recipientEmail || user?.email}</p>
+                    {recipientName && (
+                      <p className="text-xs text-slate-500 truncate mt-0.5">{recipientName}</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-3 mt-3">
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 mb-1 block">Recipient Name</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                          <User className="h-3 w-3 text-slate-400" />
+                        </div>
+                        <input 
+                          type="text" 
+                          value={recipientName}
+                          onChange={(e) => setRecipientName(e.target.value)}
+                          className="w-full text-sm pl-8 pr-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                          placeholder="Name"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 mb-1 block">Delivery Email</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                          <Mail className="h-3 w-3 text-slate-400" />
+                        </div>
+                        <input 
+                          type="email" 
+                          value={recipientEmail}
+                          onChange={(e) => setRecipientEmail(e.target.value)}
+                          className="w-full text-sm pl-8 pr-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                          placeholder="Email address"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button

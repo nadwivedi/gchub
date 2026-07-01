@@ -86,6 +86,19 @@ const orderSchema = new mongoose.Schema({
     }
   },
 
+  // Recipient Information (Optional - used for digital gifts)
+  recipientInfo: {
+    name: {
+      type: String,
+      trim: true
+    },
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true
+    }
+  },
+
   // Order Items
   items: [orderItemSchema],
 

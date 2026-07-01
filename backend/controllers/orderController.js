@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
 // Create a new order
 const createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, addressId, customerNotes, paymentMethod = 'cod', userId } = req.body;
+    const { items, shippingAddress, addressId, customerNotes, paymentMethod = 'cod', userId, recipientInfo } = req.body;
 
     // For logged-in users, get customer info from user data
     let customerInfo = {};
@@ -158,6 +158,7 @@ const createOrder = async (req, res) => {
     // Create order
     const newOrder = new Order({
       customerInfo,
+      recipientInfo,
       items: processedItems,
       totalAmount,
       totalItems,
@@ -516,7 +517,81 @@ const verifyPayment = async (req, res) => {
 
       await order.save();
 
+      // Send Email with beautiful template
+      if (giftCodes.length > 0) {
+        try {
+          const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: false, // true for 465, false for other ports
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS
+            }
+          });
 
+          const recipientEmail = (order.recipientInfo && order.recipientInfo.email) ? order.recipientInfo.email : order.customerInfo.email;
+          const recipientName = (order.recipientInfo && order.recipientInfo.name) ? order.recipientInfo.name : order.customerInfo.name;
+          const logoUrl = process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/favicon.png` : 'https://gchub.in/favicon.png';
+
+          let codesHtml = '';
+          for (const code of giftCodes) {
+            codesHtml += `
+              <div style="margin-bottom: 24px; padding: 20px; border-radius: 12px; background: #fffbeb; border: 1px solid #fde68a;">
+                <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: 600; color: #92400e;">${code.brand} - Balance: ₹${code.balance}</p>
+                <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px dashed #d97706; text-align: center; margin-bottom: 12px;">
+                  <p style="margin: 0; font-size: 24px; font-family: monospace; font-weight: bold; color: #000000; letter-spacing: 2px; user-select: all;">${code.code}</p>
+                </div>
+                ${code.pin ? `<p style="margin: 0; font-size: 14px; color: #b45309; text-align: center;">PIN: <strong>${code.pin}</strong></p>` : ''}
+              </div>
+            `;
+          }
+
+          const emailHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #334155;">
+              <div style="max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+                <div style="background: linear-gradient(to right, #fbbf24, #f59e0b); padding: 30px 20px; text-align: center;">
+                  <img src="${logoUrl}" alt="GCHub Logo" style="width: 64px; height: 64px; border-radius: 12px; margin-bottom: 16px; border: 2px solid #ffffff;" />
+                  <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Your Digital Vouchers</h1>
+                </div>
+                
+                <div style="padding: 32px 24px;">
+                  <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.5;">Hello <strong>${recipientName}</strong>,</p>
+                  <p style="margin: 0 0 30px 0; font-size: 16px; line-height: 1.5;">Thank you for your purchase from GCHub! Here are your digital redeem codes. You can easily copy the code below.</p>
+                  
+                  ${codesHtml}
+                  
+                  <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #64748b;">Need help redeeming your code?</p>
+                    <a href="${process.env.FRONTEND_URL}/customer-support" style="display: inline-block; background: #f1f5f9; color: #475569; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 500; font-size: 14px;">Contact Support</a>
+                  </div>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
+                  <p style="margin: 0; font-size: 12px; color: #94a3b8;">&copy; ${new Date().getFullYear()} GCHub. All rights reserved.</p>
+                </div>
+              </div>
+            </body>
+            </html>
+          `;
+
+          await transporter.sendMail({
+            from: \`"GCHub" <\${process.env.EMAIL_USER}>\`,
+            to: recipientEmail,
+            subject: '🎉 Your Digital Voucher Codes from GCHub',
+            html: emailHtml
+          });
+          console.log('Voucher email sent to:', recipientEmail);
+        } catch (emailErr) {
+          console.error('Error sending voucher email:', emailErr);
+        }
+      }
 
       return res.json({
         success: true,
