@@ -28,10 +28,20 @@ const GiftCardFlipkart = () => {
   useEffect(() => {
     const fetchFlipkartProducts = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/api/products/category/gift-cards?brand=Flipkart&limit=200`)
-        const data = await res.json()
-        if (data.success && data.data && data.data.length > 0) {
-          const active = data.data.filter(p => p.isActive !== false)
+        let items = []
+        const searchRes = await fetch(`${BACKEND_URL}/api/products/search?q=Flipkart&limit=200`)
+        const searchData = await searchRes.json()
+        if (searchData.success && searchData.data && searchData.data.length > 0) {
+          items = searchData.data
+        } else {
+          const catRes = await fetch(`${BACKEND_URL}/api/products/category/gift-cards?brand=Flipkart&limit=200`)
+          const catData = await catRes.json()
+          if (catData.success && catData.data) {
+            items = catData.data
+          }
+        }
+        if (items.length > 0) {
+          const active = items.filter(p => p.isActive !== false && p.brand && p.brand.toLowerCase().includes('flipkart'))
           setDbProducts(active)
         }
       } catch (err) {
@@ -58,11 +68,25 @@ const GiftCardFlipkart = () => {
   const filteredFromDb = dbProducts.filter(p => p.brand === currentBrand)
 
   const currentVouchers = filteredFromDb.length > 0 
-    ? filteredFromDb.map(p => ({
-        ...p,
-        name: p.seoTitle || p.name || `${p.brand} - ₹${p.originalPrice || p.price}`,
-        brand: p.brand || currentBrand
-      })).sort((a, b) => (a.price || 0) - (b.price || 0))
+    ? (() => {
+        const denomMap = new Map()
+        filteredFromDb.forEach(p => {
+          const denom = p.originalPrice || p.price
+          if (!denomMap.has(denom)) {
+            denomMap.set(denom, p)
+          } else {
+            const existing = denomMap.get(denom)
+            if ((p.stockQuantity || 0) > (existing.stockQuantity || 0)) {
+              denomMap.set(denom, p)
+            }
+          }
+        })
+        return Array.from(denomMap.values()).map(p => ({
+          ...p,
+          name: p.seoTitle || p.name || `${p.brand} Gift Card - ₹${p.originalPrice || p.price}`,
+          brand: p.brand || currentBrand
+        })).sort((a, b) => (a.price || 0) - (b.price || 0))
+      })()
     : fallbackFlipkartVouchers
 
   useSEO({
@@ -82,10 +106,12 @@ const GiftCardFlipkart = () => {
           <h1 className="text-3xl sm:text-4xl lg:text-4xl font-black text-slate-800 mb-3">
             Flipkart{' '}
             <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
-              {currentBrand}
+              Gift Cards
             </span>
           </h1>
-          <p className="text-base text-slate-500 max-w-2xl mx-auto">Get Flipkart codes at the best prices. Instant delivery via email.</p>
+          <p className="text-base text-slate-500 max-w-2xl mx-auto">
+            Get Flipkart codes at the best prices. Instant delivery via email.
+          </p>
         </div>
 
         {/* Dropdown Selection if multiple variants exist */}
@@ -108,26 +134,10 @@ const GiftCardFlipkart = () => {
                 <ChevronDown className="w-5 h-5" />
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-2 mt-3 justify-center">
-              {brandOptions.map(b => (
-                <button
-                  key={b}
-                  onClick={() => setSelectedBrand(b)}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    currentBrand === b
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  {b}
-                </button>
-              ))}
-            </div>
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
           {currentVouchers.map((voucher) => {
             const discountPercent = calculateDiscount(voucher.originalPrice, voucher.price)
             const savings = (voucher.originalPrice || voucher.price) - voucher.price
@@ -140,9 +150,9 @@ const GiftCardFlipkart = () => {
                   </div>
                 )}
 
-                <div className="aspect-[1/1] sm:aspect-[6/5] w-full overflow-hidden bg-slate-100 flex items-center justify-center relative">
-                  <img src={voucher.images?.[0] || '/products/flipkart.avif'} alt={voucher.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${voucher.stockQuantity === 0 ? 'from-slate-900/80 via-slate-900/20' : 'from-black/40 via-transparent'} to-transparent`}></div>
+                <div className="aspect-[16/10] w-full overflow-hidden bg-slate-50/80 flex items-center justify-center relative p-1.5 sm:p-2">
+                  <img src={voucher.images?.[0] || '/products/flipkart.avif'} alt={voucher.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-lg drop-shadow-sm" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${voucher.stockQuantity === 0 ? 'from-slate-900/80 via-slate-900/20' : 'from-black/10 via-transparent'} to-transparent pointer-events-none`}></div>
                   
                   {voucher.stockQuantity === 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center backdrop-blur-[2px]">
