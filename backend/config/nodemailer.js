@@ -291,8 +291,7 @@ const sendVoucherDeliveryEmail = async ({ order, giftCodes, isManualAssignment =
   }
 };
 
-transporter.sendVoucherDeliveryEmail = sendVoucherDeliveryEmail;
-
-module.exports = transporter;
-module.exports.transporter = transporter;
-module.exports.sendVoucherDeliveryEmail = sendVoucherDeliveryEmail;
+module.exports = {
+  transporter,
+  sendVoucherDeliveryEmail
+};
