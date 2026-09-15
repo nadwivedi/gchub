@@ -105,58 +105,44 @@ const sendVoucherDeliveryEmail = async ({ order, giftCodes, isManualAssignment =
       const googlePlayRedeemUrl = `https://play.google.com/redeem?code=${encodeURIComponent(codeValue.trim())}`;
 
       codesHtml += `
-        <div style="margin-bottom: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-          <!-- Voucher Card Header -->
-          <div style="background: ${brandColors.light}; padding: 14px 20px; border-bottom: 1px solid ${brandColors.border}; display: flex; align-items: center; justify-content: space-between;">
+        <div style="margin-bottom: 20px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <!-- Card Header -->
+          <div style="background: ${brandColors.light}; padding: 10px 16px; border-bottom: 1px solid ${brandColors.border};">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="text-align: left;">
-                  <strong style="font-size: 16px; color: ${brandColors.text}; font-weight: 700;">${brand}</strong>
+                <td style="text-align: left; vertical-align: middle;">
+                  <strong style="font-size: 13px; color: ${brandColors.text}; font-weight: 700;">${brand}</strong>
                 </td>
-                <td style="text-align: right;">
-                  ${balance ? `<span style="display: inline-block; background: #ffffff; color: #0f172a; font-weight: 700; font-size: 14px; padding: 4px 12px; border-radius: 20px; border: 1px solid ${brandColors.border};">Balance: ${balance}</span>` : ''}
+                <td style="text-align: right; vertical-align: middle;">
+                  ${balance ? `<span style="background: #ffffff; color: #0f172a; font-weight: 700; font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid ${brandColors.border}; display: inline-block;">Balance: ${balance}</span>` : ''}
                 </td>
               </tr>
             </table>
           </div>
 
           <!-- Code Box -->
-          <div style="padding: 20px; text-align: center;">
-            <p style="margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 1px;">Digital Redeem Code</p>
-            
-            <div style="background: #fffdf5; border: 2px dashed #f59e0b; border-radius: 10px; padding: 16px 12px; margin: 0 auto 12px auto; max-width: 480px;">
-              <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: 2.5px; word-break: break-all; -webkit-user-select: all; -moz-user-select: all; -ms-user-select: all; user-select: all;">
+          <div style="padding: 16px 12px; text-align: center;">
+            <p style="margin: 0 0 6px 0; font-size: 10px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 1px;">Redeem Code</p>
+
+            <div style="background: #fffdf5; border: 2px dashed #f59e0b; border-radius: 8px; padding: 12px 8px; margin: 0 auto 8px auto;">
+              <div style="font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: 2px; word-break: break-all; -webkit-user-select: all; -moz-user-select: all; user-select: all;">
                 ${codeValue}
               </div>
             </div>
 
-            <p style="margin: 0 0 14px 0; font-size: 11px; color: #94a3b8;">
-              💡 <em>Tap & hold or double-click code to copy</em>
-            </p>
-
             ${pinValue ? `
-              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 16px; display: inline-block; margin-bottom: 14px;">
-                <span style="font-size: 12px; color: #64748b; font-weight: 600;">PIN: </span>
-                <strong style="font-family: monospace; font-size: 15px; color: #0f172a; letter-spacing: 2px; -webkit-user-select: all; user-select: all;">${pinValue}</strong>
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 14px; display: inline-block; margin-bottom: 10px;">
+                <span style="font-size: 11px; color: #64748b; font-weight: 600;">PIN: </span>
+                <strong style="font-family: 'Courier New', monospace; font-size: 13px; color: #0f172a; letter-spacing: 2px; -webkit-user-select: all; user-select: all;">${pinValue}</strong>
               </div>
             ` : ''}
 
-            <!-- Action Buttons for this code -->
-            <div style="margin-top: 10px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center">
-                    ${isPlay ? `
-                      <a href="${googlePlayRedeemUrl}" target="_blank" style="display: inline-block; background: #01875f; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; margin: 4px; box-shadow: 0 2px 4px rgba(1, 135, 95, 0.25);">
-                        ▶️ Redeem on Google Play
-                      </a>
-                    ` : ''}
-                    <a href="${orderViewUrl}" target="_blank" style="display: inline-block; background: #f1f5f9; color: #0f172a; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; margin: 4px; border: 1px solid #cbd5e1;">
-                      📋 View & 1-Click Copy in GCHub
-                    </a>
-                  </td>
-                </tr>
-              </table>
+            <!-- Single Gradient Redeem Now Button -->
+            <div style="margin-top: 12px;">
+              <a href="${isPlay ? googlePlayRedeemUrl : orderViewUrl}" target="_blank"
+                style="display: inline-block; text-decoration: none; padding: 12px 32px; border-radius: 10px; font-weight: 700; font-size: 14px; color: #ffffff; background: ${isPlay ? 'linear-gradient(135deg, #01875f 0%, #00a86b 100%)' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'}; box-shadow: ${isPlay ? '0 4px 14px rgba(1,135,95,0.4)' : '0 4px 14px rgba(217,119,6,0.4)'}; letter-spacing: 0.3px;">
+                ${isPlay ? '&#9654;&#65039; Redeem Now' : '&#128722; Redeem Now'}
+              </a>
             </div>
           </div>
         </div>
