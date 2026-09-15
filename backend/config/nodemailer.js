@@ -256,7 +256,7 @@ const sendVoucherDeliveryEmail = async ({ order, giftCodes, isManualAssignment =
     `;
 
     const mailOptions = {
-      from: `"GCHub" <${process.env.EMAIL_USER}>`,
+      from: '"GCHub" <gchub123@gmail.com>',
       to: recipientEmail,
       subject: emailSubject,
       html: emailHtml

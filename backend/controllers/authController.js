@@ -245,7 +245,7 @@ const generateResetPassOTP = async (req, res) => {
     await getUser.save();
 
     const mailOptions = {
-      from: `"GCHub" <${process.env.EMAIL_USER || "noreply@gchub.in"}>`,
+      from: '"GCHub" <gchub123@gmail.com>',
       to: normalizedEmail,
       subject: "Password Reset OTP - GCHub",
       text: `Your OTP for password reset is: ${otp}. It will expire in 10 minutes.`,
