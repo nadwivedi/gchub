@@ -2,7 +2,32 @@ import React, { useState, useContext, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
-import { ArrowLeft, Package, MapPin, Phone, Mail, Calendar, CreditCard, Truck, CheckCircle, Clock, AlertCircle, XCircle, Key, Copy } from 'lucide-react'
+import { ArrowLeft, Package, MapPin, Phone, Mail, Calendar, CreditCard, Truck, CheckCircle, Clock, AlertCircle, XCircle, Key, Copy, ExternalLink, Check } from 'lucide-react'
+
+const getRedeemUrl = (brand, code) => {
+  if (!code) return null
+  const b = (brand || '').toLowerCase()
+  const trimmed = String(code).trim()
+  if (b.includes('google') || b.includes('play')) {
+    return `https://play.google.com/redeem?code=${encodeURIComponent(trimmed)}`
+  }
+  if (b.includes('amazon')) {
+    return `https://www.amazon.in/gc/redeem?claimCode=${encodeURIComponent(trimmed)}`
+  }
+  if (b.includes('steam')) {
+    return `https://store.steampowered.com/account/redeemwalletcode?wallet_code=${encodeURIComponent(trimmed)}`
+  }
+  if (b.includes('flipkart')) {
+    return `https://www.flipkart.com/account/giftcard`
+  }
+  if (b.includes('myntra')) {
+    return `https://www.myntra.com/my/giftcard`
+  }
+  if (b.includes('apple') || b.includes('itunes')) {
+    return `https://apps.apple.com/redeem?code=${encodeURIComponent(trimmed)}`
+  }
+  return null
+}
 
 const OrderDetail = () => {
   const { orderId } = useParams()
@@ -63,10 +88,12 @@ const OrderDetail = () => {
   }
 
   const handleCopy = (text, field) => {
-    navigator.clipboard.writeText(text)
+    if (!text) return
+    navigator.clipboard.writeText(String(text).trim())
     setCopiedField(field)
-    toast.success(`${field} copied!`)
-    setTimeout(() => setCopiedField(null), 2000)
+    const label = String(field).startsWith('Code') ? 'Redeem Code' : (String(field).startsWith('PIN') ? 'PIN' : field)
+    toast.success(`${label} copied to clipboard!`)
+    setTimeout(() => setCopiedField(null), 2500)
   }
 
   // Shorten order ID for display: first 8 chars uppercased
@@ -199,78 +226,143 @@ const OrderDetail = () => {
                 </div>
                 <div className="px-4 py-4 sm:px-6 space-y-4">
                   {order.giftCodes.map((gc, i) => (
-                    <div key={i} className="bg-white rounded-xl border border-emerald-200 p-4 shadow-sm">
+                    <div key={i} className="bg-white rounded-xl border border-emerald-200 p-4 sm:p-5 shadow-sm space-y-4">
                       {/* Card header */}
-                      <div className="flex items-start justify-between gap-2 mb-4">
-                        <span className="font-semibold text-gray-800 text-sm leading-tight">
-                          {gc.brand} — ₹{gc.balance} Gift Card
-                        </span>
-                        <span className="flex-shrink-0 text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="font-bold text-gray-900 text-sm sm:text-base leading-tight block">
+                            {gc.brand}
+                          </span>
+                          {gc.balance ? (
+                            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block mt-1">
+                              ₹{gc.balance} Gift Card
+                            </span>
+                          ) : null}
+                        </div>
+                        <span className="flex-shrink-0 text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-semibold whitespace-nowrap flex items-center gap-1">
+                          <Check className="w-3 h-3 text-emerald-600" />
                           Ready to Use
                         </span>
                       </div>
 
                       {/* Redeem Code */}
-                      <div className="mb-3">
-                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
+                      <div>
+                        <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1.5">
                           Redeem Code
                         </label>
-                        <div className="flex gap-2">
-                          {/* Scrollable code box — never overflows on any screen */}
-                          <div className="flex-1 min-w-0 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 overflow-x-auto">
-                            <p className="font-mono text-sm font-bold text-gray-900 tracking-widest whitespace-nowrap select-all">
+                        <div className="flex items-center gap-2">
+                          {/* Code Display Box */}
+                          <div className="flex-1 min-w-0 bg-amber-50/60 border-2 border-dashed border-amber-300 rounded-xl px-3.5 py-2.5 overflow-x-auto">
+                            <p className="font-mono text-base sm:text-lg font-extrabold text-gray-900 tracking-wider whitespace-nowrap select-all">
                               {gc.code}
                             </p>
                           </div>
+                          
+                          {/* Copy Button */}
                           <button
-                            onClick={() => handleCopy(gc.code, 'Code')}
-                            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-white text-xs font-medium transition-all duration-200 ${
-                              copiedField === 'Code'
-                                ? 'bg-emerald-500'
-                                : 'bg-emerald-600 hover:bg-emerald-700'
+                            onClick={() => handleCopy(gc.code, `Code-${i}`)}
+                            className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-3 rounded-xl text-white text-xs sm:text-sm font-bold shadow-sm transition-all duration-200 active:scale-95 cursor-pointer ${
+                              copiedField === `Code-${i}`
+                                ? 'bg-emerald-600 ring-2 ring-emerald-400 ring-offset-1'
+                                : 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-bold'
                             }`}
                             title="Copy code"
                           >
-                            <Copy className="w-3.5 h-3.5" />
-                            <span>{copiedField === 'Code' ? 'Copied!' : 'Copy'}</span>
+                            {copiedField === `Code-${i}` ? (
+                              <>
+                                <Check className="w-4 h-4 text-white" />
+                                <span className="text-white">Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-4 h-4" />
+                                <span>Copy</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
 
-                      {/* PIN */}
+                      {/* PIN if applicable */}
                       {gc.pin && (
                         <div>
-                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                            PIN
+                          <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1.5">
+                            PIN / Security Code
                           </label>
-                          <div className="flex gap-2">
-                            <div className="flex-1 min-w-0 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 overflow-x-auto">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 min-w-0 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 overflow-x-auto">
                               <p className="font-mono text-sm font-bold text-gray-900 tracking-widest whitespace-nowrap select-all">
                                 {gc.pin}
                               </p>
                             </div>
                             <button
-                              onClick={() => handleCopy(gc.pin, 'PIN')}
-                              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-white text-xs font-medium transition-all duration-200 ${
-                                copiedField === 'PIN'
-                                  ? 'bg-emerald-500'
-                                  : 'bg-emerald-600 hover:bg-emerald-700'
+                              onClick={() => handleCopy(gc.pin, `PIN-${i}`)}
+                              className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 active:scale-95 cursor-pointer ${
+                                copiedField === `PIN-${i}`
+                                  ? 'bg-emerald-500 text-white'
+                                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300'
                               }`}
                               title="Copy PIN"
                             >
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>{copiedField === 'PIN' ? 'Copied!' : 'Copy'}</span>
+                              {copiedField === `PIN-${i}` ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5" />
+                                  <span>Copy PIN</span>
+                                </>
+                              )}
                             </button>
                           </div>
                         </div>
                       )}
+
+                      {/* Direct Redeem Button (Google Play & other supported brands) */}
+                      {getRedeemUrl(gc.brand, gc.code) && (
+                        <div className="pt-2">
+                          <a
+                            href={getRedeemUrl(gc.brand, gc.code)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => {
+                              handleCopy(gc.code, `Code-${i}`)
+                            }}
+                            className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all duration-200 active:scale-[0.98] ${
+                              (gc.brand || '').toLowerCase().includes('google') || (gc.brand || '').toLowerCase().includes('play')
+                                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-500/25'
+                                : (gc.brand || '').toLowerCase().includes('amazon')
+                                ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 shadow-amber-500/25'
+                                : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/25'
+                            }`}
+                          >
+                            {(gc.brand || '').toLowerCase().includes('google') || (gc.brand || '').toLowerCase().includes('play') ? (
+                              <>
+                                <span className="text-base">▶️</span>
+                                <span>Direct Redeem on Google Play</span>
+                                <ExternalLink className="w-4 h-4 ml-0.5 opacity-90" />
+                              </>
+                            ) : (
+                              <>
+                                <span>Redeem Directly on {gc.brand}</span>
+                                <ExternalLink className="w-4 h-4 ml-0.5 opacity-90" />
+                              </>
+                            )}
+                          </a>
+                          <p className="text-[11px] text-gray-500 text-center mt-1.5">
+                            💡 Clicking auto-copies code & opens the official redeem page
+                          </p>
+                        </div>
+                      )}
                     </div>
                   ))}
-                  <div className="text-xs text-emerald-700 bg-emerald-100 rounded-lg p-3 leading-relaxed">
-                    💡 <strong>How to redeem:</strong> Go to your Google Play / respective store, tap &quot;Redeem code&quot; and enter the code above.
+                  <div className="text-xs text-emerald-800 bg-emerald-100/80 border border-emerald-200 rounded-xl p-3.5 leading-relaxed">
+                    💡 <strong>Quick Google Play Redemption:</strong> Click the <em>&quot;Direct Redeem on Google Play&quot;</em> button above, or open the Play Store app &gt; Profile &gt; <em>Payments & subscriptions</em> &gt; <em>Redeem code</em> and paste your code.
                   </div>
                   <p className="text-xs font-medium text-emerald-800 text-center pt-2 border-t border-emerald-200/50">
-                    Your code has been sent to your email. You can also find it here anytime.
+                    Your code has also been sent to your registered email.
                   </p>
                 </div>
               </div>
