@@ -228,7 +228,7 @@ const sendVoucherDeliveryEmail = async ({ order, giftCodes, isManualAssignment =
                 <tr>
                   <td style="background: #0f172a; padding: 22px 20px; text-align: center; color: #94a3b8; font-size: 12px; line-height: 1.6;">
                     <p style="margin: 0 0 6px 0; color: #f8fafc; font-weight: 600;">GCHub — Instant Digital Vouchers & Gift Cards</p>
-                    <p style="margin: 0 0 4px 0;">This email was sent to <strong>${recipientEmail}</strong></p>
+                    <p style="margin: 0 0 6px 0; color: #64748b; font-size: 11px;">This is a system-generated email. Please do not reply to this message.</p>
                     <p style="margin: 0;">&copy; ${new Date().getFullYear()} GCHub. All rights reserved.</p>
                   </td>
                 </tr>
