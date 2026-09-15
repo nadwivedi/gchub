@@ -549,10 +549,11 @@ const verifyPayment = async (req, res) => {
         if (giftCodes.length >= totalRequiredCodes) {
           order.status = 'delivered';
           order.deliveryDate = new Date();
+          console.log(`⚡ [AUTO DELIVERY] All ${giftCodes.length} required codes found & assigned for Order #${order._id.toString().slice(-8).toUpperCase()}!`);
         } else {
           // Some or all codes are missing - mark as pending delivery
           order.status = 'pending';
-          console.log(`Order ${order._id} requires ${totalRequiredCodes} codes but only ${giftCodes.length} found. Marked as pending.`);
+          console.log(`⚠️ [AUTO DELIVERY] Order #${order._id.toString().slice(-8).toUpperCase()} requires ${totalRequiredCodes} code(s) but only ${giftCodes.length} found in stock. Marked as pending for Admin.`);
         }
       }
 
@@ -561,13 +562,14 @@ const verifyPayment = async (req, res) => {
       // Send Email with beautiful template and copy options
       if (giftCodes.length > 0) {
         try {
+          console.log(`📨 [AUTO DELIVERY] Triggering email delivery for Order #${order._id.toString().slice(-8).toUpperCase()}...`);
           await sendVoucherDeliveryEmail({
             order,
             giftCodes,
             isManualAssignment: false
           });
         } catch (emailErr) {
-          console.error('Error sending voucher delivery email in verifyPayment:', emailErr);
+          console.error('❌ Error sending voucher delivery email in verifyPayment:', emailErr);
         }
       }
 
@@ -652,13 +654,14 @@ const assignCodeToOrder = async (req, res) => {
         ...(listingId && { listingId })
       };
 
+      console.log(`👨‍💼 [ADMIN ASSIGN] Admin assigned code [${code}] to Order #${order._id.toString().slice(-8).toUpperCase()}. Triggering email...`);
       await sendVoucherDeliveryEmail({
         order,
         giftCodes: [newCodeItem],
         isManualAssignment: true
       });
     } catch (emailErr) {
-      console.error('Error sending manual voucher email:', emailErr);
+      console.error('❌ Error sending manual voucher email:', emailErr);
     }
 
     res.json({ success: true, message: 'Code assigned successfully', data: order });

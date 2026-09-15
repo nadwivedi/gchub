@@ -266,12 +266,27 @@ const sendVoucherDeliveryEmail = async ({ order, giftCodes, isManualAssignment =
       mailOptions.cc = ccEmails;
     }
 
+    console.log(`\n======================================================`);
+    console.log(`📧 [EMAIL SERVICE] Sending Voucher Delivery Email...`);
+    console.log(`   📦 Order ID     : #${orderFormattedId} (${order._id})`);
+    console.log(`   👤 Recipient    : ${recipientName} <${recipientEmail}>`);
+    if (ccEmails.length > 0) {
+      console.log(`   👥 CC           : ${ccEmails.join(', ')}`);
+    }
+    console.log(`   🏷️ Mode         : ${isManualAssignment ? 'Admin Manual Assignment' : 'Automatic Instant Delivery (After Payment)'}`);
+    console.log(`   🔑 Total Codes  : ${codes.length} code(s)`);
+    codes.forEach((c, idx) => {
+      console.log(`      [${idx + 1}] Brand: ${c.brand || 'Voucher'} | Balance: ₹${c.balance || '0'} | Code: ${c.code} ${c.pin ? `| PIN: ${c.pin}` : ''}`);
+    });
+    console.log(`   🚀 Dispatching email via SMTP (${process.env.EMAIL_HOST || 'Brevo'})...`);
+    console.log(`======================================================\n`);
+
     const sendResult = await transporter.sendMail(mailOptions);
-    console.log(`✅ Voucher delivery email successfully sent to ${recipientEmail} (CC: ${ccEmails.join(', ') || 'none'}). MessageId: ${sendResult.messageId}`);
+    console.log(`✅ [EMAIL SERVICE] Email successfully SENT to ${recipientEmail}! (MessageId: ${sendResult.messageId})\n`);
     return { success: true, messageId: sendResult.messageId };
 
   } catch (error) {
-    console.error('❌ Error sending voucher delivery email:', error);
+    console.error(`❌ [EMAIL SERVICE] Failed to send voucher delivery email:`, error.message);
     return { success: false, error: error.message };
   }
 };
