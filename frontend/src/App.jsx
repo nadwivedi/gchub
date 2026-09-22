@@ -22,7 +22,6 @@ import MyOrders from './pages/MyOrders'
 import OrderDetail from './pages/OrderDetail'
 import ManageAddresses from './pages/ManageAddresses'
 import ProfileInfo from './pages/ProfileInfo'
-import CustomerSupport from './pages/CustomerSupport'
 import ChatBot from './components/ChatBot'
 import Account from './pages/Account'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -137,7 +136,6 @@ const AppContent = () => {
         <Route path="/order/:orderId" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
         <Route path="/manage-addresses" element={<ProtectedRoute><ManageAddresses /></ProtectedRoute>} />
         <Route path="/profile-info" element={<ProtectedRoute><ProfileInfo /></ProtectedRoute>} />
-        <Route path="/customer-support" element={<ProtectedRoute><CustomerSupport /></ProtectedRoute>} />
         <Route path="/payout-details" element={<ProtectedRoute><PayoutDetails /></ProtectedRoute>} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
